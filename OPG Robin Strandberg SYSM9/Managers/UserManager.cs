@@ -5,19 +5,16 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using OPG_Robin_Strandberg_SYSM9.Models;
 
 namespace OPG_Robin_Strandberg_SYSM9.Managers
 {
-    internal class UserManager
+    internal class UserManager : INotifyPropertyChanged
     {
 
-public class UserManager : Managers
-    {
-        public class UserManager : INotifyPropertyChanged
-        {
             private List<User> _users;
 
-            public List<User> Users;
+            public List<User> Users
         {
                 get
                 {
@@ -40,17 +37,17 @@ public class UserManager : Managers
                 Users.Add(new User
                 {
                     UserName = "admin",
-                    DisplayName = "Administratör",
-                    Role = "Admin",
                     Password = "1234",
+                    Country = "",
+                    
                 });
 
                 Users.Add(new User
                 {
-                    UserName = "User",
-                    DisplayName = "Regular user",
-                    Role = "User",
+
+                    UserName = "admin",
                     Password = "1234",
+                    Country = "",
                 });
             }
 
@@ -63,7 +60,7 @@ public class UserManager : Managers
                 set
                 {
                     _currentUser = value;
-                    OnPropertyChanged();
+                PropertyChanged();
                 }
             }
 
@@ -90,9 +87,8 @@ public class UserManager : Managers
 
             private void OnPropertyChanged([CallerMemberName] string propertyName)
             {
-                PropertyChanged?.Invoke(this, new PropertyChangedEventsArgs(propertyName))
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
             }
         }
     }
-}
-}
+

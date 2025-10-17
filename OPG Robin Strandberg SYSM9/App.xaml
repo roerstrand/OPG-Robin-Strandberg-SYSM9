@@ -4,6 +4,6 @@
              xmlns:local="clr-namespace:OPG_Robin_Strandberg_SYSM9"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-         
+        <managers.UserManager x:key="UserManager" />
     </Application.Resources>
 </Application>
