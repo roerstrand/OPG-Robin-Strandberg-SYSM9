@@ -17,12 +17,12 @@ namespace OPG_Robin_Strandberg_SYSM9
     /// <summary>
     /// Interaction logic for RegisterWindow.xaml
     /// </summary>
-    public partial class RegisterWindow : Window
+    public partial class RegisterWindow : UserControl
     {
         public RegisterWindow()
         {
             InitializeComponent();
-            DataContext = this;
+            DataContext = new RegisterViewModel();
         }
     }
 }

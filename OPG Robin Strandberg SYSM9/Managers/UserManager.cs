@@ -85,24 +85,18 @@ namespace OPG_Robin_Strandberg_SYSM9.Managers
 
         public changePassword(string username, string password)
         {
-            for (user u in
-            _users)
+            for (user u in _users)
             {
                 u.UserName = username;
                 u.Password = password;
             }
         }
 
-        public getLoggedIn()
-        {
-            return LoggedIn;
-        }
-
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private void OnPropertyChanged([CallerMemberName] string n)
+        private void OnPropertyChanged([CallerMemberName] string propertyName)
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(n));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

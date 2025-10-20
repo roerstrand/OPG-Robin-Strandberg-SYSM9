@@ -8,13 +8,53 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using OPG_Robin_Strandberg_SYSM9.Views;
 
 namespace OPG_Robin_Strandberg_SYSM9
 {
-    public class MainWindowViewModel
+    public class MainWindowViewModel : INotifyPropertyChanged
     {
-        public User LoggedIn { get; set; }
+        private User _loggedIn;
+
+        public User LoggedIn
+        {
+            get { return _loggedIn; }
+            set
+            {
+                _loggedIn = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(IsAuthenticated));
+            }
+        }
+
         public List<User> Users { get; set; } = new List<User>();
+
+        public bool IsAuthenticated => LoggedIn != null;
+
+        private object _currentView;
+
+        public Object CurrentView
+        {
+            get => _currentView;
+            set
+            {
+                _currentView = value;
+                OnPropertyChanged(nameof(CurrentView));
+            }
+        }
+
+        public ICommand ShowRegisterCommand { get; }
+        public ICommand ShowAddRecipeCommand { get; }
+        public ICommand ShowViewRecipeDetailsCommand { get; }
+        public ICommand ShowViewRecipeListCommand { get; }
+
+        public MainWindowViewModel()
+        {
+            ShowRegisterCommand = new RelayCommand(o => CurrentView = new RegisterWindow()); // OpenRegister här istället för egen metod
+            ShowAddRecipeCommand = new RelayCommand(o => CurrentView = new AddRecipeListViewModel());
+            ShowViewRecipeDetailsCommand = new RelayCommand(o => CurrentView = new RecipeDetailWindow());
+            ShowViewRecipeListCommand = new RelayCommand(o => CurrentView = new RecipeListWindow());
+        }
 
         public bool Login(string username, string password)
         {
@@ -31,18 +71,17 @@ namespace OPG_Robin_Strandberg_SYSM9
             return false;
         }
 
+
         public void Logout()
         {
             LoggedIn = null;
         }
-    }
-    
-    public void openRegister() {
-    
-    }
 
-    public void forgotPassword()
-    {
-        
+        public event PropertyChangedEventHandlerß PropertyChanged;
+
+        protected void OnPropertyChanged([CallerMemberName] string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
     }
 }

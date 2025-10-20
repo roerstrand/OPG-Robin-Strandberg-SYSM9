@@ -17,11 +17,12 @@ namespace OPG_Robin_Strandberg_SYSM9.Views
     /// <summary>
     /// Interaction logic for RecipeDetailWindow.xaml
     /// </summary>
-    public partial class RecipeDetailWindow : Window
+    public partial class RecipeDetailWindow : UserControl
     {
         public RecipeDetailWindow()
         {
             InitializeComponent();
+            DataContext = new RecipeDetailViewModel();
         }
     }
 }

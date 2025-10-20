@@ -22,9 +22,16 @@ namespace OPG_Robin_Strandberg_SYSM9.Models
 
         public void ValidateLogin(string userName, string password)
         {
-           
         }
 
+        public void changePassword(string username, string password)
+        {
+            UserName = username;
+            Password = password;
+        }
 
+        public void UpdateDetails()
+        {
+        }
     }
 }

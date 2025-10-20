@@ -8,5 +8,14 @@ namespace OPG_Robin_Strandberg_SYSM9.Models
 {
     internal class AdminUser
     {
+        public void RemoveAnyRecipe()
+        {
+            
+        }
+
+        public void ViewAllRecipes()
+        {
+            
+        }
     }
 }

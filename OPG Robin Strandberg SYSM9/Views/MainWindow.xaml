@@ -6,10 +6,19 @@
         xmlns:local="clr-namespace:OPG_Robin_Strandberg_SYSM9"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
-    <Label Content="CookMaster" FontSize="24" />
+
     <Grid>
+
+        <Label Content="CookMaster"
+               FontSize="30"
+               FontWeight="Bold"
+               Foreground="#FF4A4A4A"
+               HorizontalAlignment="Center"
+               VerticalAlignment="Top"
+               Margin="0,30,0,0" />
+
         <Grid x:Name="LoginSection">
-            <Grid.Style TargetType="Grid">
+            <Grid.Style>
                 <Style TargetType="Grid">
                     <Setter Property="Visibility" Value="Visible" />
                     <Style.Triggers>
@@ -19,19 +28,22 @@
                     </Style.Triggers>
                 </Style>
             </Grid.Style>
-            
-            <TextBlock Text="Username Input" />
-            <TextBox x:Name="usernameInput" />
-            <TextBlock Text="Password Input" />
-            <TextBox x:Name="passwordInput" />
 
-            <Button Content="Sign In" x:Name="signInButton" Width="200" Margin="0,10" />
-            <Button Content="Register" x:Name="registerButton" Width="200" />
-            <Button Content="Forgot Password" x:Name="forgotPwButton" Width="200"/>
+            <StackPanel HorizontalAlighment="Center" VerticalAlignment="Center">
+
+                <TextBlock Text="Username Input" Margin="0,5" />
+                <TextBox x:Name="usernameInput" Width="200" />
+                <TextBlock Text="Password Input" Margin="0,5" />
+                <TextBox x:Name="passwordInput" Width="200" />
+
+                <Button Content="Log In" x:Name="LogInButton" Click="Login" Width="200" Margin="0,10" />
+                <Button Content="Register" x:Name="RegisterButton" Command="{Binding ShowRegisterCommand}" Width="200" />
+                <Button Content="Forgot Password" x:Name="ForgotPwButton" Command="{ForgotPasswordWindow}" Width="200" />
+                <Button Content="Log Out" x:Name="LogoutButton" Click="Logout" Width="200" />
         </Grid>
 
         <Grid x:Name="MainContentSection">
-            
+
             <Grid.Style>
                 <Style TargetType="Grid">
                     <Setter Property="Visibility" Value="Collapsed" />
@@ -42,13 +54,18 @@
                     </Style.Triggers>
                 </Style>
             </Grid.Style>
-            
+
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
 
-            <StackPanel Orientation="Horizontal" Grid.Row="0" Margin="10">
-                <Button Content="Recipe"
+            <StackPanel Orientation="Horizontal" Grid.Row="0" HorizontalAlighment="Center" Margin="10">
+                <Button Content="Add Recipe" Width="120" Margin="5" Command="{Binding ShowAddRecipeCommand}" />
+                <Button Content="View Recipe Details" Width="120" Margin="5" Command="{ShowViewRecipeDetailsCommand}" />
+                <Button Content="View Recipe List" Width="120" Margin="5" Command="{ShowViewRecipeListCommand}" />
+
+                <ContentControl Content="{Binding CurrentView}" x:Name="MainContentArea" Grid.Row="1" />
         </Grid>
+    </Grid>
 </Window>
