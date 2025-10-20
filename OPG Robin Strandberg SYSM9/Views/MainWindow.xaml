@@ -6,7 +6,49 @@
         xmlns:local="clr-namespace:OPG_Robin_Strandberg_SYSM9"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
+    <Label Content="CookMaster" FontSize="24" />
     <Grid>
+        <Grid x:Name="LoginSection">
+            <Grid.Style TargetType="Grid">
+                <Style TargetType="Grid">
+                    <Setter Property="Visibility" Value="Visible" />
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding UserManager.IsAuthenticated}" Value="True">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Grid.Style>
+            
+            <TextBlock Text="Username Input" />
+            <TextBox x:Name="usernameInput" />
+            <TextBlock Text="Password Input" />
+            <TextBox x:Name="passwordInput" />
 
-    </Grid>
+            <Button Content="Sign In" x:Name="signInButton" Width="200" Margin="0,10" />
+            <Button Content="Register" x:Name="registerButton" Width="200" />
+            <Button Content="Forgot Password" x:Name="forgotPwButton" Width="200"/>
+        </Grid>
+
+        <Grid x:Name="MainContentSection">
+            
+            <Grid.Style>
+                <Style TargetType="Grid">
+                    <Setter Property="Visibility" Value="Collapsed" />
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding UserManager.IsAuthenticated}" Value="True">
+                            <Setter Property="Visibility" Value="Visible" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Grid.Style>
+            
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <StackPanel Orientation="Horizontal" Grid.Row="0" Margin="10">
+                <Button Content="Recipe"
+        </Grid>
 </Window>

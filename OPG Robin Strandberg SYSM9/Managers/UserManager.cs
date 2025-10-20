@@ -11,84 +11,98 @@ namespace OPG_Robin_Strandberg_SYSM9.Managers
 {
     internal class UserManager : INotifyPropertyChanged
     {
+        private User _loggedIn;
 
-            private List<User> _users;
-
-            public List<User> Users
+        public User LoggedIn;
         {
-                get
-                {
-                    return _users;
-                }
-                set
-                {
-                    _users = value;
-                }
-            }
+            get => _loggedIn;
+        }
 
-            public UserManager()
+        private set
+        {
+            _currentUser = value;
+            OnPropertyChanged(LoggedIn);
+            OnPropertyChanged(IsAuthenticated);
+        }
+
+        private readonly List<User> _users;
+
+        public List<User> Users
+        {
+            get { return _users; }
+            set
             {
-                CreateDefaultUsers();
-                _users = new List<User>();
-            }
-
-            public void CreateDefaultUsers()
-            {
-                Users.Add(new User
-                {
-                    UserName = "admin",
-                    Password = "1234",
-                    Country = "",
-                    
-                });
-
-                Users.Add(new User
-                {
-
-                    UserName = "admin",
-                    Password = "1234",
-                    Country = "",
-                });
-            }
-
-
-            private User? _currentUser;
-
-            public User? CurrentUser
-            {
-                get { return _currentUser; }
-                set
-                {
-                    _currentUser = value;
-                PropertyChanged();
-                }
-            }
-
-            public bool Login(string username, string password)
-            {
-                foreach (User u in Users)
-                {
-                    if (u.UserName == username && u.Password = password)
-                    {
-                        CurrentUser = u;
-                        return true;
-                    }
-                }
-
-                return false;
-            }
-
-            public void Logout()
-            {
-                CurrentUser = null;
-            }
-
-            public event PropertyChangedEventHandler? PropertyChanged;
-
-            private void OnPropertyChanged([CallerMemberName] string propertyName)
-            {
-                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+                _users = value;
+                OnPropertyChanged(Users);
             }
         }
-    }
 
+        public bool IsAuthenticated => CurrentUser != null;
+
+        public UserManager()
+        {
+            _users = new List<User>();
+        }
+
+        public void CreateDefaultUsers()
+        {
+            Users.Add(new User
+            {
+                UserName = "admin",
+                Password = "password",
+                Country = "",
+            });
+
+            Users.Add(new User
+            {
+                UserName = "user",
+                Password = "password",
+                Country = "",
+            });
+        }
+
+        public Register(string username, string password, string country)
+        {
+            Users.Add(new User
+            {
+                UserName = username,
+                Password = password,
+                Country = country,
+            });
+        }
+
+        public findUser(string username)
+        {
+            foreach (user u in _users)
+            {
+                if (username == UserName)
+                {
+                    Console.WriteLine($"Found user: {username}.");
+                    return username;
+                }
+            }
+        }
+
+        public changePassword(string username, string password)
+        {
+            for (user u in
+            _users)
+            {
+                u.UserName = username;
+                u.Password = password;
+            }
+        }
+
+        public getLoggedIn()
+        {
+            return LoggedIn;
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private void OnPropertyChanged([CallerMemberName] string n)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(n));
+        }
+    }
+}

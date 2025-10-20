@@ -19,6 +19,8 @@ namespace OPG_Robin_Strandberg_SYSM9
         public MainWindow()
         {
             InitializeComponent();
+            DataContext = new MainWindow();
         }
     }
+    
 }

@@ -22,6 +22,7 @@ namespace OPG_Robin_Strandberg_SYSM9
         public RegisterWindow()
         {
             InitializeComponent();
+            DataContext = this;
         }
     }
 }
