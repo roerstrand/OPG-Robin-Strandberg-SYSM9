@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace OPG_Robin_Strandberg_SYSM9.Models
 {
-    internal class User
+    internal class User : INotifyPropertyChanged
     {
         public string UserName { get; set; }
         public string Password { get; set; }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace OPG_Robin_Strandberg_SYSM9.Models
 {
-    internal class AdminUser
+    internal class AdminUser : INotifyPropertyChanged
     {
         public void RemoveAnyRecipe()
         {

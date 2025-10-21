@@ -8,5 +8,10 @@
              Title="RecipeDetailWindow" Height="450" Width="800">
     <Grid>
         
+        <StackPanel>
+            <TextBlock Text="{Binding RecipeManager.Recipes}" />
+            <Button Content="Edit" />
+            <Button Content="Save" />
+        
     </Grid>
 </UserControl>
