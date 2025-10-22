@@ -1,8 +1,12 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Documents;
 using OPG_Robin_Strandberg_SYSM9.Models;
 
 namespace OPG_Robin_Strandberg_SYSM9.Managers
@@ -11,61 +15,75 @@ namespace OPG_Robin_Strandberg_SYSM9.Managers
     {
         private List<Recipe> _recipes;
 
-        public List<Recipe> Recipes
+        public List<Recipe> RecipeList
         {
             get => _recipes;
-            set => _recipes = value;
-            OnPropertyChanged();
+            set
+            {
+                _recipes = value;
+                OnPropertyChanged(RecipeList.ToString());
+            }
         }
 
         public RecipeManager(List<Recipe> recipes)
         {
-            Recipes = recipes;
+            RecipeList = recipes;
         }
 
         public void AddRecipe(Recipe recipe)
         {
-            Recipes.Add(recipe);
+            RecipeList.Add(recipe);
         }
 
         public void RemoveRecipe(Recipe recipe)
         {
-            Recipes.Remove(recipe);
+            RecipeList.Remove(recipe);
         }
 
-        public Recipe GetAllRecipes()
+        public List<Recipe> GetAllRecipes()
         {
-            return Recipes;
+            return RecipeList;
         }
 
-        public User GetByUser(User user)
+        public List<Recipe> GetByUser(User UserName)
         {
-            return user;
+            List<Recipe> RecipesByUser = new List<Recipe>();
+
+            foreach (Recipe recipe in RecipeList)
+            {
+                RecipesByUser.Add(recipe);
+            }
+
+            return RecipesByUser;
         }
 
-        public Recipe Filter(string criteria) // filtrering string titel eller kategori
+        public List<Recipe> Filter(string criteria) // filtrering string titel eller kategori
         {
-            foreach (recipe Recipe in Recipes)
+            List<Recipe> FilteredRecipes = new List<Recipe>();
+
+            foreach (Recipe recipe in RecipeList)
             {
                 if (criteria == recipe.Title || criteria == recipe.Category)
                 {
-                    return recipe;
+                    FilteredRecipes.Add(recipe);
                 }
             }
 
-            return Recipes;
+            return FilteredRecipes;
         }
 
         public void UpdateRecipe(string title, string instructions, string category, DateTime createdAt, User createdBy,
-            List<string, string, string> ingredients)
+            string ingredients)
         {
-            Title = title;
-            Instructions = instructions;
-            Category = category;
-            CreatedAt = createdAt;
-            CreatedBy = createdBy;
 
-            _ingredients = new List<string>(ingredients);
+        }
+
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        public void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

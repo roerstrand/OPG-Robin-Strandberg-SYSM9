@@ -2,8 +2,8 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:OPG_Robin_Strandberg_SYSM9"
-             StartupUri="MainWindow.xaml">
+             StartupUri="/Views/MainWindow.xaml">
     <Application.Resources>
-        <managers.UserManager x:key="UserManager" />
+        <!-- <managers.UserManager x:key="UserManager" /> -->
     </Application.Resources>
 </Application>

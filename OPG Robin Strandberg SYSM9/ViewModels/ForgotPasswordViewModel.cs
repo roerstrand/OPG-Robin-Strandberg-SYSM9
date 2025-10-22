@@ -1,15 +1,10 @@
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using System.Windows;
 
 namespace OPG_Robin_Strandberg_SYSM9;
 
-public class AddRecipeListViewModel
+public class ForgotPasswordViewModel
 {
-    public void Add_RecipeButton(object sender, RoutedEventArgs e)
-    {
-
-    }
 
     public event PropertyChangedEventHandler PropertyChanged;
 

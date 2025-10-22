@@ -1,3 +1,5 @@
+using System.Windows.Input;
+
 namespace OPG_Robin_Strandberg_SYSM9;
 
 public class RelayCommand : ICommand
@@ -10,7 +12,7 @@ public class RelayCommand : ICommand
         _execute = execute;
         _canExecute = canExecute;
     }
-    
+
     public event EventHandler CanExecuteChanged
     {
         add => CommandManager.RequerySuggested += value;

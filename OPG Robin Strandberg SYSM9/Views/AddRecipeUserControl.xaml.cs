@@ -17,9 +17,9 @@ namespace OPG_Robin_Strandberg_SYSM9.Views
     /// <summary>
     /// Interaction logic for AddRecipeWindow.xaml
     /// </summary>
-    public partial class AddRecipeWindow : UserControl
+    public partial class AddRecipeUserControl : UserControl
     {
-        public AddRecipeWindow()
+        public AddRecipeUserControl()
         {
             InitializeComponent();
             DataContext = new AddRecipeListViewModel();

@@ -9,20 +9,20 @@ using OPG_Robin_Strandberg_SYSM9.Models;
 
 namespace OPG_Robin_Strandberg_SYSM9.Managers
 {
-    internal class UserManager : INotifyPropertyChanged
+    public class UserManager : INotifyPropertyChanged
     {
         private User _loggedIn;
 
-        public User LoggedIn;
+        public User LoggedIn
         {
-            get => _loggedIn;
-        }
+            get { return _loggedIn; }
 
-        private set
-        {
-            _currentUser = value;
-            OnPropertyChanged(LoggedIn);
-            OnPropertyChanged(IsAuthenticated);
+
+            private set
+            {
+                _loggedIn = value;
+                OnPropertyChanged(LoggedIn.ToString());
+            }
         }
 
         private readonly List<User> _users;
@@ -30,62 +30,47 @@ namespace OPG_Robin_Strandberg_SYSM9.Managers
         public List<User> Users
         {
             get { return _users; }
-            set
-            {
-                _users = value;
-                OnPropertyChanged(Users);
-            }
+            set { ; }
         }
 
-        public bool IsAuthenticated => CurrentUser != null;
+        public bool IsAuthenticated = false;
 
         public UserManager()
         {
-            _users = new List<User>();
+            Users = new List<User>();
+            CreateDefaultUsers();
         }
 
         public void CreateDefaultUsers()
         {
-            Users.Add(new User
-            {
-                UserName = "admin",
-                Password = "password",
-                Country = "",
-            });
-
-            Users.Add(new User
-            {
-                UserName = "user",
-                Password = "password",
-                Country = "",
-            });
+            Users.Add(new User("admin", "password", ""));
+            Users.Add(new User("user", "password", ""));
         }
 
-        public Register(string username, string password, string country)
+        public void Register(string username, string password, string country)
         {
-            Users.Add(new User
-            {
-                UserName = username,
-                Password = password,
-                Country = country,
-            });
+            Users.Add(new User(username, password, country));
         }
 
-        public findUser(string username)
+        public List<User> FindUser(string username)
         {
-            foreach (user u in _users)
+            List<User> foundUsers = new List<User>();
+
+            foreach (User u in Users)
             {
-                if (username == UserName)
+                if (username == u.UserName)
                 {
                     Console.WriteLine($"Found user: {username}.");
-                    return username;
+                    foundUsers.Add(u);
                 }
             }
+
+            return foundUsers;
         }
 
-        public changePassword(string username, string password)
+        public void ChangePassword(string username, string password)
         {
-            for (user u in _users)
+            foreach (User u in Users)
             {
                 u.UserName = username;
                 u.Password = password;
@@ -94,7 +79,7 @@ namespace OPG_Robin_Strandberg_SYSM9.Managers
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private void OnPropertyChanged([CallerMemberName] string propertyName)
+        public void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }

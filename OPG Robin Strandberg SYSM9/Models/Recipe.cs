@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace OPG_Robin_Strandberg_SYSM9.Models
 {
-    internal class Recipe
+    internal class Recipe : INotifyPropertyChanged
     {
         private string _title;
 
@@ -16,7 +18,7 @@ namespace OPG_Robin_Strandberg_SYSM9.Models
             set
             {
                 _title = value;
-                OnPropertyChanged();
+                OnPropertyChanged(Title);
             }
         }
 
@@ -28,7 +30,7 @@ namespace OPG_Robin_Strandberg_SYSM9.Models
             set
             {
                 _instructions = value;
-                OnPropertyChanged();
+                OnPropertyChanged(Instructions);
             }
         }
 
@@ -40,7 +42,7 @@ namespace OPG_Robin_Strandberg_SYSM9.Models
             set
             {
                 _category = value;
-                OnPropertyChanged();
+                OnPropertyChanged(Category);
             }
         }
 
@@ -49,8 +51,11 @@ namespace OPG_Robin_Strandberg_SYSM9.Models
         public DateTime CreatedAt
         {
             get => _createdAt;
-            set => _createdAt = value;
-            OnPropertyChanged();
+            set
+            {
+                _createdAt = value;
+                OnPropertyChanged(CreatedAt.ToString());
+            }
         }
 
         private User _createdBy;
@@ -58,8 +63,11 @@ namespace OPG_Robin_Strandberg_SYSM9.Models
         public User CreatedBy
         {
             get => _createdBy;
-            set => _createdBy = value;
-            OnPropertyChanged();
+            set
+            {
+                _createdBy = value;
+                OnPropertyChanged(CreatedBy.ToString());
+            }
         }
 
         private List<string> _ingredients;
@@ -67,12 +75,15 @@ namespace OPG_Robin_Strandberg_SYSM9.Models
         public List<string> Ingredients
         {
             get => _ingredients;
-            set => _ingredients += value;
-            OnPropertyChanged();
+            set
+            {
+                _ingredients.Add(value.ToString());
+                OnPropertyChanged(Ingredients.ToString());
+            }
         }
 
         public Recipe(string title, string instructions, string category, DateTime createdAt, User createdBy,
-            List<string. string, string> ingredients)
+           string ingredients)
         {
             Title = title;
             Instructions = instructions;
@@ -80,11 +91,11 @@ namespace OPG_Robin_Strandberg_SYSM9.Models
             CreatedAt = createdAt;
             CreatedBy = createdBy;
 
-            _ingredients = new List<string>(ingredients);
+            _ingredients = ingredients.Split(',').ToList();
         }
 
-        public void EditRecipe(string title, string instructions, string category, DateTime createdAt, User createdBy,
-            List<string. string, string> ingredients)
+        public void EditRecipe(string title, string instructions, string category, DateTime createdAt,
+            User createdBy, string ingredients)
         {
             Title = title;
             Instructions = instructions;
@@ -92,14 +103,20 @@ namespace OPG_Robin_Strandberg_SYSM9.Models
             CreatedAt = createdAt;
             CreatedBy = createdBy;
 
-            _ingredients = new List<string>(ingredients);
+            _ingredients = ingredients.Split(',').ToList();
         }
-            
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        public void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
     }
-    
-    public Recipe CopyRecipe(string title)
-    {
-        Console.WriteLine($"{Recipe.Title} was copied.");
-        return Recipe;
-    }
+
+    // public void CopyRecipe(string title)
+    // {
+    //     Console.WriteLine($"Recipe {title} was copied.");
+    // }
 }

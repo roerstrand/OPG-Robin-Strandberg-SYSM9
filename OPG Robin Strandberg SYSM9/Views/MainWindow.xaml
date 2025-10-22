@@ -17,30 +17,37 @@
                VerticalAlignment="Top"
                Margin="0,30,0,0" />
 
+        <!-- Loginsektion som visar om nuvarande användare ej är autentiserad i user manager -->
+
         <Grid x:Name="LoginSection">
             <Grid.Style>
                 <Style TargetType="Grid">
                     <Setter Property="Visibility" Value="Visible" />
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding UserManager.IsAuthenticated}" Value="True">
+                        <DataTrigger Binding="{Binding _userManager.IsAuthenticated}" Value="True">
                             <Setter Property="Visibility" Value="Collapsed" />
                         </DataTrigger>
                     </Style.Triggers>
                 </Style>
             </Grid.Style>
 
-            <StackPanel HorizontalAlighment="Center" VerticalAlignment="Center">
+            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
 
                 <TextBlock Text="Username Input" Margin="0,5" />
-                <TextBox x:Name="usernameInput" Width="200" />
-                <TextBlock Text="Password Input" Margin="0,5" />
-                <TextBox x:Name="passwordInput" Width="200" />
+                <TextBox Text="{Binding UserNameInput}" Width="200" />
+                <TextBlock Text="{Binding PasswordInput}" Margin="0,5" />
+                <TextBox x:Name="PasswordInput" Width="200" />
 
-                <Button Content="Log In" x:Name="LogInButton" Click="Login" Width="200" Margin="0,10" />
+                <Button Content="Log In" x:Name="LogInButton" Command="{Binding LoginCommand}" Width="200" Margin="0,10" />
                 <Button Content="Register" x:Name="RegisterButton" Command="{Binding ShowRegisterCommand}" Width="200" />
-                <Button Content="Forgot Password" x:Name="ForgotPwButton" Command="{ForgotPasswordWindow}" Width="200" />
-                <Button Content="Log Out" x:Name="LogoutButton" Click="Logout" Width="200" />
+                <Button Content="Forgot Password" x:Name="ForgotPwButton" Command="{Binding ForgotPasswordCommand}" Width="200" />
+                <Button Content="Log Out" x:Name="LogoutButton" Command="{Binding LogoutCommand}" Width="200" />
+
+                </StackPanel>
         </Grid>
+
+        <!-- Inbäddning av respektive User Control (fönster) i nedan MainContentSection baserat på om -->
+        <!-- nuvarande användaren är autentiserad -->
 
         <Grid x:Name="MainContentSection">
 
@@ -48,7 +55,7 @@
                 <Style TargetType="Grid">
                     <Setter Property="Visibility" Value="Collapsed" />
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding UserManager.IsAuthenticated}" Value="True">
+                        <DataTrigger Binding="{Binding _userManager.IsAuthenticated}" Value="True">
                             <Setter Property="Visibility" Value="Visible" />
                         </DataTrigger>
                     </Style.Triggers>
@@ -60,12 +67,13 @@
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
 
-            <StackPanel Orientation="Horizontal" Grid.Row="0" HorizontalAlighment="Center" Margin="10">
+            <StackPanel Orientation="Horizontal" Grid.Row="0" HorizontalAlignment="Center" Margin="10">
                 <Button Content="Add Recipe" Width="120" Margin="5" Command="{Binding ShowAddRecipeCommand}" />
-                <Button Content="View Recipe Details" Width="120" Margin="5" Command="{ShowViewRecipeDetailsCommand}" />
-                <Button Content="View Recipe List" Width="120" Margin="5" Command="{ShowViewRecipeListCommand}" />
+                <Button Content="View Recipe Details" Width="120" Margin="5" Command="{Binding ShowViewRecipeDetailsCommand}" />
+                <Button Content="View Recipe List" Width="120" Margin="5" Command="{Binding ShowViewRecipeListCommand}" />
 
                 <ContentControl Content="{Binding CurrentView}" x:Name="MainContentArea" Grid.Row="1" />
+                </StackPanel>
         </Grid>
     </Grid>
 </Window>

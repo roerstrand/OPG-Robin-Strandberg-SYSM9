@@ -1,13 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics.Metrics;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace OPG_Robin_Strandberg_SYSM9.Models
 {
-    internal class User : INotifyPropertyChanged
+    public class User : INotifyPropertyChanged
     {
         public string UserName { get; set; }
         public string Password { get; set; }
@@ -24,14 +26,20 @@ namespace OPG_Robin_Strandberg_SYSM9.Models
         {
         }
 
-        public void changePassword(string username, string password)
+        public void ChangePassword(string password)
         {
-            UserName = username;
             Password = password;
         }
 
         public void UpdateDetails()
         {
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        public void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }
