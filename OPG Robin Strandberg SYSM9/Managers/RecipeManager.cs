@@ -1,6 +1,7 @@
 ﻿
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -11,23 +12,23 @@ using OPG_Robin_Strandberg_SYSM9.Models;
 
 namespace OPG_Robin_Strandberg_SYSM9.Managers
 {
-    internal class RecipeManager : INotifyPropertyChanged
+    public class RecipeManager : INotifyPropertyChanged
     {
-        private List<Recipe> _recipes;
+        private ObservableCollection<Recipe> _recipes;
 
-        public List<Recipe> RecipeList
+        public ObservableCollection<Recipe> RecipeList
         {
             get => _recipes;
             set
             {
                 _recipes = value;
-                OnPropertyChanged(RecipeList.ToString());
+                OnPropertyChanged();
             }
         }
 
-        public RecipeManager(List<Recipe> recipes)
+        public RecipeManager()
         {
-            RecipeList = recipes;
+            RecipeList = new ObservableCollection<Recipe>();
         }
 
         public void AddRecipe(Recipe recipe)
@@ -40,7 +41,7 @@ namespace OPG_Robin_Strandberg_SYSM9.Managers
             RecipeList.Remove(recipe);
         }
 
-        public List<Recipe> GetAllRecipes()
+        public ObservableCollection<Recipe> GetAllRecipes()
         {
             return RecipeList;
         }
@@ -57,9 +58,9 @@ namespace OPG_Robin_Strandberg_SYSM9.Managers
             return RecipesByUser;
         }
 
-        public List<Recipe> Filter(string criteria) // filtrering string titel eller kategori
+        public ObservableCollection<Recipe> Filter(string criteria) // filtrering string titel eller kategori
         {
-            List<Recipe> FilteredRecipes = new List<Recipe>();
+            ObservableCollection<Recipe> FilteredRecipes = new ObservableCollection<Recipe>();
 
             foreach (Recipe recipe in RecipeList)
             {

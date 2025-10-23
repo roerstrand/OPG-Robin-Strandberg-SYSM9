@@ -1,11 +1,14 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Windows;
 using OPG_Robin_Strandberg_SYSM9.Managers;
 
 namespace OPG_Robin_Strandberg_SYSM9;
 
 public class RegisterViewModel
 {
+    private UserManager _userManager;
+
     private List<string> countries = new List<string>()
     {
         "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Antigua and Barbuda",
@@ -42,9 +45,14 @@ public class RegisterViewModel
         "Venezuela", "Vietnam", "Yemen", "Zambia", "Zimbabwe"
     };
 
+    public RegisterViewModel()
+    {
+        _userManager = (UserManager)Application.Current.Resources["UserManager"];
+    }
+
     public void CreateUser(string username, string password, string country)
     {
-        UserManager.Register(username, password, country);
+        _userManager.Register(username, password, country);
     }
 
     public event PropertyChangedEventHandler PropertyChanged;

@@ -24,7 +24,7 @@
                 <Style TargetType="Grid">
                     <Setter Property="Visibility" Value="Visible" />
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding _userManager.IsAuthenticated}" Value="True">
+                        <DataTrigger Binding="{Binding IsAuthenticated}" Value="True">
                             <Setter Property="Visibility" Value="Collapsed" />
                         </DataTrigger>
                     </Style.Triggers>
@@ -33,15 +33,15 @@
 
             <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
 
-                <TextBlock Text="Username Input" Margin="0,5" />
-                <TextBox Text="{Binding UserNameInput}" Width="200" />
-                <TextBlock Text="{Binding PasswordInput}" Margin="0,5" />
-                <TextBox x:Name="PasswordInput" Width="200" />
+                <TextBlock Text="Username Input" Margin="0,5" Width="200" />
+                <TextBox Text="{Binding UserNameInput, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,5" Width="200" />
+                <TextBlock Text="Password Input" Margin="0,5" Width="200" />
+                <PasswordBox PasswordChanged="PasswordBox_PasswordChanged" Margin="0,5" Width="200" />
 
-                <Button Content="Log In" x:Name="LogInButton" Command="{Binding LoginCommand}" Width="200" Margin="0,10" />
-                <Button Content="Register" x:Name="RegisterButton" Command="{Binding ShowRegisterCommand}" Width="200" />
-                <Button Content="Forgot Password" x:Name="ForgotPwButton" Command="{Binding ForgotPasswordCommand}" Width="200" />
-                <Button Content="Log Out" x:Name="LogoutButton" Command="{Binding LogoutCommand}" Width="200" />
+                <Button Content="Log In" x:Name="LogInButton" Command="{Binding LoginCommand}" Width="200" Margin="0,5" />
+                <Button Content="Register" x:Name="RegisterButton" Command="{Binding ShowRegisterCommand}" Width="200" Margin="0,5" />
+                <Button Content="Forgot Password" x:Name="ForgotPwButton" Command="{Binding ForgotPasswordCommand}" Width="200" Margin="0,5" />
+                <Button Content="Log Out" x:Name="LogoutButton" Command="{Binding LogoutCommand}" Width="200" Margin="0,5" />
 
                 </StackPanel>
         </Grid>
@@ -72,8 +72,10 @@
                 <Button Content="View Recipe Details" Width="120" Margin="5" Command="{Binding ShowViewRecipeDetailsCommand}" />
                 <Button Content="View Recipe List" Width="120" Margin="5" Command="{Binding ShowViewRecipeListCommand}" />
 
-                <ContentControl Content="{Binding CurrentView}" x:Name="MainContentArea" Grid.Row="1" />
                 </StackPanel>
+
+            <ContentControl Content="{Binding CurrentView}" x:Name="MainContentArea" Grid.Row="1" />
+
         </Grid>
     </Grid>
 </Window>

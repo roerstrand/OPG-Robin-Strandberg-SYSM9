@@ -18,8 +18,30 @@ namespace OPG_Robin_Strandberg_SYSM9
 {
     public class MainWindowViewModel : INotifyPropertyChanged
     {
-        public string UserNameInput;
-        public string PasswordInput;
+        private readonly UserManager _userManager;
+        private readonly RecipeManager  _recipeManager;
+
+        private string _userNameInput;
+
+        public string UserNameInput {
+            get => _userNameInput;
+            set
+            {
+                _userNameInput = value;
+                OnPropertyChanged(UserNameInput);
+            }
+        }
+
+        private string _passwordInput;
+        public string PasswordInput
+        {
+            get => _passwordInput;
+            set
+            {
+                _passwordInput = value;
+                OnPropertyChanged(PasswordInput);
+            }
+        }
 
         private User _loggedIn;
 
@@ -36,7 +58,7 @@ namespace OPG_Robin_Strandberg_SYSM9
 
         public List<User> Users { get; set; } = new List<User>();
 
-        public bool IsAuthenticated = false;
+        public bool IsAuthenticated => _userManager.IsAuthenticated;
 
         public object _currentView;
 
@@ -49,10 +71,6 @@ namespace OPG_Robin_Strandberg_SYSM9
             }
         }
 
-        UserManager _userManager = new UserManager(); // En instans av user manager skapas direkt,
-                                                      // som i konstruktorn skapar en lista med nya default users
-                                                      private RecipeManager _recipeManager = new RecipeManager(List<Recipe> recipes);
-
         // Relay commands som skapar ny instanser av fönster som seddan inbäddas i MainContentSection
         // i min window.
 
@@ -63,8 +81,14 @@ namespace OPG_Robin_Strandberg_SYSM9
         public ICommand ShowViewRecipeListCommand { get; }
         public ICommand LoginCommand { get; }
 
+        public ICommand LogoutCommand { get; }
+
+
         public MainWindowViewModel()
         {
+            _userManager = App.UserManager;
+            _recipeManager = App.RecipeManager;
+
             ShowRegisterCommand = new RelayCommand(o => CurrentView = new RegisterUserControl()); // OpenRegister här istället för egen metod
             ShowAddRecipeCommand = new RelayCommand(o => CurrentView = new AddRecipeListViewModel());
             ShowViewRecipeDetailsCommand = new RelayCommand(o => CurrentView = new RecipeDetailUserControl());
@@ -72,6 +96,7 @@ namespace OPG_Robin_Strandberg_SYSM9
             ShowForgotPasswordCommand = new RelayCommand(o => CurrentView = new ForgotPasswordUserControl());
 
             LoginCommand = new RelayCommand(o => Login_Button());
+            LogoutCommand = new RelayCommand(o => Logout_Button());
         }
 
         public void Login_Button()
@@ -81,18 +106,17 @@ namespace OPG_Robin_Strandberg_SYSM9
                 if (u.UserName == UserNameInput && u.Password == PasswordInput)
                 {
                     LoggedIn = u;
-                    IsAuthenticated = true;
-                    MessageBox.Show("Welcome {u.UserName}!");
+                    MessageBox.Show($"Welcome {u.UserName}!");
+                    return;
                 }
             }
 
             MessageBox.Show("Warning! Wrong password or username.");
         }
 
-        public void Logout_Button(object sender, RoutedEventArgs e)
+        public void Logout_Button()
         {
             LoggedIn = null;
-            IsAuthenticated = false;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace OPG_Robin_Strandberg_SYSM9.Models
 {
-    internal class Recipe : INotifyPropertyChanged
+    public class Recipe : INotifyPropertyChanged
     {
         private string _title;
 

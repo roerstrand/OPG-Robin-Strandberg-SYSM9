@@ -25,12 +25,15 @@ namespace OPG_Robin_Strandberg_SYSM9.Managers
             }
         }
 
-        private readonly List<User> _users;
+        private List<User> _users;
 
         public List<User> Users
         {
             get { return _users; }
-            set { ; }
+            set
+            {
+                _users = value ?? new List<User>();
+            }
         }
 
         public bool IsAuthenticated = false;
