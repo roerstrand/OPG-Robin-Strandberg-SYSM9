@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using OPG_Robin_Strandberg_SYSM9.Models;
 
 namespace OPG_Robin_Strandberg_SYSM9.Managers
@@ -21,7 +22,7 @@ namespace OPG_Robin_Strandberg_SYSM9.Managers
             private set
             {
                 _loggedIn = value;
-                OnPropertyChanged(LoggedIn.ToString());
+                OnPropertyChanged();
             }
         }
 
@@ -30,13 +31,23 @@ namespace OPG_Robin_Strandberg_SYSM9.Managers
         public List<User> Users
         {
             get { return _users; }
-            set
-            {
-                _users = value ?? new List<User>();
-            }
+            set { _users = value; }
         }
 
-        public bool IsAuthenticated = false;
+        private bool _isAuthenticated;
+
+        public bool IsAuthenticated
+        {
+            get => _isAuthenticated;
+            set
+            {
+                if (_isAuthenticated != value)
+                {
+                    _isAuthenticated = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
 
         public UserManager()
         {
@@ -49,6 +60,34 @@ namespace OPG_Robin_Strandberg_SYSM9.Managers
             Users.Add(new User("admin", "password", ""));
             Users.Add(new User("user", "password", ""));
         }
+
+        public bool Login(string username, string password)
+        {
+            foreach (User u in Users)
+            {
+                if (u.UserName == username && u.Password == password)
+                {
+                    LoggedIn = u;
+                    IsAuthenticated = true;
+                    MessageBox.Show($"Welcome {u.UserName}!");
+                    OnPropertyChanged(nameof(IsAuthenticated));
+                    return true;
+                }
+            }
+
+            IsAuthenticated = false;
+            OnPropertyChanged(nameof(IsAuthenticated));
+            MessageBox.Show("Warning! Wrong password or username.");
+            return false;
+        }
+
+        public void Logout()
+        {
+            LoggedIn = null;
+            IsAuthenticated = false;
+            OnPropertyChanged(nameof(IsAuthenticated));
+        }
+
 
         public void Register(string username, string password, string country)
         {

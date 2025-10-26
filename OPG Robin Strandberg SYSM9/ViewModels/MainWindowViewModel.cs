@@ -19,7 +19,6 @@ namespace OPG_Robin_Strandberg_SYSM9
     public class MainWindowViewModel : INotifyPropertyChanged
     {
         private readonly UserManager _userManager;
-        private readonly RecipeManager  _recipeManager;
 
         private string _userNameInput;
 
@@ -28,7 +27,7 @@ namespace OPG_Robin_Strandberg_SYSM9
             set
             {
                 _userNameInput = value;
-                OnPropertyChanged(UserNameInput);
+                OnPropertyChanged();
             }
         }
 
@@ -39,7 +38,6 @@ namespace OPG_Robin_Strandberg_SYSM9
             set
             {
                 _passwordInput = value;
-                OnPropertyChanged(PasswordInput);
             }
         }
 
@@ -50,9 +48,8 @@ namespace OPG_Robin_Strandberg_SYSM9
             get { return _loggedIn; }
             set
             {
-                _loggedIn = value;
-                OnPropertyChanged(nameof(LoggedIn));
-                OnPropertyChanged(nameof(IsAuthenticated));
+                    _loggedIn = value;
+                    OnPropertyChanged();
             }
         }
 
@@ -60,7 +57,7 @@ namespace OPG_Robin_Strandberg_SYSM9
 
         public bool IsAuthenticated => _userManager.IsAuthenticated;
 
-        public object _currentView;
+        private object _currentView;
 
         public Object CurrentView
         {
@@ -83,40 +80,38 @@ namespace OPG_Robin_Strandberg_SYSM9
 
         public ICommand LogoutCommand { get; }
 
-
         public MainWindowViewModel()
         {
-            _userManager = App.UserManager;
-            _recipeManager = App.RecipeManager;
+            // koppla lokala egenskaper till globala statiska instantierade objekt
 
+            _userManager = App.UserManager;
+
+            // Loginsection innan lyckad inloggning
+
+            LoginCommand = new RelayCommand(o => Login_Button());
             ShowRegisterCommand = new RelayCommand(o => CurrentView = new RegisterUserControl()); // OpenRegister här istället för egen metod
+            ShowForgotPasswordCommand = new RelayCommand(o => CurrentView = new ForgotPasswordUserControl());
+
+            // Maincontentsection efter inlogging
+
             ShowAddRecipeCommand = new RelayCommand(o => CurrentView = new AddRecipeListViewModel());
             ShowViewRecipeDetailsCommand = new RelayCommand(o => CurrentView = new RecipeDetailUserControl());
             ShowViewRecipeListCommand = new RelayCommand(o => CurrentView = new RecipeListUserControl());
-            ShowForgotPasswordCommand = new RelayCommand(o => CurrentView = new ForgotPasswordUserControl());
-
-            LoginCommand = new RelayCommand(o => Login_Button());
             LogoutCommand = new RelayCommand(o => Logout_Button());
         }
 
         public void Login_Button()
         {
-            foreach (User u in _userManager.Users)
-            {
-                if (u.UserName == UserNameInput && u.Password == PasswordInput)
-                {
-                    LoggedIn = u;
-                    MessageBox.Show($"Welcome {u.UserName}!");
-                    return;
-                }
-            }
+            _userManager.Login(UserNameInput, PasswordInput);
 
-            MessageBox.Show("Warning! Wrong password or username.");
         }
 
         public void Logout_Button()
         {
-            LoggedIn = null;
+            _userManager.Logout();
+            OnPropertyChanged(nameof(PasswordInput));
+            UserNameInput = string.Empty;
+            PasswordInput = string.Empty;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

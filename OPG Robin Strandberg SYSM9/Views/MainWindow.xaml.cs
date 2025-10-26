@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.ComponentModel;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -17,19 +18,42 @@ namespace OPG_Robin_Strandberg_SYSM9
     public partial class MainWindow : Window
     {
         private readonly MainWindowViewModel _viewModel;
+
+        private bool _isUpdatingPasswordFromVM = false;
         public MainWindow()
         {
             InitializeComponent();
             _viewModel = new MainWindowViewModel();
             DataContext = _viewModel;
+
+            // Lägg t nedan metod att lyssna
+            // på PropertyChanged-signal från MainWindowViewModel. OneWay VM till vy.
+
+            _viewModel.PropertyChanged += ViewModel_PropertyChanged;
+
         }
 
-        // Metod för att konvertera innehåll i vyns passwordbox till egenskapar som håller
-        // värden för password och username i View Model.
+        // Metod för att hämta innehåll från vyns passwordbox
         public void PasswordBox_PasswordChanged(object sender, RoutedEventArgs e)
         {
-           _viewModel.PasswordInput = ((PasswordBox)sender).Password;
+            if (!_isUpdatingPasswordFromVM)
+            {
+                _viewModel.PasswordInput = ((PasswordBox)sender).Password;
+            }
         }
+
+        public void ViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(MainWindowViewModel.PasswordInput))
+            {
+                // Skicka asynkron dispatch-signal till UI-tråden att uppdatera PasswordBox
+                // vid ändring av motsvarande egenskap i VM
+                _isUpdatingPasswordFromVM = true;
+                Dispatcher.Invoke(() => MainWindowPasswordBox.Password = string.Empty);
+                _isUpdatingPasswordFromVM = false;
+            }
+        }
+
     }
 
 }

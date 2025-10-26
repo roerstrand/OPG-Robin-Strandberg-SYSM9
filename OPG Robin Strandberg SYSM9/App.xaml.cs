@@ -14,7 +14,5 @@ namespace OPG_Robin_Strandberg_SYSM9
         // Skapar statiska egenskaper som ger åtkomst till respektive managerinstans i app.xaml
         public static UserManager UserManager => (UserManager)Current.Resources["UserManager"];
 
-        public static RecipeManager RecipeManager => (RecipeManager)Current.Resources["RecipeManager"];
     }
-
 }

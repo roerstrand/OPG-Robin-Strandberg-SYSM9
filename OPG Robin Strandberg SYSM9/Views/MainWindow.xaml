@@ -7,24 +7,30 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
 
-    <Grid>
+    <Grid Background="AntiqueWhite">
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
 
         <Label Content="CookMaster"
-               FontSize="30"
+               FontSize="80"
                FontWeight="Bold"
                Foreground="#FF4A4A4A"
                HorizontalAlignment="Center"
-               VerticalAlignment="Top"
+               VerticalAlignment="Center"
                Margin="0,30,0,0" />
 
         <!-- Loginsektion som visar om nuvarande användare ej är autentiserad i user manager -->
 
-        <Grid x:Name="LoginSection">
+        <Grid Grid.Row="1" x:Name="LoginSection">
             <Grid.Style>
                 <Style TargetType="Grid">
                     <Setter Property="Visibility" Value="Visible" />
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding IsAuthenticated}" Value="True">
+                        <DataTrigger Binding="{Binding Source={x:Static local:App.UserManager},
+                        Path=IsAuthenticated}" Value="True">
                             <Setter Property="Visibility" Value="Collapsed" />
                         </DataTrigger>
                     </Style.Triggers>
@@ -33,15 +39,14 @@
 
             <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
 
-                <TextBlock Text="Username Input" Margin="0,5" Width="200" />
+                <TextBlock Text="Username Input" FontSize="13" FontWeight="Bold" Margin="0,5" Width="200" />
                 <TextBox Text="{Binding UserNameInput, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,5" Width="200" />
-                <TextBlock Text="Password Input" Margin="0,5" Width="200" />
-                <PasswordBox PasswordChanged="PasswordBox_PasswordChanged" Margin="0,5" Width="200" />
+                <TextBlock Text="Password Input" FontSize="13" FontWeight="Bold" Margin="0,5" Width="200" />
+                <PasswordBox x:Name="MainWindowPasswordBox" PasswordChanged="PasswordBox_PasswordChanged" Margin="0,5" Width="200" />
 
-                <Button Content="Log In" x:Name="LogInButton" Command="{Binding LoginCommand}" Width="200" Margin="0,5" />
-                <Button Content="Register" x:Name="RegisterButton" Command="{Binding ShowRegisterCommand}" Width="200" Margin="0,5" />
-                <Button Content="Forgot Password" x:Name="ForgotPwButton" Command="{Binding ForgotPasswordCommand}" Width="200" Margin="0,5" />
-                <Button Content="Log Out" x:Name="LogoutButton" Command="{Binding LogoutCommand}" Width="200" Margin="0,5" />
+                <Button Background="LightSlateGray" FontSize="14" Content="Log In" x:Name="LogInButton" Command="{Binding LoginCommand}" Width="200" Margin="0,5" />
+                <Button Background="LightSlateGray" FontSize="14" Content="Register" x:Name="RegisterButton" Command="{Binding ShowRegisterCommand}" Width="200" Margin="0,5" />
+                <Button Background="LightSlateGray" FontSize="14" Content="Forgot Password" x:Name="ForgotPwButton" Command="{Binding ForgotPasswordCommand}" Width="200" Margin="0,5" />
 
                 </StackPanel>
         </Grid>
@@ -49,28 +54,25 @@
         <!-- Inbäddning av respektive User Control (fönster) i nedan MainContentSection baserat på om -->
         <!-- nuvarande användaren är autentiserad -->
 
-        <Grid x:Name="MainContentSection">
+        <Grid x:Name="MainContentSection" Grid.Row="1">
 
             <Grid.Style>
                 <Style TargetType="Grid">
                     <Setter Property="Visibility" Value="Collapsed" />
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding _userManager.IsAuthenticated}" Value="True">
+                        <DataTrigger Binding="{Binding Source={x:Static local:App.UserManager},
+                        Path=IsAuthenticated}" Value="True">
                             <Setter Property="Visibility" Value="Visible" />
                         </DataTrigger>
                     </Style.Triggers>
                 </Style>
             </Grid.Style>
 
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="*" />
-            </Grid.RowDefinitions>
-
-            <StackPanel Orientation="Horizontal" Grid.Row="0" HorizontalAlignment="Center" Margin="10">
-                <Button Content="Add Recipe" Width="120" Margin="5" Command="{Binding ShowAddRecipeCommand}" />
-                <Button Content="View Recipe Details" Width="120" Margin="5" Command="{Binding ShowViewRecipeDetailsCommand}" />
-                <Button Content="View Recipe List" Width="120" Margin="5" Command="{Binding ShowViewRecipeListCommand}" />
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="10">
+                <Button Background="LightSlateGray" FontSize="14" Content="Add Recipe" Width="120" Height="60" Margin="5" Command="{Binding ShowAddRecipeCommand}" />
+                <Button Background="LightSlateGray" FontSize="14" Content="View Recipe Details" Width="120" Height="60" Margin="5" Command="{Binding ShowViewRecipeDetailsCommand}" />
+                <Button Background="LightSlateGray" FontSize="14" Content="View Recipe List" Width="120" Height="60" Margin="5" Command="{Binding ShowViewRecipeListCommand}" />
+                <Button Background="LightSlateGray" FontSize="14" Content="Log Out" Width="120" Height="60" Margin="5" Command="{Binding LogoutCommand}" />
 
                 </StackPanel>
 
