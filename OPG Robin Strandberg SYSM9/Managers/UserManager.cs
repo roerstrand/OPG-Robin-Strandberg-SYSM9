@@ -102,7 +102,6 @@ namespace OPG_Robin_Strandberg_SYSM9.Managers
             {
                 if (username == u.UserName)
                 {
-                    Console.WriteLine($"Found user: {username}.");
                     foundUsers.Add(u);
                 }
             }
@@ -114,8 +113,12 @@ namespace OPG_Robin_Strandberg_SYSM9.Managers
         {
             foreach (User u in Users)
             {
-                u.UserName = username;
-                u.Password = password;
+                if (u.UserName == username)
+                {
+                    u.Password = password;
+                    OnPropertyChanged(nameof(Users));
+                    break; // Efter första träff på användarnamn
+                }
             }
         }
 

@@ -26,14 +26,17 @@ namespace OPG_Robin_Strandberg_SYSM9
             _viewModel = new MainWindowViewModel();
             DataContext = _viewModel;
 
-            // Lägg t nedan metod att lyssna
-            // på PropertyChanged-signal från MainWindowViewModel. OneWay VM till vy.
+            // Läggs t nedan metod att lyssna
+            // på PropertyChanged-signal från MainWindowViewModel. OneWay VM till vy, för att kunna
+            // tömma passwordbox vid utloggning
 
             _viewModel.PropertyChanged += ViewModel_PropertyChanged;
 
         }
 
         // Metod för att hämta innehåll från vyns passwordbox
+        //_isUpdatingPasswordFromVM används för att skicka signaler one way till VM om inte
+        //PasswordBox updateras/töms av nedan metod ViewModel_PropertyChanged.
         public void PasswordBox_PasswordChanged(object sender, RoutedEventArgs e)
         {
             if (!_isUpdatingPasswordFromVM)

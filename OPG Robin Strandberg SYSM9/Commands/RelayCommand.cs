@@ -1,6 +1,6 @@
 using System.Windows.Input;
 
-namespace OPG_Robin_Strandberg_SYSM9;
+namespace OPG_Robin_Strandberg_SYSM9.Commands;
 
 public class RelayCommand : ICommand
 {

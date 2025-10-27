@@ -13,6 +13,7 @@ using System.Windows.Shapes;
 using OPG_Robin_Strandberg_SYSM9.Managers;
 using OPG_Robin_Strandberg_SYSM9.Models;
 using OPG_Robin_Strandberg_SYSM9.Views;
+using OPG_Robin_Strandberg_SYSM9.Commands;
 
 namespace OPG_Robin_Strandberg_SYSM9
 {
@@ -22,7 +23,8 @@ namespace OPG_Robin_Strandberg_SYSM9
 
         private string _userNameInput;
 
-        public string UserNameInput {
+        public string UserNameInput
+        {
             get => _userNameInput;
             set
             {
@@ -32,13 +34,11 @@ namespace OPG_Robin_Strandberg_SYSM9
         }
 
         private string _passwordInput;
+
         public string PasswordInput
         {
             get => _passwordInput;
-            set
-            {
-                _passwordInput = value;
-            }
+            set { _passwordInput = value; }
         }
 
         private User _loggedIn;
@@ -48,8 +48,8 @@ namespace OPG_Robin_Strandberg_SYSM9
             get { return _loggedIn; }
             set
             {
-                    _loggedIn = value;
-                    OnPropertyChanged();
+                _loggedIn = value;
+                OnPropertyChanged();
             }
         }
 
@@ -65,11 +65,12 @@ namespace OPG_Robin_Strandberg_SYSM9
             set
             {
                 _currentView = value;
+                OnPropertyChanged();
             }
         }
 
-        // Relay commands som skapar ny instanser av fönster som seddan inbäddas i MainContentSection
-        // i min window.
+        // Relay commands som skapar ny instanser av fönster som sedan inbäddas i MainContentSection
+        // i main window.
 
         public ICommand ShowRegisterCommand { get; }
         public ICommand ShowForgotPasswordCommand { get; }
@@ -82,6 +83,7 @@ namespace OPG_Robin_Strandberg_SYSM9
 
         public MainWindowViewModel()
         {
+
             // koppla lokala egenskaper till globala statiska instantierade objekt
 
             _userManager = App.UserManager;
@@ -89,8 +91,14 @@ namespace OPG_Robin_Strandberg_SYSM9
             // Loginsection innan lyckad inloggning
 
             LoginCommand = new RelayCommand(o => Login_Button());
-            ShowRegisterCommand = new RelayCommand(o => CurrentView = new RegisterUserControl()); // OpenRegister här istället för egen metod
-            ShowForgotPasswordCommand = new RelayCommand(o => CurrentView = new ForgotPasswordUserControl());
+            ShowRegisterCommand =
+                new RelayCommand(o =>
+                    CurrentView = new RegisterUserControl()); // OpenRegister här istället för egen metod
+            ShowForgotPasswordCommand = new RelayCommand(o =>
+            {
+                System.Diagnostics.Debug.WriteLine("ForgotPasswordCommand triggered!");
+                CurrentView = new ForgotPasswordUserControl();
+            });
 
             // Maincontentsection efter inlogging
 
@@ -103,7 +111,6 @@ namespace OPG_Robin_Strandberg_SYSM9
         public void Login_Button()
         {
             _userManager.Login(UserNameInput, PasswordInput);
-
         }
 
         public void Logout_Button()
