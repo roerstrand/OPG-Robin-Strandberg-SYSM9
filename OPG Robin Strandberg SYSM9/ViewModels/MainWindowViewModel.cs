@@ -77,8 +77,9 @@ namespace OPG_Robin_Strandberg_SYSM9
         public ICommand ShowAddRecipeCommand { get; }
         public ICommand ShowViewRecipeDetailsCommand { get; }
         public ICommand ShowViewRecipeListCommand { get; }
-        public ICommand LoginCommand { get; }
 
+        public ICommand ShowViewUserDetailsCommand { get; }
+        public ICommand LoginCommand { get; }
         public ICommand LogoutCommand { get; }
 
         public MainWindowViewModel()
@@ -107,9 +108,10 @@ namespace OPG_Robin_Strandberg_SYSM9
 
             // Maincontentsection efter inlogging
 
-            ShowAddRecipeCommand = new RelayCommand(o => CurrentView = new AddRecipeListViewModel());
-            ShowViewRecipeDetailsCommand = new RelayCommand(o => CurrentView = new RecipeDetailUserControl());
-            ShowViewRecipeListCommand = new RelayCommand(o => CurrentView = new RecipeListUserControl());
+            ShowAddRecipeCommand = new RelayCommand(o => CurrentView = new AddRecipeWindow());
+            ShowViewRecipeDetailsCommand = new RelayCommand(o => CurrentView = new RecipeDetailWindow());
+            ShowViewRecipeListCommand = new RelayCommand(o => CurrentView = new RecipeListWindow());
+            ShowViewUserDetailsCommand = new RelayCommand(o => CurrentView = new UserDetailsWindow());
             LogoutCommand = new RelayCommand(o => Logout_Button());
         }
 

@@ -12,17 +12,17 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-namespace OPG_Robin_Strandberg_SYSM9
+namespace OPG_Robin_Strandberg_SYSM9.Views
 {
     /// <summary>
-    /// Interaction logic for RecipeListWindow.xaml
+    /// Interaction logic for RecipeDetailWindow.xaml
     /// </summary>
-    public partial class RecipeListUserControl : UserControl
+    public partial class RecipeDetailWindow : Window
     {
-        public RecipeListUserControl()
+        public RecipeDetailWindow()
         {
             InitializeComponent();
-            DataContext = new RecipeListViewModel();
+            DataContext = new RecipeDetailViewModel();
         }
     }
 }

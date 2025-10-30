@@ -5,6 +5,13 @@
              xmlns:local="clr-namespace:OPG_Robin_Strandberg_SYSM9"
              StartupUri="/Views/MainWindow.xaml">
     <Application.Resources>
-        <managers:UserManager x:Key="UserManager" />
+
+
+        <ResourceDictionary>
+            <managers:UserManager x:Key="UserManager" />
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Themes/GlobalStyles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
     </Application.Resources>
 </Application>

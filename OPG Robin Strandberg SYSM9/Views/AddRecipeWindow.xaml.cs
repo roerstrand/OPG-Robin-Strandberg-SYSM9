@@ -15,14 +15,14 @@ using System.Windows.Shapes;
 namespace OPG_Robin_Strandberg_SYSM9.Views
 {
     /// <summary>
-    /// Interaction logic for RecipeDetailWindow.xaml
+    /// Interaction logic for AddRecipeWindow.xaml
     /// </summary>
-    public partial class RecipeDetailUserControl : UserControl
+    public partial class AddRecipeWindow : Window
     {
-        public RecipeDetailUserControl()
+        public AddRecipeWindow()
         {
             InitializeComponent();
-            DataContext = new RecipeDetailViewModel();
+            DataContext = new AddRecipeListViewModel();
         }
     }
 }
