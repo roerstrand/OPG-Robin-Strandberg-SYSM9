@@ -1,0 +1,91 @@
+﻿<Window x:Class="OPG_Robin_Strandberg_SYSM9.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:OPG_Robin_Strandberg_SYSM9"
+        mc:Ignorable="d"
+        Title="CookMaster"
+        WindowStartupLocation="CenterScreen"
+        WindowState="Maximized"
+        Background="AntiqueWhite">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <!-- Splash label -->
+        <Label Content="CookMaster"
+               FontSize="80"
+               FontWeight="Bold"
+               Foreground="#FF4A4A4A"
+               HorizontalAlignment="Center"
+               Margin="0,30,0,10" />
+
+        <!-- LOGINSEKTION (visas när man INTE är inloggad) -->
+        <Grid Grid.Row="1" x:Name="LoginSection">
+            <Grid.Style>
+                <Style TargetType="Grid">
+                    <Setter Property="Visibility" Value="Visible" />
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Source={x:Static local:App.UserManager}, Path=IsAuthenticated}"
+                                     Value="True">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Grid.Style>
+
+            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                <TextBlock Text="Username Input" FontSize="13" FontWeight="Bold" Margin="0,5" Width="200" />
+                <TextBox Text="{Binding UserNameInput, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                         Width="200" Margin="0,5" />
+
+                <TextBlock Text="Password Input" FontSize="13" FontWeight="Bold" Margin="0,5" Width="200" />
+                <PasswordBox x:Name="MainWindowPasswordBox"
+                             Width="200" Margin="0,5"
+                             PasswordChanged="PasswordBox_PasswordChanged" />
+
+                <Button Content="Log In" Background="LightSlateGray" FontSize="14"
+                        Width="200" Margin="0,5"
+                        Command="{Binding LoginCommand}" />
+
+                <Button Content="Register" Background="LightSlateGray" FontSize="14"
+                        Width="200" Margin="0,5"
+                        Command="{Binding ShowRegisterCommand}" />
+
+                <Button Content="Forgot Password" Background="LightSlateGray" FontSize="14"
+                        Width="200" Margin="0,5"
+                        Command="{Binding ShowForgotPasswordCommand}" />
+            </StackPanel>
+        </Grid>
+
+        <!-- MAINCONTENT (visas när man ÄR inloggad) -->
+        <Grid Grid.Row="1" x:Name="MainContentSection">
+            <Grid.Style>
+                <Style TargetType="Grid">
+                    <Setter Property="Visibility" Value="Collapsed" />
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Source={x:Static local:App.UserManager}, Path=IsAuthenticated}"
+                                     Value="True">
+                            <Setter Property="Visibility" Value="Visible" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Grid.Style>
+
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="10">
+                <Button Background="LightSlateGray" FontSize="14" Content="Add Recipe" Width="120" Height="60"
+                        Margin="5" Command="{Binding ShowAddRecipeCommand}" />
+                <Button Background="LightSlateGray" FontSize="14" Content="View Recipe Details" Width="120" Height="60"
+                        Margin="5" Command="{Binding ShowViewRecipeDetailsCommand}" />
+                <Button Background="LightSlateGray" FontSize="14" Content="View Recipe List" Width="120" Height="60"
+                        Margin="5" Command="{Binding ShowViewRecipeListCommand}" />
+                <Button Background="LightSlateGray" FontSize="14" Content="Log Out" Width="120" Height="60" Margin="5"
+                        Command="{Binding LogoutCommand}" />
+            </StackPanel>
+        </Grid>
+    </Grid>
+</Window>
