@@ -18,7 +18,7 @@ namespace OPG_Robin_Strandberg_SYSM9
         private string _lastFourPreviousPassword;
 
         private int _attempts;
-        private bool _canSubmit;
+        private bool _canSubmit = true;
 
         public string InputUsername
         {
@@ -143,7 +143,6 @@ namespace OPG_Robin_Strandberg_SYSM9
                 var lastFour = password.Substring(password.Length - 4);
                 lastFour = lastFour.Trim(); // Extra säkerhet ifall lagrat lösenord innehåller mellanslag
 
-                int remaining = 3 - Attempts;
 
                 if (lastFour != LastFourPreviousPassword)
                 {
@@ -153,6 +152,8 @@ namespace OPG_Robin_Strandberg_SYSM9
                         CanSubmit = false;
                         return;
                     }
+
+                    int remaining = 3 - Attempts;
 
                     MessageBox.Show(
                         $"Security check does not match current password. {remaining} attempts to pass security check.");

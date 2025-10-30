@@ -1,0 +1,12 @@
+﻿using System.Windows.Controls;
+
+namespace OPG_Robin_Strandberg_SYSM9.Views;
+
+public partial class UserDetailsUserControl : UserControl
+{
+    public UserDetailsUserControl()
+    {
+        InitializeComponent();
+    }
+}
+
