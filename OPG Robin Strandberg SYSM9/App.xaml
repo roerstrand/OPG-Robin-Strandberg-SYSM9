@@ -8,7 +8,6 @@
 
 
         <ResourceDictionary>
-            <managers:UserManager x:Key="UserManager" />
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="Themes/GlobalStyles.xaml" />
             </ResourceDictionary.MergedDictionaries>

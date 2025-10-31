@@ -23,31 +23,51 @@ namespace OPG_Robin_Strandberg_SYSM9
         public string InputUsername
         {
             get => _inputUsername;
-            set { _inputUsername = value; OnPropertyChanged(); }
+            set
+            {
+                _inputUsername = value;
+                OnPropertyChanged();
+            }
         }
 
         public string InputNewPassword
         {
             get => _inputNewPassword;
-            set { _inputNewPassword = value; OnPropertyChanged(); }
+            set
+            {
+                _inputNewPassword = value;
+                OnPropertyChanged();
+            }
         }
 
         public string InputConfirmNewPassword
         {
             get => _inputConfirmPassword;
-            set { _inputConfirmPassword = value; OnPropertyChanged(); }
+            set
+            {
+                _inputConfirmPassword = value;
+                OnPropertyChanged();
+            }
         }
 
         public string LastFourPreviousPassword
         {
             get => _lastFourPreviousPassword;
-            set { _lastFourPreviousPassword = value; OnPropertyChanged(); }
+            set
+            {
+                _lastFourPreviousPassword = value;
+                OnPropertyChanged();
+            }
         }
 
         public int Attempts
         {
             get => _attempts;
-            set { _attempts = value; OnPropertyChanged(); }
+            set
+            {
+                _attempts = value;
+                OnPropertyChanged();
+            }
         }
 
         public bool CanSubmit
@@ -63,7 +83,6 @@ namespace OPG_Robin_Strandberg_SYSM9
             }
         }
 
-        // 🔹 Rätt typ för MVVM — ICommand (inte RelayCommand)
         public ICommand SubmitCommand { get; }
         public ICommand BackToLoginCommand { get; }
 
@@ -71,7 +90,6 @@ namespace OPG_Robin_Strandberg_SYSM9
         {
             _userManager = App.UserManager;
 
-            // 🔹 Implementation: RelayCommand
             SubmitCommand = new RelayCommand(o => ValidatePriorPasswordChange());
             BackToLoginCommand = new RelayCommand(o => BackToLogin());
         }
@@ -80,23 +98,25 @@ namespace OPG_Robin_Strandberg_SYSM9
         {
             try
             {
+                var loginWindow = new Views.MainWindow();
+                loginWindow.Show();
+
+
                 foreach (Window window in Application.Current.Windows)
                 {
-                    if (window is Views.ForgotPasswordWindow)
+                    if (window is Views.ForgotPasswordWindow forgotWindow)
                     {
-                        window.Close();
+                        forgotWindow.Close();
                         break;
                     }
                 }
-
-                var loginWindow = new Views.MainWindow();
-                loginWindow.Show();
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Error in BackToLogin: {ex.Message}");
             }
         }
+
 
         private void ChangePassword(User user, string newPassword)
         {
@@ -161,6 +181,7 @@ namespace OPG_Robin_Strandberg_SYSM9
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
+
         protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
             => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }

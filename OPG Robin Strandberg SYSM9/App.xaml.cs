@@ -1,18 +1,20 @@
-﻿using System.Configuration;
-using System.Data;
-using System.Windows;
+﻿using System.Windows;
 using OPG_Robin_Strandberg_SYSM9.Managers;
 
 namespace OPG_Robin_Strandberg_SYSM9
 {
-    /// <summary>
-    /// Interaction logic for App.xaml
-    /// </summary>
     public partial class App : Application
     {
+        public static UserManager UserManager { get; private set; }
 
-        // Skapar statiska egenskaper som ger åtkomst till respektive managerinstans i app.xaml
-        public static UserManager UserManager => (UserManager)Current.Resources["UserManager"];
+        protected override void OnStartup(StartupEventArgs e)
+        {
+            base.OnStartup(e);
 
+            UserManager ??= new UserManager();
+
+            MainWindow = new Views.MainWindow();
+            MainWindow.Show();
+        }
     }
 }

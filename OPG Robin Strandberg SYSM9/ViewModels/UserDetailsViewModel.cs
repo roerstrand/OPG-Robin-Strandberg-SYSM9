@@ -51,51 +51,66 @@ namespace OPG_Robin_Strandberg_SYSM9.ViewModels
 
         private void SaveChanges()
         {
-            if (!string.IsNullOrWhiteSpace(NewUserName))
+            try
             {
-                if (NewUserName.Length < 3)
+                if (!string.IsNullOrWhiteSpace(NewUserName))
                 {
-                    MessageBox.Show("Username must be at least 3 characters long.");
-                    return;
+                    if (NewUserName.Length < 3)
+                    {
+                        MessageBox.Show("Username must be at least 3 characters long.");
+                        return;
+                    }
+
+                    if (_userManager.IsUsernameTaken(NewUserName))
+                    {
+                        MessageBox.Show("That username is already taken.");
+                        return;
+                    }
+
+                    _userManager.CurrentUser.UserName = NewUserName;
                 }
 
-                if (_userManager.IsUsernameTaken(NewUserName))
+                if (!string.IsNullOrWhiteSpace(NewPassword))
                 {
-                    MessageBox.Show("That username is already taken.");
-                    return;
+                    if (NewPassword.Length < 5)
+                    {
+                        MessageBox.Show("Password must be at least 5 characters long.");
+                        return;
+                    }
+
+                    if (NewPassword != ConfirmPassword)
+                    {
+                        MessageBox.Show("Passwords do not match.");
+                        return;
+                    }
+
+                    _userManager.CurrentUser.Password = NewPassword;
                 }
 
-                _userManager.CurrentUser.UserName = NewUserName;
+                if (!string.IsNullOrWhiteSpace(SelectedCountry))
+                    _userManager.CurrentUser.Country = SelectedCountry;
+
+                MessageBox.Show("User details updated successfully!");
+
+                Application.Current.MainWindow.Content =
+                    new Views.RecipeListUserControl(_userManager.GetRecipeManagerForCurrentUser());
             }
-
-            if (!string.IsNullOrWhiteSpace(NewPassword))
+            catch (NullReferenceException ex)
             {
-                if (NewPassword.Length < 5)
-                {
-                    MessageBox.Show("Password must be at least 5 characters long.");
-                    return;
-                }
-
-                if (NewPassword != ConfirmPassword)
-                {
-                    MessageBox.Show("Passwords do not match.");
-                    return;
-                }
-
-                _userManager.CurrentUser.Password = NewPassword;
+                MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
-
-            if (!string.IsNullOrWhiteSpace(SelectedCountry))
-                _userManager.CurrentUser.Country = SelectedCountry;
-
-            MessageBox.Show("User details updated successfully!");
-
-            Application.Current.MainWindow.Content = new Views.RecipeListUserControl(_userManager.GetRecipeManagerForCurrentUser());
         }
 
         private void Cancel()
         {
-            Application.Current.MainWindow.Content = new Views.RecipeListUserControl(_userManager.GetRecipeManagerForCurrentUser());
+            try
+            {
+                Application.Current.MainWindow.Content =
+                    new Views.RecipeListUserControl(_userManager.GetRecipeManagerForCurrentUser());
+            } catch  (NullReferenceException ex)
+            {
+                MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

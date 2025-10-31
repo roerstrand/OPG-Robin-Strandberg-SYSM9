@@ -3,28 +3,37 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:local="clr-namespace:OPG_Robin_Strandberg_SYSM9.Views"
              mc:Ignorable="d"
              Height="450" Width="800">
-    <Grid>
-        <StackPanel>
+    <Grid Background="{StaticResource AppBackground}">
+        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Width="400">
+
             <Label Content="Add Recipe"
                    FontSize="20"
                    FontWeight="600"
                    HorizontalAlignment="Center"
-                   VerticalAlignment="Top"
-                   Margin="0,30,0,0" />
+                   Margin="0,10,0,20" />
 
             <TextBlock Text="Title" />
             <TextBox x:Name="titleInput" />
-            <TextBlock Text="Ingredients" />
-            <TextBox x:Name="ingredientsInput" />
-            <TextBlock Text="Category" />
-            <TextBox x:Name="catogoryInput" />
 
-            <!-- <Button Content="Add" x:Name="AddRecipeButton" Click="Add_RecipeButton" /> -->
+            <TextBlock Text="Ingredients (comma separated)" Margin="0,10,0,0"/>
+            <TextBox x:Name="ingredientsInput" Height="60" TextWrapping="Wrap" AcceptsReturn="True"/>
 
+            <TextBlock Text="Category" Margin="0,10,0,0"/>
+            <TextBox x:Name="categoryInput" />
+
+            <TextBlock Text="Instructions" Margin="0,10,0,0"/>
+            <TextBox x:Name="instructionsInput" Height="100" TextWrapping="Wrap" AcceptsReturn="True"/>
+
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,20,0,0">
+                <Button Content="Save Recipe"
+                        Width="120"
+                        Click="SaveRecipe_Click" />
+                <Button Content="Back"
+                        Width="120"
+                        Click="BackToList_Click" />
+            </StackPanel>
         </StackPanel>
-
     </Grid>
 </UserControl>

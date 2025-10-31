@@ -26,10 +26,15 @@ namespace OPG_Robin_Strandberg_SYSM9
         private string _userNameInput;
 
         private RecipeListViewModel _recipeListViewModel;
+
         public RecipeListViewModel RecipeListViewModel
         {
             get => _recipeListViewModel;
-            set { _recipeListViewModel = value; OnPropertyChanged(); }
+            set
+            {
+                _recipeListViewModel = value;
+                OnPropertyChanged();
+            }
         }
 
 
@@ -105,22 +110,18 @@ namespace OPG_Robin_Strandberg_SYSM9
             ShowRegisterCommand = new RelayCommand(o =>
             {
                 var register = new RegisterWindow();
-                register.Show();
-                Application.Current.MainWindow.Close();
+                register.Owner = Application.Current.MainWindow;
+                register.ShowDialog();
             });
 
             ShowForgotPasswordCommand = new RelayCommand(o =>
             {
                 var forgot = new ForgotPasswordWindow();
-                forgot.Show();
-                Application.Current.MainWindow.Close();
+                forgot.Owner = Application.Current.MainWindow;
+                forgot.ShowDialog();
             });
 
-
-            // Maincontentsection efter inlogging
-
             // Maincontentsection efter inloggning
-// Maincontentsection efter inloggning
             ShowAddRecipeCommand = new RelayCommand(_ =>
             {
                 Application.Current.MainWindow.Content = new AddRecipeUserControl(_recipeManager);
@@ -142,12 +143,11 @@ namespace OPG_Robin_Strandberg_SYSM9
                 }
 
                 Application.Current.MainWindow.Content =
-                    new RecipeDetailsUserControl(_recipeManager.CurrentRecipe, _recipeManager);
+                    new RecipeDetailUserControl(_recipeManager.CurrentRecipe, _recipeManager);
             });
 
             LogoutCommand = new RelayCommand(_ => Logout_Button());
         }
-
 
         public void Login_Button()
         {
@@ -156,7 +156,11 @@ namespace OPG_Robin_Strandberg_SYSM9
                 _recipeManager = _userManager.GetRecipeManagerForCurrentUser();
                 RecipeListViewModel = new RecipeListViewModel(_recipeManager, _userManager);
 
-                // Denna rad triggar din XAML så login-sektionen döljs och MainContent visas
+                CurrentView = new RecipeListUserControl(_recipeManager)
+                {
+                    DataContext = RecipeListViewModel
+                };
+
                 OnPropertyChanged(nameof(IsAuthenticated));
             }
             else
@@ -167,7 +171,6 @@ namespace OPG_Robin_Strandberg_SYSM9
                     MessageBoxImage.Error);
             }
         }
-
 
         public void Logout_Button()
         {

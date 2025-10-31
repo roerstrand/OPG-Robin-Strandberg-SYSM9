@@ -11,6 +11,21 @@ namespace OPG_Robin_Strandberg_SYSM9.Managers
 {
     public class RecipeManager : INotifyPropertyChanged
     {
+        private Recipe _currentRecipe;
+
+        public Recipe CurrentRecipe
+        {
+            get => _currentRecipe;
+            set
+            {
+                if (_currentRecipe != value)
+                {
+                    _currentRecipe = value;
+                    OnPropertyChanged(nameof(CurrentRecipe));
+                }
+            }
+        }
+
         private ObservableCollection<Recipe> _recipes;
 
         public ObservableCollection<Recipe> RecipeList
@@ -34,20 +49,23 @@ namespace OPG_Robin_Strandberg_SYSM9.Managers
             {
                 if (recipe == null)
                 {
-                    MessageBox.Show("Recipe could not be added because it was empty.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show("Recipe could not be added because it was empty.", "Error", MessageBoxButton.OK,
+                        MessageBoxImage.Error);
                     return;
                 }
 
                 if (RecipeList.Any(r => string.Equals(r.Title, recipe.Title, StringComparison.OrdinalIgnoreCase)
                                         && r.CreatedBy?.UserName == recipe.CreatedBy?.UserName))
                 {
-                    MessageBox.Show("A recipe with that title already exists for this user.", "Duplicate", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    MessageBox.Show("A recipe with that title already exists for this user.", "Duplicate",
+                        MessageBoxButton.OK, MessageBoxImage.Warning);
                     return;
                 }
 
                 RecipeList.Add(recipe);
                 OnPropertyChanged(nameof(RecipeList));
-                MessageBox.Show($"Recipe \"{recipe.Title}\" was successfully added!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show($"Recipe \"{recipe.Title}\" was successfully added!", "Success", MessageBoxButton.OK,
+                    MessageBoxImage.Information);
             }
             catch (Exception ex)
             {
@@ -61,7 +79,8 @@ namespace OPG_Robin_Strandberg_SYSM9.Managers
             {
                 if (recipe == null)
                 {
-                    MessageBox.Show("No recipe selected to remove.", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    MessageBox.Show("No recipe selected to remove.", "Warning", MessageBoxButton.OK,
+                        MessageBoxImage.Warning);
                     return;
                 }
 
@@ -73,7 +92,8 @@ namespace OPG_Robin_Strandberg_SYSM9.Managers
 
                 RecipeList.Remove(recipe);
                 OnPropertyChanged(nameof(RecipeList));
-                MessageBox.Show($"Recipe \"{recipe.Title}\" was removed.", "Removed", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show($"Recipe \"{recipe.Title}\" was removed.", "Removed", MessageBoxButton.OK,
+                    MessageBoxImage.Information);
             }
             catch (Exception ex)
             {
@@ -100,7 +120,8 @@ namespace OPG_Robin_Strandberg_SYSM9.Managers
             {
                 if (user == null)
                 {
-                    MessageBox.Show("User not found. Cannot load recipes.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show("User not found. Cannot load recipes.", "Error", MessageBoxButton.OK,
+                        MessageBoxImage.Error);
                     return new List<Recipe>();
                 }
 
@@ -126,11 +147,12 @@ namespace OPG_Robin_Strandberg_SYSM9.Managers
 
                 var filtered = RecipeList
                     .Where(r => r.Title.ToLowerInvariant().Contains(criteria)
-                             || r.Category.ToLowerInvariant().Contains(criteria))
+                                || r.Category.ToLowerInvariant().Contains(criteria))
                     .ToList();
 
                 if (filtered.Count == 0)
-                    MessageBox.Show("No recipes matched your search.", "No Results", MessageBoxButton.OK, MessageBoxImage.Information);
+                    MessageBox.Show("No recipes matched your search.", "No Results", MessageBoxButton.OK,
+                        MessageBoxImage.Information);
 
                 return new ObservableCollection<Recipe>(filtered);
             }
@@ -147,13 +169,15 @@ namespace OPG_Robin_Strandberg_SYSM9.Managers
             {
                 if (recipe == null)
                 {
-                    MessageBox.Show("No recipe selected to update.", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    MessageBox.Show("No recipe selected to update.", "Warning", MessageBoxButton.OK,
+                        MessageBoxImage.Warning);
                     return;
                 }
 
                 if (string.IsNullOrWhiteSpace(title) || string.IsNullOrWhiteSpace(instructions))
                 {
-                    MessageBox.Show("Title and instructions must be filled in.", "Validation Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    MessageBox.Show("Title and instructions must be filled in.", "Validation Error",
+                        MessageBoxButton.OK, MessageBoxImage.Warning);
                     return;
                 }
 
@@ -162,14 +186,15 @@ namespace OPG_Robin_Strandberg_SYSM9.Managers
                 recipe.Category = string.IsNullOrWhiteSpace(category) ? "Uncategorized" : category;
 
                 recipe.Ingredients = ingredients?
-                    .Split(',')
-                    .Select(i => i.Trim())
-                    .Where(i => !string.IsNullOrWhiteSpace(i))
-                    .ToList()
-                    ?? new List<string>();
+                                         .Split(',')
+                                         .Select(i => i.Trim())
+                                         .Where(i => !string.IsNullOrWhiteSpace(i))
+                                         .ToList()
+                                     ?? new List<string>();
 
                 OnPropertyChanged(nameof(RecipeList));
-                MessageBox.Show($"Recipe \"{recipe.Title}\" was updated successfully.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show($"Recipe \"{recipe.Title}\" was updated successfully.", "Success", MessageBoxButton.OK,
+                    MessageBoxImage.Information);
             }
             catch (Exception ex)
             {
@@ -184,6 +209,7 @@ namespace OPG_Robin_Strandberg_SYSM9.Managers
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
+
         protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));

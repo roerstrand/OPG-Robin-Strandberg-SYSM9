@@ -1,6 +1,7 @@
 using System;
 using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Input;
 using OPG_Robin_Strandberg_SYSM9.Models;
@@ -19,13 +20,22 @@ namespace OPG_Robin_Strandberg_SYSM9.ViewModels
         public Recipe Recipe
         {
             get => _recipe;
-            set { _recipe = value; OnPropertyChanged(nameof(Recipe)); }
+            set
+            {
+                _recipe = value;
+                OnPropertyChanged(nameof(Recipe));
+            }
         }
 
         public bool IsEditing
         {
             get => _isEditing;
-            set { _isEditing = value; OnPropertyChanged(nameof(IsEditing)); OnPropertyChanged(nameof(IsReadOnly)); }
+            set
+            {
+                _isEditing = value;
+                OnPropertyChanged(nameof(IsEditing));
+                OnPropertyChanged(nameof(IsReadOnly));
+            }
         }
 
         public bool IsReadOnly => !IsEditing;
@@ -33,7 +43,11 @@ namespace OPG_Robin_Strandberg_SYSM9.ViewModels
         public string Title
         {
             get => Recipe.Title;
-            set { Recipe.Title = value; OnPropertyChanged(nameof(Title)); }
+            set
+            {
+                Recipe.Title = value;
+                OnPropertyChanged(nameof(Title));
+            }
         }
 
         public string Ingredients
@@ -49,19 +63,31 @@ namespace OPG_Robin_Strandberg_SYSM9.ViewModels
         public string Instructions
         {
             get => Recipe.Instructions;
-            set { Recipe.Instructions = value; OnPropertyChanged(nameof(Instructions)); }
+            set
+            {
+                Recipe.Instructions = value;
+                OnPropertyChanged(nameof(Instructions));
+            }
         }
 
         public string Category
         {
             get => Recipe.Category;
-            set { Recipe.Category = value; OnPropertyChanged(nameof(Category)); }
+            set
+            {
+                Recipe.Category = value;
+                OnPropertyChanged(nameof(Category));
+            }
         }
 
         public DateTime CreatedAt
         {
             get => Recipe.CreatedAt;
-            set { Recipe.CreatedAt = value; OnPropertyChanged(nameof(CreatedAt)); }
+            set
+            {
+                Recipe.CreatedAt = value;
+                OnPropertyChanged(nameof(CreatedAt));
+            }
         }
 
         public string CreatedBy => Recipe.CreatedBy.UserName;
@@ -92,25 +118,28 @@ namespace OPG_Robin_Strandberg_SYSM9.ViewModels
                     string.IsNullOrWhiteSpace(Category) ||
                     Recipe.Ingredients == null || !Recipe.Ingredients.Any())
                 {
-                    MessageBox.Show("All fields must be filled in.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show("All fields must be filled in.", "Error", MessageBoxButton.OK,
+                        MessageBoxImage.Error);
                     return;
                 }
 
-                // Uppdatera befintligt recept i RecipeManager
                 var existingRecipe = _recipeManager.RecipeList.FirstOrDefault(r => r.Title == Recipe.Title);
                 if (existingRecipe != null)
                 {
-                    existingRecipe.EditRecipe(Title, Instructions, Category, DateTime.Now, Recipe.CreatedBy, string.Join(", ", Recipe.Ingredients));
+                    existingRecipe.EditRecipe(Title, Instructions, Category, DateTime.Now, Recipe.CreatedBy,
+                        string.Join(", ", Recipe.Ingredients));
                 }
 
-                MessageBox.Show("Recipe saved successfully!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show("Recipe saved successfully!", "Success", MessageBoxButton.OK,
+                    MessageBoxImage.Information);
 
                 Application.Current.MainWindow.Content = new Views.RecipeListUserControl(_recipeManager);
 
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error saving recipe: {ex.Message}", "System Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Error saving recipe: {ex.Message}", "System Error", MessageBoxButton.OK,
+                    MessageBoxImage.Error);
             }
         }
 
@@ -128,7 +157,8 @@ namespace OPG_Robin_Strandberg_SYSM9.ViewModels
 
                 _recipeManager.AddRecipe(copiedRecipe);
 
-                MessageBox.Show($"Recipe '{Title}' copied successfully!", "Copied", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show($"Recipe '{Title}' copied successfully!", "Copied", MessageBoxButton.OK,
+                    MessageBoxImage.Information);
 
                 Application.Current.MainWindow.Content = new Views.RecipeListUserControl(_recipeManager);
 
@@ -136,7 +166,8 @@ namespace OPG_Robin_Strandberg_SYSM9.ViewModels
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error copying recipe: {ex.Message}", "System Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Error copying recipe: {ex.Message}", "System Error", MessageBoxButton.OK,
+                    MessageBoxImage.Error);
             }
         }
 
@@ -145,12 +176,13 @@ namespace OPG_Robin_Strandberg_SYSM9.ViewModels
             Application.Current.MainWindow.Content = new Views.RecipeListUserControl(_recipeManager);
         }
 
-        }
+
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        protected void OnPropertyChanged(string name) =>
+        public void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+    }
 }

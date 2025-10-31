@@ -11,6 +11,11 @@ namespace OPG_Robin_Strandberg_SYSM9.Views
     {
         private readonly RecipeManager _recipeManager;
 
+        public RecipeDetailUserControl()
+        {
+            InitializeComponent();
+        }
+
         public RecipeDetailUserControl(Recipe recipe, RecipeManager recipeManager)
         {
             InitializeComponent();
@@ -20,7 +25,7 @@ namespace OPG_Robin_Strandberg_SYSM9.Views
 
         private void Close_Click(object sender, RoutedEventArgs e)
         {
-            MediaTypeNames.Application.Current.MainWindow.Content = new RecipeListUserControl(_recipeManager);
+            Application.Current.MainWindow.Content = new RecipeListUserControl(_recipeManager);
         }
     }
 }

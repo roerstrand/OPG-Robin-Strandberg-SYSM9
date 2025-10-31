@@ -167,15 +167,12 @@ namespace OPG_Robin_Strandberg_SYSM9.Managers
         }
 
 
-        public void Register(string username, string password, string country)
+        public bool Register(string username, string password, string country)
         {
             try
             {
-                // Samma regex som changepassword
-
                 string pattern = @"^(?=.*\d)(?=.*[!@#$%^&*(),.?""':{}|<>])[A-Za-z\d!@#$%^&*(),.?""':{}|<>]{8,}$";
 
-                // Kontrollera lösenordet först
                 if (!Regex.IsMatch(password, pattern))
                 {
                     MessageBox.Show(
@@ -184,10 +181,9 @@ namespace OPG_Robin_Strandberg_SYSM9.Managers
                         MessageBoxButton.OK,
                         MessageBoxImage.Warning
                     );
-                    return; // Avbryt registreringen om lösenordet inte uppfyller kraven
+                    return false;
                 }
 
-                // Kolla så användarnamnet inte redan finns
                 if (Users.Any(u => u.UserName.Equals(username, StringComparison.OrdinalIgnoreCase)))
                 {
                     MessageBox.Show(
@@ -196,10 +192,9 @@ namespace OPG_Robin_Strandberg_SYSM9.Managers
                         MessageBoxButton.OK,
                         MessageBoxImage.Warning
                     );
-                    return;
+                    return false;
                 }
 
-                // Skapa och lägg till ny användare om allt är OK
                 Users.Add(new User(username, password, country));
 
                 MessageBox.Show(
@@ -208,22 +203,24 @@ namespace OPG_Robin_Strandberg_SYSM9.Managers
                     MessageBoxButton.OK,
                     MessageBoxImage.Information
                 );
+
+                return true;
             }
             catch (Exception ex)
             {
-                // Fångar eventuella systemfel (t.ex. null-lista eller IO-fel)
                 MessageBox.Show(
                     "Ett fel uppstod vid registreringen:\n" + ex.Message,
                     "Systemfel",
                     MessageBoxButton.OK,
                     MessageBoxImage.Error
                 );
+                return false;
             }
         }
 
+
         public bool IsUsernameTaken(string newUserName)
         {
-            // Kontrollera om något befintligt användarnamn matchar (case-insensitive)
             return Users.Any(u =>
                 u.UserName.Equals(newUserName, StringComparison.OrdinalIgnoreCase));
         }

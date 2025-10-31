@@ -46,10 +46,11 @@ namespace OPG_Robin_Strandberg_SYSM9.ViewModels
             };
         }
 
-        public void CreateUser(string username, string password, string country)
+        public bool CreateUser(string username, string password, string country)
         {
-            _userManager.Register(username, password, country);
+            return _userManager.Register(username, password, country);
         }
+
 
         public event PropertyChangedEventHandler PropertyChanged;
 

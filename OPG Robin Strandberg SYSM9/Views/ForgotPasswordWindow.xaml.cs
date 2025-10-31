@@ -24,9 +24,7 @@ namespace OPG_Robin_Strandberg_SYSM9.Views
 
         private void BackToLogin_Click(object sender, RoutedEventArgs e)
         {
-            var main = new MainWindow();
-            main.Show();
-            Close();
+            this.Close();
         }
 
         private void LastFourPreviousPassword_OnPasswordChanged(object sender, RoutedEventArgs e)

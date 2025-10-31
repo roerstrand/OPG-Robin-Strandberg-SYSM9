@@ -13,21 +13,21 @@
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <Label Content="CookMaster"/>
+        <Label Content="CookMaster" />
 
         <!-- Loginsektion (visas när man inte är inloggad) -->
         <Grid Grid.Row="1" x:Name="LoginSection">
             <Grid.Style>
                 <Style TargetType="Grid">
-                    <Setter Property="Visibility" Value="Visible"/>
+                    <Setter Property="Visibility" Value="Visible" />
                     <Style.Triggers>
                         <DataTrigger Binding="{Binding Source={x:Static local:App.UserManager}, Path=IsAuthenticated}"
                                      Value="True">
-                            <Setter Property="Visibility" Value="Collapsed"/>
+                            <Setter Property="Visibility" Value="Collapsed" />
                         </DataTrigger>
                     </Style.Triggers>
                 </Style>
@@ -58,22 +58,23 @@
         </Grid>
 
         <!-- Huvudinnehåll (visas när man är inloggad) -->
+        <!-- Ersätt hela receptdelen med en ContentControl -->
         <Grid Grid.Row="1" x:Name="MainContentSection">
             <Grid.Style>
                 <Style TargetType="Grid">
-                    <Setter Property="Visibility" Value="Collapsed"/>
+                    <Setter Property="Visibility" Value="Collapsed" />
                     <Style.Triggers>
                         <DataTrigger Binding="{Binding Source={x:Static local:App.UserManager}, Path=IsAuthenticated}"
                                      Value="True">
-                            <Setter Property="Visibility" Value="Visible"/>
+                            <Setter Property="Visibility" Value="Visible" />
                         </DataTrigger>
                     </Style.Triggers>
                 </Style>
             </Grid.Style>
 
-            <!-- Visa receptlistan direkt efter inloggning -->
-            <views:RecipeListUserControl DataContext="{Binding RecipeListViewModel}" />
+            <ContentControl Content="{Binding CurrentView}" />
         </Grid>
+
 
     </Grid>
 </Window>

@@ -15,29 +15,21 @@ namespace OPG_Robin_Strandberg_SYSM9.Views
 
         private void Register_Click(object sender, RoutedEventArgs e)
         {
-            var username = UsernameBox.Text;
-            var password = PasswordBox.Password;
+            var username = UsernameBox.Text.Trim();
+            var password = PasswordBox.Password.Trim();
             var country = CountryBox.SelectedItem?.ToString();
 
-            if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password) || string.IsNullOrWhiteSpace(country))
+            bool success = _viewModel.CreateUser(username, password, country);
+
+            if (success)
             {
-                MessageBox.Show("All fields are required.");
-                return;
+                this.Close();
             }
-
-            _viewModel.CreateUser(username, password, country);
-            MessageBox.Show("User registered successfully!");
-
-            var main = new MainWindow();
-            main.Show();
-            Close();
         }
 
         private void BackToLogin_Click(object sender, RoutedEventArgs e)
         {
-            var main = new MainWindow();
-            main.Show();
-            Close();
+           this.Close();
         }
     }
 }
