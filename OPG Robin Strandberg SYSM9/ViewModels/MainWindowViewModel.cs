@@ -14,14 +14,24 @@ using OPG_Robin_Strandberg_SYSM9.Managers;
 using OPG_Robin_Strandberg_SYSM9.Models;
 using OPG_Robin_Strandberg_SYSM9.Views;
 using OPG_Robin_Strandberg_SYSM9.Commands;
+using OPG_Robin_Strandberg_SYSM9.ViewModels;
 
 namespace OPG_Robin_Strandberg_SYSM9
 {
     public class MainWindowViewModel : INotifyPropertyChanged
     {
         private readonly UserManager _userManager;
+        private RecipeManager _recipeManager;
 
         private string _userNameInput;
+
+        private RecipeListViewModel _recipeListViewModel;
+        public RecipeListViewModel RecipeListViewModel
+        {
+            get => _recipeListViewModel;
+            set { _recipeListViewModel = value; OnPropertyChanged(); }
+        }
+
 
         public string UserNameInput
         {
@@ -77,16 +87,17 @@ namespace OPG_Robin_Strandberg_SYSM9
         public ICommand ShowAddRecipeCommand { get; }
         public ICommand ShowViewRecipeDetailsCommand { get; }
         public ICommand ShowViewRecipeListCommand { get; }
-
         public ICommand ShowViewUserDetailsCommand { get; }
         public ICommand LoginCommand { get; }
         public ICommand LogoutCommand { get; }
 
         public MainWindowViewModel()
         {
-            // koppla lokala egenskaper till globala statiska instantierade objekt
+            // kopplatill globala statisk user manager
 
             _userManager = App.UserManager;
+            _recipeManager =
+                new RecipeManager(); // null innan inloggning. En instans skapas vid lyckad inloggning Login_Button
 
             // Loginsection innan lyckad inloggning
 
@@ -108,17 +119,55 @@ namespace OPG_Robin_Strandberg_SYSM9
 
             // Maincontentsection efter inlogging
 
-            ShowAddRecipeCommand = new RelayCommand(o => CurrentView = new AddRecipeWindow());
-            ShowViewRecipeDetailsCommand = new RelayCommand(o => CurrentView = new RecipeDetailWindow());
-            ShowViewRecipeListCommand = new RelayCommand(o => CurrentView = new RecipeListWindow());
-            ShowViewUserDetailsCommand = new RelayCommand(o => CurrentView = new UserDetailsWindow());
-            LogoutCommand = new RelayCommand(o => Logout_Button());
+            // Maincontentsection efter inloggning
+// Maincontentsection efter inloggning
+            ShowAddRecipeCommand = new RelayCommand(_ =>
+            {
+                Application.Current.MainWindow.Content = new AddRecipeUserControl(_recipeManager);
+            });
+
+            ShowViewRecipeListCommand = new RelayCommand(_ =>
+            {
+                Application.Current.MainWindow.Content = new RecipeListUserControl(_recipeManager);
+            });
+
+            ShowViewRecipeDetailsCommand = new RelayCommand(_ =>
+            {
+                // kontrollera att något recept är valt
+                if (_recipeManager.CurrentRecipe == null)
+                {
+                    MessageBox.Show("Välj ett recept först.", "Information", MessageBoxButton.OK,
+                        MessageBoxImage.Information);
+                    return;
+                }
+
+                Application.Current.MainWindow.Content =
+                    new RecipeDetailsUserControl(_recipeManager.CurrentRecipe, _recipeManager);
+            });
+
+            LogoutCommand = new RelayCommand(_ => Logout_Button());
         }
+
 
         public void Login_Button()
         {
-            _userManager.Login(UserNameInput, PasswordInput);
+            if (_userManager.Login(UserNameInput, PasswordInput))
+            {
+                _recipeManager = _userManager.GetRecipeManagerForCurrentUser();
+                RecipeListViewModel = new RecipeListViewModel(_recipeManager, _userManager);
+
+                // Denna rad triggar din XAML så login-sektionen döljs och MainContent visas
+                OnPropertyChanged(nameof(IsAuthenticated));
+            }
+            else
+            {
+                MessageBox.Show("Felaktigt användarnamn eller lösenord.",
+                    "Inloggning misslyckades",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+            }
         }
+
 
         public void Logout_Button()
         {

@@ -8,35 +8,37 @@
         Title="Register"
         WindowStartupLocation="CenterScreen"
         WindowState="Maximized"
-        Background="AntiqueWhite">
+        Background="{StaticResource AppBackground}">
 
     <Window.DataContext>
         <vm:RegisterViewModel />
     </Window.DataContext>
 
     <Grid>
-        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-            <TextBlock Text="Create new account" FontSize="20" FontWeight="Bold" Margin="0,0,0,20" />
+        <Border CornerRadius="10"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center">
 
-            <TextBlock Text="Username" Margin="0,5" />
-            <TextBox x:Name="UsernameBox" Width="200" />
+            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                <Label Content="Create new account" />
 
-            <TextBlock Text="Password" Margin="0,5" />
-            <PasswordBox x:Name="PasswordBox" Width="200" />
+                <TextBlock Text="Username" />
+                <TextBox x:Name="UsernameBox" />
 
-            <TextBlock Text="Select Country" Margin="0,5" />
-            <ComboBox x:Name="CountryBox"
-                      Width="200"
-                      ItemsSource="{Binding Countries}"
-                      SelectedIndex="0" />
+                <TextBlock Text="Password" />
+                <PasswordBox x:Name="PasswordBox" />
 
+                <TextBlock Text="Select Country" />
+                <ComboBox x:Name="CountryBox"
+                          ItemsSource="{Binding Countries}"
+                          SelectedIndex="0" />
 
-            <Button Content="Register" Width="200" Margin="0,15,0,5"
-                    Background="LightSlateGray" Foreground="White"
-                    Click="Register_Click" />
+                <Button Content="Register"
+                        Click="Register_Click" />
 
-            <Button Content="Back to Login" Width="200"
-                    Background="Gray" Click="BackToLogin_Click" />
-        </StackPanel>
+                <Button Content="Back to Login"
+                        Click="BackToLogin_Click" />
+            </StackPanel>
+        </Border>
     </Grid>
 </Window>

@@ -1,6 +1,8 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows;
+using System.Windows.Input;
 using OPG_Robin_Strandberg_SYSM9.Managers;
 using OPG_Robin_Strandberg_SYSM9.Commands;
 using OPG_Robin_Strandberg_SYSM9.Models;
@@ -11,63 +13,41 @@ namespace OPG_Robin_Strandberg_SYSM9
     {
         private readonly UserManager _userManager;
 
-        // Har här övergått till samlad lista av alla fält först från tidigare fält+egenskap för sig
         private string _inputUsername;
         private string _inputNewPassword;
         private string _inputConfirmPassword;
         private string _lastFourPreviousPassword;
-
         private int _attempts;
         private bool _canSubmit = true;
 
         public string InputUsername
         {
             get => _inputUsername;
-            set
-            {
-                _inputUsername = value;
-                OnPropertyChanged();
-            }
+            set { _inputUsername = value; OnPropertyChanged(); }
         }
 
         public string InputNewPassword
         {
             get => _inputNewPassword;
-            set
-            {
-                _inputNewPassword = value;
-                OnPropertyChanged();
-            }
+            set { _inputNewPassword = value; OnPropertyChanged(); }
         }
 
         public string InputConfirmNewPassword
         {
             get => _inputConfirmPassword;
-            set
-            {
-                _inputConfirmPassword = value;
-                OnPropertyChanged();
-            }
+            set { _inputConfirmPassword = value; OnPropertyChanged(); }
         }
 
         public string LastFourPreviousPassword
         {
             get => _lastFourPreviousPassword;
-            set
-            {
-                _lastFourPreviousPassword = value;
-                OnPropertyChanged();
-            }
+            set { _lastFourPreviousPassword = value; OnPropertyChanged(); }
         }
 
         public int Attempts
         {
             get => _attempts;
-            set
-            {
-                _attempts = value;
-                OnPropertyChanged();
-            }
+            set { _attempts = value; OnPropertyChanged(); }
         }
 
         public bool CanSubmit
@@ -83,31 +63,48 @@ namespace OPG_Robin_Strandberg_SYSM9
             }
         }
 
-        // kommando kopplat till knappen
-        public RelayCommand SubmitCommand { get; }
+        // 🔹 Rätt typ för MVVM — ICommand (inte RelayCommand)
+        public ICommand SubmitCommand { get; }
+        public ICommand BackToLoginCommand { get; }
 
         public ForgotPasswordViewModel()
         {
             _userManager = App.UserManager;
+
+            // 🔹 Implementation: RelayCommand
             SubmitCommand = new RelayCommand(o => ValidatePriorPasswordChange());
+            BackToLoginCommand = new RelayCommand(o => BackToLogin());
+        }
+
+        private void BackToLogin()
+        {
+            try
+            {
+                foreach (Window window in Application.Current.Windows)
+                {
+                    if (window is Views.ForgotPasswordWindow)
+                    {
+                        window.Close();
+                        break;
+                    }
+                }
+
+                var loginWindow = new Views.MainWindow();
+                loginWindow.Show();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in BackToLogin: {ex.Message}");
+            }
         }
 
         private void ChangePassword(User user, string newPassword)
         {
             try
             {
-                User Currentuser = null;
+                var currentUser = _userManager.Users.FirstOrDefault(u => u.UserName == user.UserName);
 
-                foreach (User u in _userManager.Users)
-                {
-                    if (u.UserName == user.UserName)
-                    {
-                        Currentuser = u;
-                        break;
-                    }
-                }
-
-                if (Currentuser == null)
+                if (currentUser == null)
                 {
                     MessageBox.Show("User not found");
                     return;
@@ -119,11 +116,11 @@ namespace OPG_Robin_Strandberg_SYSM9
                     return;
                 }
 
-                Currentuser.Password = newPassword;
+                currentUser.Password = newPassword;
             }
             catch (Exception)
             {
-                Console.WriteLine("Unexpected error occurred in method CHangePassword in ForgotPasswordViewModel");
+                Console.WriteLine("Unexpected error in ChangePassword (ForgotPasswordViewModel)");
             }
         }
 
@@ -132,7 +129,6 @@ namespace OPG_Robin_Strandberg_SYSM9
             try
             {
                 var user = _userManager.FindUser(InputUsername);
-
                 if (user == null)
                 {
                     MessageBox.Show("User not found");
@@ -140,23 +136,19 @@ namespace OPG_Robin_Strandberg_SYSM9
                 }
 
                 var password = user.Password;
-                var lastFour = password.Substring(password.Length - 4);
-                lastFour = lastFour.Trim(); // Extra säkerhet ifall lagrat lösenord innehåller mellanslag
-
+                var lastFour = password.Substring(password.Length - 4).Trim();
 
                 if (lastFour != LastFourPreviousPassword)
                 {
                     Attempts++;
-                    if (Attempts == 3)
+                    if (Attempts >= 3)
                     {
                         CanSubmit = false;
                         return;
                     }
 
                     int remaining = 3 - Attempts;
-
-                    MessageBox.Show(
-                        $"Security check does not match current password. {remaining} attempts to pass security check.");
+                    MessageBox.Show($"Security check failed. {remaining} attempts remaining.");
                     return;
                 }
 
@@ -164,16 +156,12 @@ namespace OPG_Robin_Strandberg_SYSM9
             }
             catch (Exception)
             {
-                Console.WriteLine("Unexpected error occurred with method UpdatePassword in ForgotPasswordViewModel.");
+                Console.WriteLine("Unexpected error in ValidatePriorPasswordChange (ForgotPasswordViewModel)");
             }
         }
 
-
         public event PropertyChangedEventHandler PropertyChanged;
-
         protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
+            => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 }
