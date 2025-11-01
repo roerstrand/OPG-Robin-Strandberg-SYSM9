@@ -1,20 +1,14 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using System.Text;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using OPG_Robin_Strandberg_SYSM9.Managers;
 using OPG_Robin_Strandberg_SYSM9.Models;
 using OPG_Robin_Strandberg_SYSM9.Views;
 using OPG_Robin_Strandberg_SYSM9.Commands;
 using OPG_Robin_Strandberg_SYSM9.ViewModels;
+using System;
+using System.Collections.Generic;
 
 namespace OPG_Robin_Strandberg_SYSM9
 {
@@ -24,6 +18,9 @@ namespace OPG_Robin_Strandberg_SYSM9
         private RecipeManager _recipeManager;
 
         private string _userNameInput;
+        private string _passwordInput;
+        private User _currentUser;
+        private object _currentView;
 
         private RecipeListViewModel _recipeListViewModel;
 
@@ -37,7 +34,6 @@ namespace OPG_Robin_Strandberg_SYSM9
             }
         }
 
-
         public string UserNameInput
         {
             get => _userNameInput;
@@ -48,19 +44,19 @@ namespace OPG_Robin_Strandberg_SYSM9
             }
         }
 
-        private string _passwordInput;
-
         public string PasswordInput
         {
             get => _passwordInput;
-            set { _passwordInput = value; }
+            set
+            {
+                _passwordInput = value;
+                OnPropertyChanged();
+            }
         }
-
-        private User _currentUser;
 
         public User CurrentUser
         {
-            get { return _currentUser; }
+            get => _currentUser;
             set
             {
                 _currentUser = value;
@@ -72,9 +68,7 @@ namespace OPG_Robin_Strandberg_SYSM9
 
         public bool IsAuthenticated => _userManager.IsAuthenticated;
 
-        private object _currentView;
-
-        public Object CurrentView
+        public object CurrentView
         {
             get => _currentView;
             set
@@ -84,58 +78,63 @@ namespace OPG_Robin_Strandberg_SYSM9
             }
         }
 
-        // Relay commands som skapar ny instanser av fönster som sedan inbäddas i MainContentSection
-        // i main window.
-
         public ICommand ShowRegisterCommand { get; }
         public ICommand ShowForgotPasswordCommand { get; }
         public ICommand ShowAddRecipeCommand { get; }
         public ICommand ShowViewRecipeDetailsCommand { get; }
         public ICommand ShowViewRecipeListCommand { get; }
-
         public ICommand ShowViewUserDetailsCommand { get; }
         public ICommand LoginCommand { get; }
         public ICommand LogoutCommand { get; }
 
         public MainWindowViewModel()
         {
-            // kopplatill globala statisk user manager
-
             _userManager = App.UserManager;
-            _recipeManager =
-                new RecipeManager(); // null innan inloggning. En instans skapas vid lyckad inloggning Login_Button
+            _recipeManager = new RecipeManager();
 
-            // Loginsection innan lyckad inloggning
-
-            LoginCommand = new RelayCommand(o => Login_Button());
-            ShowRegisterCommand = new RelayCommand(o =>
+            // Login
+            LoginCommand = new RelayCommand(_ => Login_Button());
+            ShowRegisterCommand = new RelayCommand(_ =>
             {
-                var register = new RegisterWindow();
-                register.Owner = Application.Current.MainWindow;
+                var register = new RegisterWindow
+                {
+                    Owner = Application.Current.MainWindow
+                };
                 register.ShowDialog();
             });
 
-            ShowForgotPasswordCommand = new RelayCommand(o =>
+            ShowForgotPasswordCommand = new RelayCommand(_ =>
             {
-                var forgot = new ForgotPasswordWindow();
-                forgot.Owner = Application.Current.MainWindow;
+                var forgot = new ForgotPasswordWindow
+                {
+                    Owner = Application.Current.MainWindow
+                };
                 forgot.ShowDialog();
             });
 
-            // Maincontentsection efter inloggning
             ShowAddRecipeCommand = new RelayCommand(_ =>
             {
-                Application.Current.MainWindow.Content = new AddRecipeUserControl(_recipeManager);
+                var addRecipeWindow = new AddRecipeWindow
+                {
+                    DataContext = new AddRecipeViewModel(_recipeManager),
+                    Owner = Application.Current.MainWindow
+                };
+                addRecipeWindow.Show();
             });
 
             ShowViewRecipeListCommand = new RelayCommand(_ =>
             {
-                Application.Current.MainWindow.Content = new RecipeListUserControl(_recipeManager);
+                RecipeListViewModel = new RecipeListViewModel(_recipeManager, _userManager);
+                var recipeListWindow = new RecipeListWindow
+                {
+                    DataContext = RecipeListViewModel,
+                    Owner = Application.Current.MainWindow
+                };
+                recipeListWindow.Show();
             });
 
             ShowViewRecipeDetailsCommand = new RelayCommand(_ =>
             {
-                // kontrollera att något recept är valt
                 if (_recipeManager.CurrentRecipe == null)
                 {
                     MessageBox.Show("Choose a recipe first.", "Information", MessageBoxButton.OK,
@@ -143,15 +142,13 @@ namespace OPG_Robin_Strandberg_SYSM9
                     return;
                 }
 
-                Application.Current.MainWindow.Content =
-                    new RecipeDetailUserControl(_recipeManager.CurrentRecipe, _recipeManager);
+                var recipeDetailWindow = new RecipeDetailsWindow
+                {
+                    DataContext = new RecipeDetailViewModel(_recipeManager.CurrentRecipe, _recipeManager),
+                    Owner = Application.Current.MainWindow
+                };
+                recipeDetailWindow.Show();
             });
-
-            // ShowViewUserDetailsCommand = new RelayCommand(o =>
-            // {
-            //
-            //     Application.Current.MainWindow.Content = new RecipeDetailUserControl(_recipeManager);
-            // });
 
             LogoutCommand = new RelayCommand(_ => Logout_Button());
         }
@@ -162,20 +159,21 @@ namespace OPG_Robin_Strandberg_SYSM9
             {
                 if (_userManager.Login(UserNameInput, PasswordInput))
                 {
-                    _recipeManager = _userManager.GetRecipeManagerForCurrentUser();
-                    RecipeListViewModel = new RecipeListViewModel(_recipeManager, _userManager);
+                    var recipeList = new RecipeListWindow(_userManager.GetRecipeManagerForCurrentUser());
+                    recipeList.Show();
 
-                    CurrentView = new RecipeListUserControl(_recipeManager)
+                    foreach (Window window in Application.Current.Windows)
                     {
-                        DataContext = RecipeListViewModel
-                    };
-
-                    OnPropertyChanged(nameof(IsAuthenticated));
+                        if (window is MainWindow)
+                        {
+                            window.Close();
+                            break;
+                        }
+                    }
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex);
                 MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
@@ -183,16 +181,14 @@ namespace OPG_Robin_Strandberg_SYSM9
         public void Logout_Button()
         {
             _userManager.Logout();
-            OnPropertyChanged(nameof(PasswordInput));
             UserNameInput = string.Empty;
             PasswordInput = string.Empty;
+            OnPropertyChanged(nameof(IsAuthenticated));
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
+        private void OnPropertyChanged([CallerMemberName] string propertyName = null)
+            => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 }

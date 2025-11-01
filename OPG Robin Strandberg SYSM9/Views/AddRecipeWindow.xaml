@@ -1,11 +1,14 @@
-﻿<UserControl x:Class="OPG_Robin_Strandberg_SYSM9.Views.AddRecipeUserControl"
+﻿<Window x:Class="OPG_Robin_Strandberg_SYSM9.Views.AddRecipeWindow"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d"
-             Height="450" Width="800">
-    <Grid Background="{StaticResource AppBackground}">
+             WindowStartupLocation="CenterScreen"
+             Width="800"
+             Height="600"
+             Background="{StaticResource AppBackground}">
+    <Grid>
         <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Width="400">
 
             <Label Content="Add Recipe"
@@ -36,4 +39,4 @@
             </StackPanel>
         </StackPanel>
     </Grid>
-</UserControl>
+</Window>

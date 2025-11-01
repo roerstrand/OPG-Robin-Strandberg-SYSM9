@@ -4,76 +4,45 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:OPG_Robin_Strandberg_SYSM9"
-        xmlns:views="clr-namespace:OPG_Robin_Strandberg_SYSM9.Views"
         mc:Ignorable="d"
         Title="CookMaster"
         WindowStartupLocation="CenterScreen"
-        WindowState="Maximized"
+        Width="800"
+        Height="600"
         Background="{StaticResource AppBackground}">
 
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
+    <Grid VerticalAlignment="Center" HorizontalAlignment="Center">
 
-        <Label Content="CookMaster" />
+        <StackPanel HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Width="300"
+                    Orientation="Vertical">
 
-        <!-- Loginsektion (visas när man inte är inloggad) -->
-        <Grid Grid.Row="1" x:Name="LoginSection">
-            <Grid.Style>
-                <Style TargetType="Grid">
-                    <Setter Property="Visibility" Value="Visible" />
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding Source={x:Static local:App.UserManager}, Path=IsAuthenticated}"
-                                     Value="True">
-                            <Setter Property="Visibility" Value="Collapsed" />
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </Grid.Style>
+            <Label Content="CookMaster"
+                   FontSize="80"
+                   FontWeight="Bold"
+                   HorizontalAlignment="Center"
+                   Margin="0,0,0,40" />
 
-            <Border Background="{StaticResource AppBackground}"
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center">
-                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+            <TextBlock Text="Username" Margin="0,0,0,5" />
+            <TextBox Text="{Binding UserNameInput, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                     Margin="0,0,0,10" />
 
-                    <TextBlock Text="Username Input" />
-                    <TextBox Text="{Binding UserNameInput, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+            <TextBlock Text="Password" Margin="0,0,0,5" />
+            <PasswordBox x:Name="MainWindowPasswordBox"
+                         PasswordChanged="PasswordBox_PasswordChanged"
+                         Margin="0,0,0,20" />
 
-                    <TextBlock Text="Password Input" />
-                    <PasswordBox x:Name="MainWindowPasswordBox"
-                                 PasswordChanged="PasswordBox_PasswordChanged" />
+            <Button Content="Log In"
+                    Command="{Binding LoginCommand}"
+                    Margin="0,0,0,5" />
 
-                    <Button Content="Log In"
-                            Command="{Binding LoginCommand}" />
+            <Button Content="Register"
+                    Command="{Binding ShowRegisterCommand}"
+                    Margin="0,0,0,5" />
 
-                    <Button Content="Register"
-                            Command="{Binding ShowRegisterCommand}" />
-
-                    <Button Content="Forgot Password"
-                            Command="{Binding ShowForgotPasswordCommand}" />
-                </StackPanel>
-            </Border>
-        </Grid>
-
-        <!-- Huvudinnehåll (visas när man är inloggad) -->
-        <Grid Grid.Row="1" x:Name="MainContentSection">
-            <Grid.Style>
-                <Style TargetType="Grid">
-                    <Setter Property="Visibility" Value="Collapsed" />
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding Source={x:Static local:App.UserManager}, Path=IsAuthenticated}"
-                                     Value="True">
-                            <Setter Property="Visibility" Value="Visible" />
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </Grid.Style>
-
-            <ContentControl Content="{Binding CurrentView}" />
-        </Grid>
-
-
+            <Button Content="Forgot Password"
+                    Command="{Binding ShowForgotPasswordCommand}" />
+        </StackPanel>
     </Grid>
 </Window>

@@ -5,10 +5,9 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Input;
-using OPG_Robin_Strandberg_SYSM9;
-using OPG_Robin_Strandberg_SYSM9.Models;
-using OPG_Robin_Strandberg_SYSM9.Managers;
 using OPG_Robin_Strandberg_SYSM9.Commands;
+using OPG_Robin_Strandberg_SYSM9.Managers;
+using OPG_Robin_Strandberg_SYSM9.Models;
 using OPG_Robin_Strandberg_SYSM9.Views;
 
 namespace OPG_Robin_Strandberg_SYSM9.ViewModels
@@ -19,39 +18,24 @@ namespace OPG_Robin_Strandberg_SYSM9.ViewModels
         private readonly UserManager _userManager;
 
         private ObservableCollection<Recipe> _recipes;
-
         public ObservableCollection<Recipe> Recipes
         {
             get => _recipes;
-            set
-            {
-                _recipes = value;
-                OnPropertyChanged();
-            }
+            set { _recipes = value; OnPropertyChanged(); }
         }
 
         private Recipe _selectedRecipe;
-
         public Recipe SelectedRecipe
         {
             get => _selectedRecipe;
-            set
-            {
-                _selectedRecipe = value;
-                OnPropertyChanged();
-            }
+            set { _selectedRecipe = value; OnPropertyChanged(); }
         }
 
         private string _filterText;
-
         public string FilterText
         {
             get => _filterText;
-            set
-            {
-                _filterText = value;
-                OnPropertyChanged();
-            }
+            set { _filterText = value; OnPropertyChanged(); }
         }
 
         public string CurrentUserName => _userManager?.CurrentUser?.UserName ?? "Unknown";
@@ -62,6 +46,7 @@ namespace OPG_Robin_Strandberg_SYSM9.ViewModels
         public ICommand FilterCommand { get; }
         public ICommand InfoCommand { get; }
         public ICommand SignOutCommand { get; }
+        public ICommand ShowUserDetailsCommand { get; }
 
         public RecipeListViewModel(RecipeManager recipeManager, UserManager userManager)
         {
@@ -74,6 +59,7 @@ namespace OPG_Robin_Strandberg_SYSM9.ViewModels
             FilterCommand = new RelayCommand(_ => FilterRecipes());
             InfoCommand = new RelayCommand(_ => ShowInfo());
             SignOutCommand = new RelayCommand(_ => SignOut());
+            ShowUserDetailsCommand = new RelayCommand(_ => ShowUserDetails());
 
             LoadRecipes();
         }
@@ -89,9 +75,7 @@ namespace OPG_Robin_Strandberg_SYSM9.ViewModels
                     return;
                 }
 
-                Recipes = new ObservableCollection<Recipe>(
-                    _recipeManager.GetByUser(_userManager.CurrentUser)
-                );
+                Recipes = new ObservableCollection<Recipe>(_recipeManager.GetByUser(_userManager.CurrentUser));
             }
             catch (Exception ex)
             {
@@ -121,12 +105,12 @@ namespace OPG_Robin_Strandberg_SYSM9.ViewModels
         {
             try
             {
-                // byt ut UserControl i fönstret istället för att öppna nytt
-                Application.Current.MainWindow.Content = new Views.AddRecipeUserControl(_recipeManager);
+                var addRecipe = new AddRecipeWindow(_recipeManager);
+                addRecipe.ShowDialog();
             }
             catch (Exception ex)
             {
-                ShowError("Could not open Add Recipe view.", ex);
+                ShowError("Could not open Add Recipe window.", ex);
             }
         }
 
@@ -136,8 +120,7 @@ namespace OPG_Robin_Strandberg_SYSM9.ViewModels
             {
                 if (SelectedRecipe == null)
                 {
-                    MessageBox.Show("Select a recipe to remove.", "Warning", MessageBoxButton.OK,
-                        MessageBoxImage.Warning);
+                    MessageBox.Show("Select a recipe to remove.", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
                     return;
                 }
 
@@ -160,13 +143,12 @@ namespace OPG_Robin_Strandberg_SYSM9.ViewModels
             {
                 if (SelectedRecipe == null)
                 {
-                    MessageBox.Show("Select a recipe to view.", "Warning", MessageBoxButton.OK,
-                        MessageBoxImage.Warning);
+                    MessageBox.Show("Select a recipe to view.", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
                     return;
                 }
 
-                var detailsControl = new Views.RecipeDetailUserControl(SelectedRecipe, _recipeManager);
-                Application.Current.MainWindow.Content = detailsControl;
+                var detailsWindow = new RecipeDetailsWindow(SelectedRecipe, _recipeManager);
+                detailsWindow.ShowDialog();
             }
             catch (Exception ex)
             {
@@ -174,10 +156,22 @@ namespace OPG_Robin_Strandberg_SYSM9.ViewModels
             }
         }
 
+        private void ShowUserDetails()
+        {
+            try
+            {
+                var userDetails = new UserDetailsWindow(_userManager);
+                userDetails.ShowDialog();
+            }
+            catch (Exception ex)
+            {
+                ShowError("Could not open user details window.", ex);
+            }
+        }
+
         private void ShowInfo()
         {
-            MessageBox.Show(
-                "CookMaster lets you create, view, and manage your recipes.\n\nUse filtering to search by title or category.",
+            MessageBox.Show("CookMaster lets you create, view, and manage your recipes.\n\nUse filtering to search by title or category.",
                 "About CookMaster", MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
@@ -186,7 +180,7 @@ namespace OPG_Robin_Strandberg_SYSM9.ViewModels
             try
             {
                 _userManager.Logout();
-                var mainWindow = new Views.MainWindow();
+                var mainWindow = new MainWindow();
                 mainWindow.Show();
                 CloseCurrentWindow();
             }
@@ -200,7 +194,7 @@ namespace OPG_Robin_Strandberg_SYSM9.ViewModels
         {
             foreach (Window w in Application.Current.Windows)
             {
-                if (w is Views.RecipeListUserControl)
+                if (w is RecipeListWindow)
                 {
                     w.Close();
                     break;
@@ -215,7 +209,6 @@ namespace OPG_Robin_Strandberg_SYSM9.ViewModels
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-
         protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));

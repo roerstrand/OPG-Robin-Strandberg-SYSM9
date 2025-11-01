@@ -1,31 +1,40 @@
-﻿<UserControl x:Class="OPG_Robin_Strandberg_SYSM9.Views.RecipeListUserControl"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d"
-             d:DesignHeight="450"
-             d:DesignWidth="800"
-             Background="{StaticResource AppBackground}">
-    <UserControl.Resources>
+﻿<Window x:Class="OPG_Robin_Strandberg_SYSM9.Views.RecipeListWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        WindowStartupLocation="CenterScreen"
+        Width="800"
+        Height="600"
+        Title="Recipe List"
+        Background="{StaticResource AppBackground}">
+
+    <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <!-- Importera det globala temat -->
                 <ResourceDictionary Source="/Themes/GlobalStyles.xaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
-    </UserControl.Resources>
+    </Window.Resources>
 
     <DockPanel Margin="16">
+
         <StackPanel Orientation="Horizontal"
                     DockPanel.Dock="Top"
                     HorizontalAlignment="Right"
                     Margin="0 0 0 16">
             <Button Content="Add Recipe"
                     Command="{Binding AddRecipeCommand}"
-                    Margin="0 8 0 0" />
+                    Margin="0 8 8 0" />
+            <Button Content="User Details"
+                    Command="{Binding ShowUserDetailsCommand}"
+                    Margin="0 8 8 0" />
+            <Button Content="View User Details"
+                    Command="{Binding ShowDetailsCommand}"
+                    Margin="0 8 8 0" />
             <Button Content="Log Out"
-                    Command="{Binding SignOutCommand}"/>
+                    Command="{Binding SignOutCommand}" />
         </StackPanel>
 
         <ListView ItemsSource="{Binding Recipes}"
@@ -38,4 +47,4 @@
             </ListView.View>
         </ListView>
     </DockPanel>
-</UserControl>
+</Window>

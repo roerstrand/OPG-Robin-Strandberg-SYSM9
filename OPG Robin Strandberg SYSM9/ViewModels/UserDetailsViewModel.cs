@@ -1,10 +1,12 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Input;
-using OPG_Robin_Strandberg_SYSM9.Managers;
 using OPG_Robin_Strandberg_SYSM9.Commands;
+using OPG_Robin_Strandberg_SYSM9.Managers;
+using OPG_Robin_Strandberg_SYSM9.Views;
 
 namespace OPG_Robin_Strandberg_SYSM9.ViewModels
 {
@@ -16,6 +18,8 @@ namespace OPG_Robin_Strandberg_SYSM9.ViewModels
         public string CurrentCountry => _userManager.CurrentUser.Country;
 
         private string _newUserName;
+        private string _selectedCountry;
+
         public string NewUserName
         {
             get => _newUserName;
@@ -26,7 +30,7 @@ namespace OPG_Robin_Strandberg_SYSM9.ViewModels
         public string ConfirmPassword { get; set; }
 
         public ObservableCollection<string> Countries { get; }
-        private string _selectedCountry;
+
         public string SelectedCountry
         {
             get => _selectedCountry;
@@ -42,7 +46,30 @@ namespace OPG_Robin_Strandberg_SYSM9.ViewModels
 
             Countries = new ObservableCollection<string>
             {
-                "Sweden", "Norway", "Finland", "Denmark", "Germany"
+                "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Antigua and Barbuda",
+                "Argentina", "Armenia", "Australia", "Austria", "Azerbaijan", "Bahamas",
+                "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize",
+                "Benin", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana",
+                "Brazil", "Brunei", "Bulgaria", "Burkina Faso", "Burundi", "Cambodia",
+                "Cameroon", "Canada", "Chile", "China", "Colombia", "Costa Rica", "Croatia",
+                "Cuba", "Cyprus", "Czech Republic", "Denmark", "Djibouti", "Dominican Republic",
+                "Ecuador", "Egypt", "El Salvador", "Estonia", "Ethiopia", "Finland",
+                "France", "Germany", "Ghana", "Greece", "Greenland", "Guatemala", "Honduras",
+                "Hungary", "Iceland", "India", "Indonesia", "Iran", "Iraq", "Ireland",
+                "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya",
+                "Kuwait", "Latvia", "Lebanon", "Liberia", "Libya", "Lithuania", "Luxembourg",
+                "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Mexico",
+                "Moldova", "Monaco", "Mongolia", "Montenegro", "Morocco", "Mozambique",
+                "Namibia", "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger",
+                "Nigeria", "North Korea", "Norway", "Oman", "Pakistan", "Palestine",
+                "Panama", "Paraguay", "Peru", "Philippines", "Poland", "Portugal",
+                "Qatar", "Romania", "Russia", "Rwanda", "Saudi Arabia", "Senegal",
+                "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovakia", "Slovenia",
+                "South Africa", "South Korea", "Spain", "Sri Lanka", "Sudan", "Sweden",
+                "Switzerland", "Syria", "Taiwan", "Tanzania", "Thailand", "Tunisia",
+                "Turkey", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom",
+                "United States", "Uruguay", "Uzbekistan", "Venezuela", "Vietnam", "Yemen",
+                "Zambia", "Zimbabwe"
             };
 
             SaveCommand = new RelayCommand(_ => SaveChanges());
@@ -88,16 +115,27 @@ namespace OPG_Robin_Strandberg_SYSM9.ViewModels
                 }
 
                 if (!string.IsNullOrWhiteSpace(SelectedCountry))
+                {
                     _userManager.CurrentUser.Country = SelectedCountry;
+                }
 
-                MessageBox.Show("User details updated successfully!");
+                MessageBox.Show("User details updated successfully!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
 
-                Application.Current.MainWindow.Content =
-                    new Views.RecipeListUserControl(_userManager.GetRecipeManagerForCurrentUser());
+                var listWindow = new RecipeListWindow(_userManager.GetRecipeManagerForCurrentUser());
+                listWindow.Show();
+
+                foreach (Window w in Application.Current.Windows)
+                {
+                    if (w.DataContext == this)
+                    {
+                        w.Close();
+                        break;
+                    }
+                }
             }
-            catch (NullReferenceException ex)
+            catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("An error occurred: " + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -105,16 +143,28 @@ namespace OPG_Robin_Strandberg_SYSM9.ViewModels
         {
             try
             {
-                Application.Current.MainWindow.Content =
-                    new Views.RecipeListUserControl(_userManager.GetRecipeManagerForCurrentUser());
-            } catch  (NullReferenceException ex)
+                var listWindow = new RecipeListWindow(_userManager.GetRecipeManagerForCurrentUser());
+                listWindow.Show();
+
+                foreach (Window w in Application.Current.Windows)
+                {
+                    if (w.DataContext == this)
+                    {
+                        w.Close();
+                        break;
+                    }
+                }
+            }
+            catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("An error occurred: " + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
         private void OnPropertyChanged([CallerMemberName] string prop = null)
-            => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
+        }
     }
 }

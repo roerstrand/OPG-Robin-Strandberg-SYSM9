@@ -1,22 +1,15 @@
-﻿using System.Net.Mime;
-using System.Windows;
-using System.Windows.Controls;
+﻿using System.Windows;
 using OPG_Robin_Strandberg_SYSM9.Managers;
 using OPG_Robin_Strandberg_SYSM9.Models;
 using OPG_Robin_Strandberg_SYSM9.ViewModels;
 
 namespace OPG_Robin_Strandberg_SYSM9.Views
 {
-    public partial class RecipeDetailUserControl : UserControl
+    public partial class RecipeDetailsWindow : Window
     {
         private readonly RecipeManager _recipeManager;
 
-        public RecipeDetailUserControl()
-        {
-            InitializeComponent();
-        }
-
-        public RecipeDetailUserControl(Recipe recipe, RecipeManager recipeManager)
+        public RecipeDetailsWindow(Recipe recipe, RecipeManager recipeManager)
         {
             InitializeComponent();
             _recipeManager = recipeManager;
@@ -25,7 +18,9 @@ namespace OPG_Robin_Strandberg_SYSM9.Views
 
         private void Close_Click(object sender, RoutedEventArgs e)
         {
-            Application.Current.MainWindow.Content = new RecipeListUserControl(_recipeManager);
+            var listWindow = new RecipeListWindow(_recipeManager);
+            listWindow.Show();
+            Close();
         }
     }
 }

@@ -4,10 +4,10 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Input;
-using OPG_Robin_Strandberg_SYSM9.Models;
-using OPG_Robin_Strandberg_SYSM9.Views;
 using OPG_Robin_Strandberg_SYSM9.Commands;
 using OPG_Robin_Strandberg_SYSM9.Managers;
+using OPG_Robin_Strandberg_SYSM9.Models;
+using OPG_Robin_Strandberg_SYSM9.Views;
 
 namespace OPG_Robin_Strandberg_SYSM9.ViewModels
 {
@@ -20,22 +20,13 @@ namespace OPG_Robin_Strandberg_SYSM9.ViewModels
         public Recipe Recipe
         {
             get => _recipe;
-            set
-            {
-                _recipe = value;
-                OnPropertyChanged(nameof(Recipe));
-            }
+            set { _recipe = value; OnPropertyChanged(); }
         }
 
         public bool IsEditing
         {
             get => _isEditing;
-            set
-            {
-                _isEditing = value;
-                OnPropertyChanged(nameof(IsEditing));
-                OnPropertyChanged(nameof(IsReadOnly));
-            }
+            set { _isEditing = value; OnPropertyChanged(); OnPropertyChanged(nameof(IsReadOnly)); }
         }
 
         public bool IsReadOnly => !IsEditing;
@@ -43,54 +34,26 @@ namespace OPG_Robin_Strandberg_SYSM9.ViewModels
         public string Title
         {
             get => Recipe.Title;
-            set
-            {
-                Recipe.Title = value;
-                OnPropertyChanged(nameof(Title));
-            }
+            set { Recipe.Title = value; OnPropertyChanged(); }
         }
 
         public string Ingredients
         {
             get => string.Join(", ", Recipe.Ingredients);
-            set
-            {
-                Recipe.Ingredients = value.Split(',').Select(i => i.Trim()).ToList();
-                OnPropertyChanged(nameof(Ingredients));
-            }
+            set { Recipe.Ingredients = value.Split(',').Select(i => i.Trim()).ToList(); OnPropertyChanged(); }
         }
 
         public string Instructions
         {
             get => Recipe.Instructions;
-            set
-            {
-                Recipe.Instructions = value;
-                OnPropertyChanged(nameof(Instructions));
-            }
+            set { Recipe.Instructions = value; OnPropertyChanged(); }
         }
 
         public string Category
         {
             get => Recipe.Category;
-            set
-            {
-                Recipe.Category = value;
-                OnPropertyChanged(nameof(Category));
-            }
+            set { Recipe.Category = value; OnPropertyChanged(); }
         }
-
-        public DateTime CreatedAt
-        {
-            get => Recipe.CreatedAt;
-            set
-            {
-                Recipe.CreatedAt = value;
-                OnPropertyChanged(nameof(CreatedAt));
-            }
-        }
-
-        public string CreatedBy => Recipe.CreatedBy.UserName;
 
         public ICommand EditCommand { get; }
         public ICommand SaveCommand { get; }
@@ -101,7 +64,6 @@ namespace OPG_Robin_Strandberg_SYSM9.ViewModels
         {
             Recipe = recipe;
             _recipeManager = recipeManager;
-            IsEditing = false;
 
             EditCommand = new RelayCommand(_ => IsEditing = true);
             SaveCommand = new RelayCommand(_ => SaveRecipe());
@@ -115,31 +77,29 @@ namespace OPG_Robin_Strandberg_SYSM9.ViewModels
             {
                 if (string.IsNullOrWhiteSpace(Title) ||
                     string.IsNullOrWhiteSpace(Instructions) ||
-                    string.IsNullOrWhiteSpace(Category) ||
-                    Recipe.Ingredients == null || !Recipe.Ingredients.Any())
+                    string.IsNullOrWhiteSpace(Category))
                 {
-                    MessageBox.Show("All fields must be filled in.", "Error", MessageBoxButton.OK,
-                        MessageBoxImage.Error);
+                    MessageBox.Show("All fields must be filled in.", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
                     return;
                 }
 
-                var existingRecipe = _recipeManager.RecipeList.FirstOrDefault(r => r.Title == Recipe.Title);
-                if (existingRecipe != null)
+                MessageBox.Show("Recipe saved successfully!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+
+                var listWindow = new RecipeListWindow(_recipeManager);
+                listWindow.Show();
+
+                foreach (Window w in Application.Current.Windows)
                 {
-                    existingRecipe.EditRecipe(Title, Instructions, Category, DateTime.Now, Recipe.CreatedBy,
-                        string.Join(", ", Recipe.Ingredients));
+                    if (w.DataContext == this)
+                    {
+                        w.Close();
+                        break;
+                    }
                 }
-
-                MessageBox.Show("Recipe saved successfully!", "Success", MessageBoxButton.OK,
-                    MessageBoxImage.Information);
-
-                Application.Current.MainWindow.Content = new Views.RecipeListUserControl(_recipeManager);
-
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error saving recipe: {ex.Message}", "System Error", MessageBoxButton.OK,
-                    MessageBoxImage.Error);
+                MessageBox.Show("An error occurred: " + ex.Message);
             }
         }
 
@@ -147,40 +107,60 @@ namespace OPG_Robin_Strandberg_SYSM9.ViewModels
         {
             try
             {
-                var copiedRecipe = new Recipe(
+                var copy = new Recipe(
                     $"{Title} (Copy)",
                     Instructions,
                     Category,
                     DateTime.Now,
                     App.UserManager.CurrentUser,
-                    string.Join(", ", Recipe.Ingredients));
+                    string.Join(", ", Recipe.Ingredients)
+                );
 
-                _recipeManager.AddRecipe(copiedRecipe);
+                _recipeManager.AddRecipe(copy);
+                MessageBox.Show("Recipe copied successfully!", "Copied", MessageBoxButton.OK, MessageBoxImage.Information);
 
-                MessageBox.Show($"Recipe '{Title}' copied successfully!", "Copied", MessageBoxButton.OK,
-                    MessageBoxImage.Information);
+                var listWindow = new RecipeListWindow(_recipeManager);
+                listWindow.Show();
 
-                Application.Current.MainWindow.Content = new Views.RecipeListUserControl(_recipeManager);
-
-
+                foreach (Window w in Application.Current.Windows)
+                {
+                    if (w.DataContext == this)
+                    {
+                        w.Close();
+                        break;
+                    }
+                }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error copying recipe: {ex.Message}", "System Error", MessageBoxButton.OK,
-                    MessageBoxImage.Error);
+                MessageBox.Show("An error occurred: " + ex.Message);
             }
         }
 
         private void Cancel()
         {
-            Application.Current.MainWindow.Content = new Views.RecipeListUserControl(_recipeManager);
+            try
+            {
+                var listWindow = new RecipeListWindow(_recipeManager);
+                listWindow.Show();
+
+                foreach (Window w in Application.Current.Windows)
+                {
+                    if (w.DataContext == this)
+                    {
+                        w.Close();
+                        break;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("An error occurred: " + ex.Message);
+            }
         }
 
-
-
         public event PropertyChangedEventHandler PropertyChanged;
-
-        public void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        private void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }

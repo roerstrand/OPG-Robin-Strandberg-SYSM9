@@ -21,15 +21,13 @@ namespace OPG_Robin_Strandberg_SYSM9.Views
         private readonly MainWindowViewModel _viewModel;
 
         private bool _isUpdatingPasswordFromVM = false;
+
         public MainWindow()
         {
-
             _viewModel = new MainWindowViewModel();
             DataContext = _viewModel;
 
             InitializeComponent();
-
-            _viewModel.PropertyChanged += ViewModel_PropertyChanged;
 
         }
 
@@ -48,28 +46,5 @@ namespace OPG_Robin_Strandberg_SYSM9.Views
                 MessageBox.Show("Unexpected error");
             }
         }
-
-        public void ViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            try
-            {
-                if (e.PropertyName == nameof(MainWindowViewModel.PasswordInput))
-                {
-                    _isUpdatingPasswordFromVM = true;
-                    Dispatcher.Invoke(() =>
-                        MainWindowPasswordBox.Password =
-                            string.Empty); // Skicka onProp change one-way tillbaka t UI-tråd för tömning
-                    // av password box.
-                    _isUpdatingPasswordFromVM = false;
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex);
-                MessageBox.Show("Unexpected error");
-            }
-        }
-
     }
-
 }
