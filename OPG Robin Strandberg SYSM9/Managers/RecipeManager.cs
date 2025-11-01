@@ -33,7 +33,7 @@ namespace OPG_Robin_Strandberg_SYSM9.Managers
             get => _recipes;
             private set
             {
-                _recipes = value ?? new ObservableCollection<Recipe>();
+                _recipes = value;
                 OnPropertyChanged();
             }
         }
@@ -54,7 +54,7 @@ namespace OPG_Robin_Strandberg_SYSM9.Managers
                     return;
                 }
 
-                if (RecipeList.Any(r => string.Equals(r.Title, recipe.Title, StringComparison.OrdinalIgnoreCase)
+                if (RecipeList.Any(r => string.Equals(r.Title, recipe.Title, StringComparison.Ordinal)
                                         && r.CreatedBy?.UserName == recipe.CreatedBy?.UserName))
                 {
                     MessageBox.Show("A recipe with that title already exists for this user.", "Duplicate",
@@ -143,11 +143,12 @@ namespace OPG_Robin_Strandberg_SYSM9.Managers
                 if (string.IsNullOrWhiteSpace(criteria))
                     return new ObservableCollection<Recipe>(RecipeList);
 
-                criteria = criteria.Trim().ToLowerInvariant();
+                criteria = criteria.Trim();
 
                 var filtered = RecipeList
-                    .Where(r => r.Title.ToLowerInvariant().Contains(criteria)
-                                || r.Category.ToLowerInvariant().Contains(criteria))
+                    .Where(r =>
+                        r.Title.Contains(criteria, StringComparison.Ordinal) ||
+                        r.Category.Contains(criteria, StringComparison.Ordinal))
                     .ToList();
 
                 if (filtered.Count == 0)
@@ -185,12 +186,30 @@ namespace OPG_Robin_Strandberg_SYSM9.Managers
                 recipe.Instructions = instructions;
                 recipe.Category = string.IsNullOrWhiteSpace(category) ? "Uncategorized" : category;
 
-                recipe.Ingredients = ingredients?
-                                         .Split(',')
-                                         .Select(i => i.Trim())
-                                         .Where(i => !string.IsNullOrWhiteSpace(i))
-                                         .ToList()
-                                     ?? new List<string>();
+                List<string> ingredientsList;
+
+
+                if (string.IsNullOrWhiteSpace(ingredients))
+                {
+                    ingredientsList = new List<string>();
+                }
+                else
+                {
+                    string[] parts = ingredients.Split(',');
+
+
+                    ingredientsList = new List<string>();
+                    foreach (string part in parts)
+                    {
+                        string trimmed = part.Trim();
+                        if (!string.IsNullOrWhiteSpace(trimmed))
+                        {
+                            ingredientsList.Add(trimmed);
+                        }
+                    }
+                }
+
+                recipe.Ingredients = ingredientsList;
 
                 OnPropertyChanged(nameof(RecipeList));
                 MessageBox.Show($"Recipe \"{recipe.Title}\" was updated successfully.", "Success", MessageBoxButton.OK,

@@ -58,7 +58,6 @@
         </Grid>
 
         <!-- Huvudinnehåll (visas när man är inloggad) -->
-        <!-- Ersätt hela receptdelen med en ContentControl -->
         <Grid Grid.Row="1" x:Name="MainContentSection">
             <Grid.Style>
                 <Style TargetType="Grid">

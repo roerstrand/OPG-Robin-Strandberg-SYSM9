@@ -94,56 +94,6 @@ namespace OPG_Robin_Strandberg_SYSM9
             BackToLoginCommand = new RelayCommand(o => BackToLogin());
         }
 
-        private void BackToLogin()
-        {
-            try
-            {
-                var loginWindow = new Views.MainWindow();
-                loginWindow.Show();
-
-
-                foreach (Window window in Application.Current.Windows)
-                {
-                    if (window is Views.ForgotPasswordWindow forgotWindow)
-                    {
-                        forgotWindow.Close();
-                        break;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error in BackToLogin: {ex.Message}");
-            }
-        }
-
-
-        private void ChangePassword(User user, string newPassword)
-        {
-            try
-            {
-                var currentUser = _userManager.Users.FirstOrDefault(u => u.UserName == user.UserName);
-
-                if (currentUser == null)
-                {
-                    MessageBox.Show("User not found");
-                    return;
-                }
-
-                if (InputNewPassword != newPassword)
-                {
-                    MessageBox.Show("Passwords do not match");
-                    return;
-                }
-
-                currentUser.Password = newPassword;
-            }
-            catch (Exception)
-            {
-                Console.WriteLine("Unexpected error in ChangePassword (ForgotPasswordViewModel)");
-            }
-        }
-
         private void ValidatePriorPasswordChange()
         {
             try
@@ -177,6 +127,57 @@ namespace OPG_Robin_Strandberg_SYSM9
             catch (Exception)
             {
                 Console.WriteLine("Unexpected error in ValidatePriorPasswordChange (ForgotPasswordViewModel)");
+                MessageBox.Show("Unexpected error.");
+            }
+        }
+
+        private void ChangePassword(User user, string newPassword)
+        {
+            try
+            {
+                var currentUser = _userManager.Users.FirstOrDefault(u => u.UserName == user.UserName);
+
+                if (currentUser == null)
+                {
+                    MessageBox.Show("User not found");
+                    return;
+                }
+
+                if (InputNewPassword != newPassword)
+                {
+                    MessageBox.Show("Passwords do not match");
+                    return;
+                }
+
+                currentUser.Password = newPassword;
+            }
+            catch (Exception)
+            {
+                Console.WriteLine("Unexpected error in ChangePassword (ForgotPasswordViewModel)");
+                MessageBox.Show("Unexpected error.");
+            }
+        }
+
+        private void BackToLogin()
+        {
+            try
+            {
+                var loginWindow = new Views.MainWindow();
+                loginWindow.Show();
+
+                foreach (Window window in Application.Current.Windows)
+                {
+                    if (window is Views.ForgotPasswordWindow forgotWindow)
+                    {
+                        forgotWindow.Close();
+                        break;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in BackToLogin method in forgotpasswordviewmodel: {ex.Message}");
+                MessageBox.Show("Unexpected error.");
             }
         }
 

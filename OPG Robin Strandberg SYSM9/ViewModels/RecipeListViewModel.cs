@@ -84,7 +84,7 @@ namespace OPG_Robin_Strandberg_SYSM9.ViewModels
             {
                 if (_userManager.CurrentUser == null)
                 {
-                    MessageBox.Show("Ingen användare är inloggad. Återgår till startsidan.", "Session",
+                    MessageBox.Show("No user is logged in. Returning to start screen.", "Session",
                         MessageBoxButton.OK, MessageBoxImage.Warning);
                     return;
                 }
@@ -95,7 +95,7 @@ namespace OPG_Robin_Strandberg_SYSM9.ViewModels
             }
             catch (Exception ex)
             {
-                ShowError("Kunde inte läsa in recept.", ex);
+                ShowError("Could not load recipes.", ex);
             }
         }
 
@@ -113,7 +113,7 @@ namespace OPG_Robin_Strandberg_SYSM9.ViewModels
             }
             catch (Exception ex)
             {
-                ShowError("Fel vid filtrering.", ex);
+                ShowError("Error while filtering.", ex);
             }
         }
 
@@ -126,10 +126,9 @@ namespace OPG_Robin_Strandberg_SYSM9.ViewModels
             }
             catch (Exception ex)
             {
-                ShowError("Kunde inte öppna Add Recipe-vyn.", ex);
+                ShowError("Could not open Add Recipe view.", ex);
             }
         }
-
 
         private void RemoveRecipe()
         {
@@ -137,12 +136,12 @@ namespace OPG_Robin_Strandberg_SYSM9.ViewModels
             {
                 if (SelectedRecipe == null)
                 {
-                    MessageBox.Show("Markera ett recept att ta bort.", "Varning", MessageBoxButton.OK,
+                    MessageBox.Show("Select a recipe to remove.", "Warning", MessageBoxButton.OK,
                         MessageBoxImage.Warning);
                     return;
                 }
 
-                if (MessageBox.Show($"Vill du ta bort \"{SelectedRecipe.Title}\"?", "Bekräfta", MessageBoxButton.YesNo,
+                if (MessageBox.Show($"Do you want to delete \"{SelectedRecipe.Title}\"?", "Confirm", MessageBoxButton.YesNo,
                         MessageBoxImage.Question) == MessageBoxResult.Yes)
                 {
                     _recipeManager.RemoveRecipe(SelectedRecipe);
@@ -151,7 +150,7 @@ namespace OPG_Robin_Strandberg_SYSM9.ViewModels
             }
             catch (Exception ex)
             {
-                ShowError("Fel vid borttagning av recept.", ex);
+                ShowError("Error while deleting recipe.", ex);
             }
         }
 
@@ -161,26 +160,25 @@ namespace OPG_Robin_Strandberg_SYSM9.ViewModels
             {
                 if (SelectedRecipe == null)
                 {
-                    MessageBox.Show("Markera ett recept att visa.", "Varning", MessageBoxButton.OK,
+                    MessageBox.Show("Select a recipe to view.", "Warning", MessageBoxButton.OK,
                         MessageBoxImage.Warning);
                     return;
                 }
 
                 var detailsControl = new Views.RecipeDetailUserControl(SelectedRecipe, _recipeManager);
                 Application.Current.MainWindow.Content = detailsControl;
-
             }
             catch (Exception ex)
             {
-                ShowError("Kunde inte öppna detaljvyn.", ex);
+                ShowError("Could not open detail view.", ex);
             }
         }
 
         private void ShowInfo()
         {
             MessageBox.Show(
-                "CookMaster låter dig skapa, visa och hantera dina recept.\n\nAnvänd filtrering för att söka efter titel eller kategori.",
-                "Om CookMaster", MessageBoxButton.OK, MessageBoxImage.Information);
+                "CookMaster lets you create, view, and manage your recipes.\n\nUse filtering to search by title or category.",
+                "About CookMaster", MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
         private void SignOut()
@@ -194,7 +192,7 @@ namespace OPG_Robin_Strandberg_SYSM9.ViewModels
             }
             catch (Exception ex)
             {
-                ShowError("Fel vid utloggning.", ex);
+                ShowError("Error during logout.", ex);
             }
         }
 
@@ -213,7 +211,7 @@ namespace OPG_Robin_Strandberg_SYSM9.ViewModels
         private void ShowError(string message, Exception ex)
         {
             Console.WriteLine($"[RecipeListVM] {ex.Message}");
-            MessageBox.Show($"{message}\n\n{ex.Message}", "Fel", MessageBoxButton.OK, MessageBoxImage.Error);
+            MessageBox.Show($"{message}\n\n{ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

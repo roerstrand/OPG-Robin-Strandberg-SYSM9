@@ -35,19 +35,38 @@ namespace OPG_Robin_Strandberg_SYSM9.Views
 
         public void PasswordBox_PasswordChanged(object sender, RoutedEventArgs e)
         {
-            if (!_isUpdatingPasswordFromVM)
+            try
             {
-                _viewModel.PasswordInput = ((PasswordBox)sender).Password;
+                if (!_isUpdatingPasswordFromVM)
+                {
+                    _viewModel.PasswordInput = ((PasswordBox)sender).Password;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                MessageBox.Show("Unexpected error");
             }
         }
 
         public void ViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(MainWindowViewModel.PasswordInput))
+            try
             {
-                _isUpdatingPasswordFromVM = true;
-                Dispatcher.Invoke(() => MainWindowPasswordBox.Password = string.Empty);
-                _isUpdatingPasswordFromVM = false;
+                if (e.PropertyName == nameof(MainWindowViewModel.PasswordInput))
+                {
+                    _isUpdatingPasswordFromVM = true;
+                    Dispatcher.Invoke(() =>
+                        MainWindowPasswordBox.Password =
+                            string.Empty); // Skicka onProp change one-way tillbaka t UI-tråd för tömning
+                    // av password box.
+                    _isUpdatingPasswordFromVM = false;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                MessageBox.Show("Unexpected error");
             }
         }
 

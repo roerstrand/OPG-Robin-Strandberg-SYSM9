@@ -23,13 +23,13 @@ namespace OPG_Robin_Strandberg_SYSM9.Views
 
             if (success)
             {
-                this.Close();
+                Close();
             }
         }
 
         private void BackToLogin_Click(object sender, RoutedEventArgs e)
         {
-           this.Close();
+            Close();
         }
     }
 }

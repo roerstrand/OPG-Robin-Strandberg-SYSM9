@@ -56,14 +56,14 @@ namespace OPG_Robin_Strandberg_SYSM9
             set { _passwordInput = value; }
         }
 
-        private User _loggedIn;
+        private User _currentUser;
 
-        public User LoggedIn
+        public User CurrentUser
         {
-            get { return _loggedIn; }
+            get { return _currentUser; }
             set
             {
-                _loggedIn = value;
+                _currentUser = value;
                 OnPropertyChanged();
             }
         }
@@ -92,6 +92,7 @@ namespace OPG_Robin_Strandberg_SYSM9
         public ICommand ShowAddRecipeCommand { get; }
         public ICommand ShowViewRecipeDetailsCommand { get; }
         public ICommand ShowViewRecipeListCommand { get; }
+
         public ICommand ShowViewUserDetailsCommand { get; }
         public ICommand LoginCommand { get; }
         public ICommand LogoutCommand { get; }
@@ -137,7 +138,7 @@ namespace OPG_Robin_Strandberg_SYSM9
                 // kontrollera att något recept är valt
                 if (_recipeManager.CurrentRecipe == null)
                 {
-                    MessageBox.Show("Välj ett recept först.", "Information", MessageBoxButton.OK,
+                    MessageBox.Show("Choose a recipe first.", "Information", MessageBoxButton.OK,
                         MessageBoxImage.Information);
                     return;
                 }
@@ -146,29 +147,36 @@ namespace OPG_Robin_Strandberg_SYSM9
                     new RecipeDetailUserControl(_recipeManager.CurrentRecipe, _recipeManager);
             });
 
+            // ShowViewUserDetailsCommand = new RelayCommand(o =>
+            // {
+            //
+            //     Application.Current.MainWindow.Content = new RecipeDetailUserControl(_recipeManager);
+            // });
+
             LogoutCommand = new RelayCommand(_ => Logout_Button());
         }
 
         public void Login_Button()
         {
-            if (_userManager.Login(UserNameInput, PasswordInput))
+            try
             {
-                _recipeManager = _userManager.GetRecipeManagerForCurrentUser();
-                RecipeListViewModel = new RecipeListViewModel(_recipeManager, _userManager);
-
-                CurrentView = new RecipeListUserControl(_recipeManager)
+                if (_userManager.Login(UserNameInput, PasswordInput))
                 {
-                    DataContext = RecipeListViewModel
-                };
+                    _recipeManager = _userManager.GetRecipeManagerForCurrentUser();
+                    RecipeListViewModel = new RecipeListViewModel(_recipeManager, _userManager);
 
-                OnPropertyChanged(nameof(IsAuthenticated));
+                    CurrentView = new RecipeListUserControl(_recipeManager)
+                    {
+                        DataContext = RecipeListViewModel
+                    };
+
+                    OnPropertyChanged(nameof(IsAuthenticated));
+                }
             }
-            else
+            catch (Exception ex)
             {
-                MessageBox.Show("Felaktigt användarnamn eller lösenord.",
-                    "Inloggning misslyckades",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Error);
+                Console.WriteLine(ex);
+                MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
