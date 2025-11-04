@@ -9,7 +9,8 @@ namespace OPG_Robin_Strandberg_SYSM9.Views
         public ForgotPasswordWindow()
         {
             InitializeComponent();
-            _viewModel = (ForgotPasswordViewModel)DataContext;
+            _viewModel = new ForgotPasswordViewModel();
+            DataContext = _viewModel;
         }
 
         private void NewPasswordBox_PasswordChanged(object sender, RoutedEventArgs e)
@@ -20,11 +21,6 @@ namespace OPG_Robin_Strandberg_SYSM9.Views
         private void ConfirmPasswordBox_PasswordChanged(object sender, RoutedEventArgs e)
         {
             _viewModel.InputConfirmNewPassword = ConfirmNewPasswordBox.Password;
-        }
-
-        private void BackToLogin_Click(object sender, RoutedEventArgs e)
-        {
-            this.Close();
         }
 
         private void LastFourPreviousPassword_OnPasswordChanged(object sender, RoutedEventArgs e)

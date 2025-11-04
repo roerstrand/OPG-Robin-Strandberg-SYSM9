@@ -284,6 +284,7 @@ namespace OPG_Robin_Strandberg_SYSM9.Managers
         {
             try
             {
+
                 foreach (User u in Users)
                 {
                     if (u.UserName == username)

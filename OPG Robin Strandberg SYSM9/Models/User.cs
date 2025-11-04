@@ -15,6 +15,8 @@ namespace OPG_Robin_Strandberg_SYSM9.Models
         public string Password { get; set; }
         public string Country { get; set; }
 
+        public bool IsAdmin { get; protected set; }
+
         public User(string userName, string password, string country)
         {
             UserName = userName;

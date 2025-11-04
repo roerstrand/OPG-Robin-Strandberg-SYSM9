@@ -5,7 +5,7 @@
 
 CRUD-applikation med Create, Read, Update och Delete med WPF. Användarregistrering i en "CookMaster-App"
 där användare kan registrera sig, återställa lösenord i "forgot password" och logga in. Vid inloggning överblicka
-receptlista och navigera vidare till "user details", "recipe details" och "add recipe".
+receptlista och därifrån kan användaren navigera vidare till "user details", "recipe details" och "add recipe"-fönster.
 
 * Sammanfattning och analys av projektets struktur och uppbyggnad
 
@@ -16,18 +16,23 @@ så "rena" som möjligt där enbart åtgärden i sig utförs (i något enstaka f
 
 * Fördelar och nackdelar med olika approacher 
 
-- Inbäddning med (WPF) UserControls valdes i applikation för att undvika att nya fönster öppnas upp för användaren.
-Nya fönster som öppnas (oväntat) ovanpå befintlig applikationssida bör undvikas ur ett användarvänligt perspektiv (om det 
+- Inbäddning med (WPF) UserControls valdes inledningsvis i applikationen för att undvika att nya fönster öppnas upp för användaren.
+Nya fönster som öppnas (oväntat) ovanpå befintlig applikationssida kan undvikas ur ett användarvänligt perspektiv (om det 
 inte anges explicit e.g. "Öppna i nytt fönster"). Öppnandet av nya fönster kan inge ett oprofessionelt intryck
 med oväntade pop-up fönster. OBS! Forgotpasswordwindow och registerwindow förblev egna fönster pga svårigheter att bädda 
-in ytterligare en sektion (bestående av register och forgotpassword) i den första loginsektionen.
+in ytterligare en sektion (bestående av register och forgotpassword) inuti den första loginsektionen. Sedermera övergavs användandet user controls
+överallt de det krävdes mycket felsökning för att få gränssnittet att fungera. Således kan slutsatsen dras att fönster istället för inbäddning är en traditionell metod 
+och pålitlig metod som håller isär olika komponenter i gränssnittet effektivt. Nackdelen är fönster som öppnas på varandra vilket ger kan ge visst vilseledande intryck för
+användaren.
 
-- Vid val av global resurs av objektinstansen user manager valdes användande av en statisk resurs 
-i code-behind app.xaml. Detta medförde en fördel i att resursen enklare kunde nås genom den kortare
-referensen App.UserManager (färdigkompilerad resurs) istället för en längre referens till global
-resurs, enbart globalt initierad i app.xaml (Current.Resource["UserMan...]).
+- Vid val av global resurs av objektinstansen user manager valdes användande av en OnStartUp-metoden 
+i code-behind app.xaml. Detta medförde en fördel i att resurserna initieras/laddas efter app-klassen är kompilerad och valdes
+pga startup-uri användes initialt i app (och kördes direkt vid uppstart tillsammans med user manager) vilket skapas synkroniseringsproblem
+mellan mainwindow VM som kastade fel i konstruktorn då globala resurser inte kunde hittas vid just detta debug-tillfälle. Därav valdes med fördel
+en mer holistik approach där startup och user manager sätts i code-behind app och körs enbart när app-klassen är färdigkompilerad.
 
-En recipe manager skapas vid varje lyckad inloggning per användare. Detta medförde ett större integritetsskydd
-för användaren om ytterligare logik för cachning och historik behövs läggas till.
+En instants av recipe manager-klassen skapas vid varje lyckad inloggning per användare. Detta medförde ett större integritetsskydd
+för användaren om ytterligare logik för cachning och historik behövs läggas till. Exempel för detta kan vara tidigare sökningar eller 
+åtgärder utförda med varje användares inviduella recipe manager.
 
 

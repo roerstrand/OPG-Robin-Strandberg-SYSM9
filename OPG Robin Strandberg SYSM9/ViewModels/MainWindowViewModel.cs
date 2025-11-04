@@ -64,19 +64,7 @@ namespace OPG_Robin_Strandberg_SYSM9
             }
         }
 
-        public List<User> Users { get; set; } = new List<User>();
-
         public bool IsAuthenticated => _userManager.IsAuthenticated;
-
-        public object CurrentView
-        {
-            get => _currentView;
-            set
-            {
-                _currentView = value;
-                OnPropertyChanged();
-            }
-        }
 
         public ICommand ShowRegisterCommand { get; }
         public ICommand ShowForgotPasswordCommand { get; }
@@ -92,7 +80,6 @@ namespace OPG_Robin_Strandberg_SYSM9
             _userManager = App.UserManager;
             _recipeManager = new RecipeManager();
 
-            // Login
             LoginCommand = new RelayCommand(_ => Login_Button());
             ShowRegisterCommand = new RelayCommand(_ =>
             {
@@ -142,7 +129,7 @@ namespace OPG_Robin_Strandberg_SYSM9
                     return;
                 }
 
-                var recipeDetailWindow = new RecipeDetailsWindow
+                var recipeDetailWindow = new RecipeDetailsWindow(_recipeManager.CurrentRecipe, _recipeManager)
                 {
                     DataContext = new RecipeDetailViewModel(_recipeManager.CurrentRecipe, _recipeManager),
                     Owner = Application.Current.MainWindow

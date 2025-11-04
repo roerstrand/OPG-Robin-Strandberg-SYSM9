@@ -2,20 +2,9 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <SolidColorBrush x:Key="AppBackground" Color="#FAEBD7" />
-    <SolidColorBrush x:Key="PrimaryTitle" Color="#FF4A4A4A" />
+    <SolidColorBrush x:Key="PrimaryTitle" Color="#FF2F2F2F" />
     <SolidColorBrush x:Key="ButtonBackground" Color="LightSlateGray" />
     <SolidColorBrush x:Key="ButtonText" Color="White" />
-
-
-    <Style TargetType="Label">
-        <Setter Property="FontFamily" Value="Segoe UI" />
-        <Setter Property="FontSize" Value="80" />
-        <Setter Property="FontWeight" Value="Bold" />
-        <Setter Property="Foreground" Value="{StaticResource PrimaryTitle}" />
-        <Setter Property="HorizontalAlignment" Value="Center" />
-        <Setter Property="Margin" Value="0,30,0,10" />
-    </Style>
-
 
     <Style TargetType="TextBlock">
         <Setter Property="FontFamily" Value="Segoe UI" />
@@ -26,7 +15,7 @@
 
     <Style TargetType="TextBox">
         <Setter Property="Width" Value="200" />
-        <Setter Property="Margin" Value="0,5" />
+        <Setter Property="Margin" Value="0,5, 0,10" />
         <Setter Property="Padding" Value="4" />
         <Setter Property="FontFamily" Value="Segoe UI" />
         <Setter Property="FontSize" Value="13" />
@@ -37,7 +26,7 @@
 
     <Style TargetType="PasswordBox">
         <Setter Property="Width" Value="200" />
-        <Setter Property="Margin" Value="0,5" />
+        <Setter Property="Margin" Value="0,5, 0,20" />
         <Setter Property="Padding" Value="4" />
         <Setter Property="FontFamily" Value="Segoe UI" />
         <Setter Property="FontSize" Value="13" />
@@ -52,9 +41,8 @@
         <Setter Property="FontFamily" Value="Segoe UI" />
         <Setter Property="FontSize" Value="14" />
         <Setter Property="Width" Value="200" />
-        <Setter Property="Margin" Value="0,5" />
+        <Setter Property="Margin" Value="5,5" />
         <Setter Property="Padding" Value="5,3" />
-        <Setter Property="BorderThickness" Value="0" />
         <Setter Property="Cursor" Value="Hand" />
         <Setter Property="HorizontalAlignment" Value="Center" />
         <Setter Property="Template">

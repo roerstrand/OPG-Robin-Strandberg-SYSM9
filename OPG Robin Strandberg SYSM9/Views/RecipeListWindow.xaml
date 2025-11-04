@@ -10,41 +10,42 @@
         Title="Recipe List"
         Background="{StaticResource AppBackground}">
 
-    <Window.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="/Themes/GlobalStyles.xaml"/>
-            </ResourceDictionary.MergedDictionaries>
-        </ResourceDictionary>
-    </Window.Resources>
-
     <DockPanel Margin="16">
 
-        <StackPanel Orientation="Horizontal"
-                    DockPanel.Dock="Top"
-                    HorizontalAlignment="Right"
-                    Margin="0 0 0 16">
-            <Button Content="Add Recipe"
-                    Command="{Binding AddRecipeCommand}"
-                    Margin="0 8 8 0" />
-            <Button Content="User Details"
-                    Command="{Binding ShowUserDetailsCommand}"
-                    Margin="0 8 8 0" />
-            <Button Content="View User Details"
-                    Command="{Binding ShowDetailsCommand}"
-                    Margin="0 8 8 0" />
-            <Button Content="Log Out"
-                    Command="{Binding SignOutCommand}" />
-        </StackPanel>
+        <StackPanel>
+            <TextBlock Text="CookMaster"
+                       Foreground="{StaticResource PrimaryTitle}"
+                       FontSize="80"
+                       FontWeight="Bold"
+                       HorizontalAlignment="Center"
+                       Margin="0,0,0,40" />
 
-        <ListView ItemsSource="{Binding Recipes}"
-                  SelectedItem="{Binding SelectedRecipe, Mode=TwoWay}">
-            <ListView.View>
-                <GridView>
-                    <GridViewColumn Header="Title" DisplayMemberBinding="{Binding Title}" />
-                    <GridViewColumn Header="Category" DisplayMemberBinding="{Binding Category}" />
-                </GridView>
-            </ListView.View>
-        </ListView>
+            <StackPanel Orientation="Horizontal"
+                        DockPanel.Dock="Top"
+                        HorizontalAlignment="Right"
+                        Margin="0 0 0 16">
+                <Button Content="Add Recipe"
+                        Command="{Binding AddRecipeCommand}"
+                        Margin="0 8 8 0" />
+                <Button Content="Recipe Details"
+                        Command="{Binding DetailsCommand}"
+                        Margin="0 8 8 0" />
+                <Button Content="User Details"
+                        Command="{Binding ShowUserDetailsCommand}"
+                        Margin="0 8 8 0" />
+                <Button Content="Log Out"
+                        Command="{Binding SignOutCommand}" />
+            </StackPanel>
+
+            <ListView ItemsSource="{Binding Recipes}"
+                      SelectedItem="{Binding SelectedRecipe, Mode=TwoWay}">
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Header="Title" DisplayMemberBinding="{Binding Title}" />
+                        <GridViewColumn Header="Category" DisplayMemberBinding="{Binding Category}" />
+                    </GridView>
+                </ListView.View>
+            </ListView>
+        </StackPanel>
     </DockPanel>
 </Window>

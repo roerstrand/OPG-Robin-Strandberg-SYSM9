@@ -11,35 +11,44 @@
         Background="{StaticResource AppBackground}">
 
     <Grid Margin="40">
-        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Width="500">
+        <StackPanel>
+            <TextBlock Text="CookMaster"
+                       Foreground="{StaticResource PrimaryTitle}"
+                       FontSize="80"
+                       FontWeight="Bold"
+                       HorizontalAlignment="Center"
+                       Margin="0,0,0,40" />
+            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Width="500">
 
-            <Label Content="Recipe Details" />
+                <Label Content="Recipe Details" />
 
-            <TextBlock Text="Title:" />
-            <TextBox Text="{Binding Title, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="{Binding IsReadOnly}" />
+                <TextBlock Text="Title:" />
+                <TextBox Text="{Binding Title, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="{Binding IsReadOnly}" />
 
-            <TextBlock Text="Ingredients:" />
-            <TextBox Text="{Binding Ingredients, UpdateSourceTrigger=PropertyChanged}"
-                     IsReadOnly="{Binding IsReadOnly}" TextWrapping="Wrap" />
+                <TextBlock Text="Ingredients:" />
+                <TextBox Text="{Binding Ingredients, UpdateSourceTrigger=PropertyChanged}"
+                         IsReadOnly="{Binding IsReadOnly}" TextWrapping="Wrap" />
 
-            <TextBlock Text="Instructions:" />
-            <TextBox Text="{Binding Instructions, UpdateSourceTrigger=PropertyChanged}"
-                     TextWrapping="Wrap" Height="100" IsReadOnly="{Binding IsReadOnly}" />
+                <TextBlock Text="Instructions:" />
+                <TextBox Text="{Binding Instructions, UpdateSourceTrigger=PropertyChanged}"
+                         TextWrapping="Wrap" Height="100" IsReadOnly="{Binding IsReadOnly}" />
 
-            <TextBlock Text="Category:" />
-            <TextBox Text="{Binding Category, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="{Binding IsReadOnly}" />
+                <TextBlock Text="Category:" />
+                <TextBox Text="{Binding Category, UpdateSourceTrigger=PropertyChanged}"
+                         IsReadOnly="{Binding IsReadOnly}" />
 
-            <TextBlock Text="Created by:" />
-            <TextBlock Text="{Binding CreatedBy}" />
+                <TextBlock Text="Created by:" />
+                <TextBlock Text="{Binding CreatedBy}" />
 
-            <TextBlock Text="Created at:" />
-            <TextBlock Text="{Binding CreatedAt, StringFormat={}{0:yyyy-MM-dd HH:mm}}" />
+                <TextBlock Text="Created at:" />
+                <TextBlock Text="{Binding CreatedAt, StringFormat={}{0:yyyy-MM-dd HH:mm}}" />
 
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,20,0,0">
-                <Button Content="Edit" Command="{Binding EditCommand}" />
-                <Button Content="Save" Command="{Binding SaveCommand}" />
-                <Button Content="Copy" Command="{Binding CopyCommand}" />
-                <Button Content="Cancel" Command="{Binding CancelCommand}" />
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,20,0,0">
+                    <Button Content="Edit" Command="{Binding EditCommand}" />
+                    <Button Content="Save" Command="{Binding SaveCommand}" />
+                    <Button Content="Copy" Command="{Binding CopyCommand}" />
+                    <Button Content="Cancel" Command="{Binding CancelCommand}" />
+                </StackPanel>
             </StackPanel>
         </StackPanel>
     </Grid>

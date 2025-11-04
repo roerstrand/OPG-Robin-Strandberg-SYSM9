@@ -10,7 +10,8 @@ namespace OPG_Robin_Strandberg_SYSM9.Views
         public RegisterWindow()
         {
             InitializeComponent();
-            _viewModel = (RegisterViewModel)DataContext;
+            _viewModel = new RegisterViewModel();
+            DataContext = _viewModel;
         }
 
         private void Register_Click(object sender, RoutedEventArgs e)

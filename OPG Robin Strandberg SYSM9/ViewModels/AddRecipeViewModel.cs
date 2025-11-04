@@ -1,5 +1,4 @@
-﻿using System;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Input;
@@ -49,6 +48,7 @@ namespace OPG_Robin_Strandberg_SYSM9.ViewModels
         public AddRecipeViewModel(RecipeManager recipeManager)
         {
             _recipeManager = recipeManager;
+
             SaveCommand = new RelayCommand(_ => SaveRecipe());
             CancelCommand = new RelayCommand(_ => Cancel());
         }
@@ -62,7 +62,7 @@ namespace OPG_Robin_Strandberg_SYSM9.ViewModels
                     string.IsNullOrWhiteSpace(Category) ||
                     string.IsNullOrWhiteSpace(Ingredients))
                 {
-                    MessageBox.Show("All fields must be filled in.", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    MessageBox.Show("Alla fält måste fyllas i.", "Fel", MessageBoxButton.OK, MessageBoxImage.Warning);
                     return;
                 }
 
@@ -76,45 +76,27 @@ namespace OPG_Robin_Strandberg_SYSM9.ViewModels
                 );
 
                 _recipeManager.AddRecipe(recipe);
-                MessageBox.Show("Recipe added successfully!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
 
-                var listWindow = new RecipeListWindow(App.UserManager.GetRecipeManagerForCurrentUser());
-                listWindow.Show();
-
-                foreach (Window w in Application.Current.Windows)
-                {
-                    if (w.DataContext == this)
-                    {
-                        w.Close();
-                        break;
-                    }
-                }
+                MessageBox.Show("Recept tillagt!", "Klart", MessageBoxButton.OK, MessageBoxImage.Information);
             }
             catch (Exception ex)
             {
-                MessageBox.Show("An error occurred: " + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Ett fel uppstod: {ex.Message}", "Fel", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
         private void Cancel()
         {
-            try
-            {
-                var listWindow = new RecipeListWindow(App.UserManager.GetRecipeManagerForCurrentUser());
-                listWindow.Show();
+            var listWindow = new RecipeListWindow(App.UserManager.GetRecipeManagerForCurrentUser());
+            listWindow.Show();
 
-                foreach (Window w in Application.Current.Windows)
-                {
-                    if (w.DataContext == this)
-                    {
-                        w.Close();
-                        break;
-                    }
-                }
-            }
-            catch (Exception ex)
+            foreach (Window w in Application.Current.Windows)
             {
-                MessageBox.Show("An error occurred: " + ex.Message);
+                if (w.DataContext == this)
+                {
+                    w.Close();
+                    break;
+                }
             }
         }
 

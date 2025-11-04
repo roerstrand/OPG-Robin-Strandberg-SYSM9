@@ -8,9 +8,18 @@ namespace OPG_Robin_Strandberg_SYSM9
     {
         public static UserManager UserManager { get; private set; }
 
+        // Samtliga resurser laddas i application-metoden OnStartUp efter färdkompilerad app-klass ist
+        // globala resurser satta i app.xaml. Men körs innan något fönster har öppnats.
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
+
+            var theme = new ResourceDictionary
+            {
+                Source = new Uri("pack://application:,,,/OPG%20Robin%20Strandberg%20SYSM9;component/Themes/GlobalStyles.xaml", UriKind.Absolute)
+            };
+
+            Application.Current.Resources.MergedDictionaries.Add(theme);
 
             UserManager ??= new UserManager();
 

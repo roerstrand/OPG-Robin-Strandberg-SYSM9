@@ -9,39 +9,41 @@
         Height="600"
         Title="User Details">
 
-    <Window.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="/Themes/GlobalStyles.xaml"/>
-            </ResourceDictionary.MergedDictionaries>
-        </ResourceDictionary>
-    </Window.Resources>
-
     <Grid Margin="16">
-        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Width="18rem">
-            <TextBlock Text="Current Username:" FontWeight="Bold"/>
-            <TextBlock Text="{Binding CurrentUserName}" />
 
-            <TextBlock Text="Current Country:" FontWeight="Bold" Margin="0 0 0 8"/>
-            <TextBlock Text="{Binding CurrentCountry}" />
+        <StackPanel>
+            <TextBlock Text="CookMaster"
+                       Foreground="{StaticResource PrimaryTitle}"
+                       FontSize="80"
+                       FontWeight="Bold"
+                       HorizontalAlignment="Center"
+                       Margin="0,0,0,40" />
 
-            <Separator Margin="8 16"/>
+            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Width="18rem">
+                <TextBlock Text="Current Username:" FontWeight="Bold" />
+                <TextBlock Text="{Binding CurrentUserName}" />
 
-            <TextBlock Text="New Username:"/>
-            <TextBox Text="{Binding NewUserName, UpdateSourceTrigger=PropertyChanged}" />
+                <TextBlock Text="Current Country:" FontWeight="Bold" Margin="0 0 0 8" />
+                <TextBlock Text="{Binding CurrentCountry}" />
 
-            <TextBlock Text="New Password:"/>
-            <PasswordBox x:Name="PasswordBox1" PasswordChanged="PasswordBox1_PasswordChanged" />
+                <Separator Margin="8 16" />
 
-            <TextBlock Text="Confirm Password:"/>
-            <PasswordBox x:Name="PasswordBox2" PasswordChanged="PasswordBox2_PasswordChanged" />
+                <TextBlock Text="New Username:" />
+                <TextBox Text="{Binding NewUserName, UpdateSourceTrigger=PropertyChanged}" />
 
-            <TextBlock Text="Select Country:"/>
-            <ComboBox ItemsSource="{Binding Countries}" SelectedItem="{Binding SelectedCountry}" />
+                <TextBlock Text="New Password:" />
+                <PasswordBox x:Name="PasswordBox1" PasswordChanged="PasswordBox1_PasswordChanged" />
 
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="8 0 0 0">
-                <Button Content="Save" Margin="8" Command="{Binding SaveCommand}" />
-                <Button Content="Cancel" Margin="8" Command="{Binding CancelCommand}" />
+                <TextBlock Text="Confirm Password:" />
+                <PasswordBox x:Name="PasswordBox2" PasswordChanged="PasswordBox2_PasswordChanged" />
+
+                <TextBlock Text="Select Country:" />
+                <ComboBox ItemsSource="{Binding Countries}" SelectedItem="{Binding SelectedCountry}" />
+
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="8 0 0 0">
+                    <Button Content="Save" Margin="8" Command="{Binding SaveCommand}" />
+                    <Button Content="Cancel" Margin="8" Command="{Binding CancelCommand}" />
+                </StackPanel>
             </StackPanel>
         </StackPanel>
     </Grid>

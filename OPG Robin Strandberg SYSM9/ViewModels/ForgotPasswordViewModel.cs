@@ -126,7 +126,7 @@ namespace OPG_Robin_Strandberg_SYSM9
             }
             catch (Exception)
             {
-                Console.WriteLine("Unexpected error in ValidatePriorPasswordChange (ForgotPasswordViewModel)");
+                Console.WriteLine("Unexpected error in method ValidatePriorPasswordChange (ForgotPasswordViewModel)");
                 MessageBox.Show("Unexpected error.");
             }
         }
@@ -135,7 +135,7 @@ namespace OPG_Robin_Strandberg_SYSM9
         {
             try
             {
-                var currentUser = _userManager.Users.FirstOrDefault(u => u.UserName == user.UserName);
+                var currentUser = _userManager.FindUser(user.UserName);
 
                 if (currentUser == null)
                 {
@@ -149,7 +149,7 @@ namespace OPG_Robin_Strandberg_SYSM9
                     return;
                 }
 
-                currentUser.Password = newPassword;
+                _userManager.ChangePassword(user, newPassword);
             }
             catch (Exception)
             {
@@ -162,9 +162,6 @@ namespace OPG_Robin_Strandberg_SYSM9
         {
             try
             {
-                var loginWindow = new Views.MainWindow();
-                loginWindow.Show();
-
                 foreach (Window window in Application.Current.Windows)
                 {
                     if (window is Views.ForgotPasswordWindow forgotWindow)
