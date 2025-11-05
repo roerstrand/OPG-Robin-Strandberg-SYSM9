@@ -31,8 +31,10 @@ pga startup-uri användes initialt i app (och kördes direkt vid uppstart tillsa
 mellan mainwindow VM som kastade fel i konstruktorn då globala resurser inte kunde hittas vid just detta debug-tillfälle. Därav valdes med fördel
 en mer holistik approach där startup och user manager sätts i code-behind app och körs enbart när app-klassen är färdigkompilerad.
 
-En instants av recipe manager-klassen skapas vid varje lyckad inloggning per användare. Detta medförde ett större integritetsskydd
+En instans av recipe manager-klassen skapas vid varje lyckad inloggning per användare. Detta medförde ett större integritetsskydd
 för användaren om ytterligare logik för cachning och historik behövs läggas till. Exempel för detta kan vara tidigare sökningar eller 
-åtgärder utförda med varje användares inviduella recipe manager.
+åtgärder utförda med varje användares inviduella recipe manager (recepthanterare).
 
-
+- Med fördel valdes att applikationen inte stängs om alla fönster stängs då användardata, tillagda recept, användare etc
+inte bör raderas om användaren skulle stänga fönstret (ShutdownMode.OnExplicitShutdown). 
+Applikationen i ett praktiskt scenario körs då via extern server.

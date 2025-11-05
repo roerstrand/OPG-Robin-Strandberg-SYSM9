@@ -15,7 +15,7 @@ namespace OPG_Robin_Strandberg_SYSM9.Managers
     {
         private User _currentUser;
 
-        public User CurrentUser
+        public User CurrentUser // getLogged in här
         {
             get { return _currentUser; }
 
@@ -51,6 +51,9 @@ namespace OPG_Robin_Strandberg_SYSM9.Managers
             set { _users = value; }
         }
 
+        // Lista med aktiva admins
+        public List<AdminUser> ActiveAdmins { get; private set; } = new();
+
         private bool _isAuthenticated;
 
         public bool IsAuthenticated
@@ -74,7 +77,8 @@ namespace OPG_Robin_Strandberg_SYSM9.Managers
 
         public void CreateDefaultUsers()
         {
-            Users.Add(new User("admin", "password", "Sweden"));
+            // Lägg till en AdminUser och en vanlig user
+            Users.Add(new AdminUser("admin", "password", "Sweden"));
             Users.Add(new User("user", "password", "Norway"));
         }
 
@@ -89,6 +93,15 @@ namespace OPG_Robin_Strandberg_SYSM9.Managers
                         CurrentUser = u;
                         IsAuthenticated = true;
                         GetRecipeManagerForCurrentUser();
+
+                        if (u is AdminUser admin && !ActiveAdmins.Contains(admin))
+                        {
+                            ActiveAdmins.Add(admin);
+                            MessageBox.Show($"Welcome administrator {u.UserName}!");
+                            OnPropertyChanged(nameof(IsAuthenticated));
+                            return true;
+                        }
+
                         MessageBox.Show($"Welcome {u.UserName}!");
                         OnPropertyChanged(nameof(IsAuthenticated));
                         return true;
@@ -120,7 +133,8 @@ namespace OPG_Robin_Strandberg_SYSM9.Managers
                     _userRecipeManagers[CurrentUser] = new RecipeManager();
 
                 return _userRecipeManagers[CurrentUser];
-            } catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
             }
@@ -131,6 +145,12 @@ namespace OPG_Robin_Strandberg_SYSM9.Managers
 
         public void Logout()
         {
+            // 🔹 Ta bort aktuell användare från ActiveAdmins om det är en admin
+            if (CurrentUser is AdminUser admin && ActiveAdmins.Contains(admin))
+            {
+                ActiveAdmins.Remove(admin);
+            }
+
             CurrentUser = null;
             IsAuthenticated = false;
             OnPropertyChanged(nameof(IsAuthenticated));
@@ -251,8 +271,10 @@ namespace OPG_Robin_Strandberg_SYSM9.Managers
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
-                MessageBox.Show("Unexpected error when checking if username already taken. Please try another username.");
+                MessageBox.Show(
+                    "Unexpected error when checking if username already taken. Please try another username.");
             }
+
             return true;
         }
 
@@ -284,7 +306,6 @@ namespace OPG_Robin_Strandberg_SYSM9.Managers
         {
             try
             {
-
                 foreach (User u in Users)
                 {
                     if (u.UserName == username)

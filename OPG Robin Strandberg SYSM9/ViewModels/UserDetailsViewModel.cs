@@ -23,7 +23,11 @@ namespace OPG_Robin_Strandberg_SYSM9.ViewModels
         public string NewUserName
         {
             get => _newUserName;
-            set { _newUserName = value; OnPropertyChanged(); }
+            set
+            {
+                _newUserName = value;
+                OnPropertyChanged();
+            }
         }
 
         public string NewPassword { get; set; }
@@ -34,7 +38,11 @@ namespace OPG_Robin_Strandberg_SYSM9.ViewModels
         public string SelectedCountry
         {
             get => _selectedCountry;
-            set { _selectedCountry = value; OnPropertyChanged(); }
+            set
+            {
+                _selectedCountry = value;
+                OnPropertyChanged();
+            }
         }
 
         public ICommand SaveCommand { get; }
@@ -42,6 +50,13 @@ namespace OPG_Robin_Strandberg_SYSM9.ViewModels
 
         public UserDetailsViewModel(UserManager userManager)
         {
+            if (userManager == null || userManager.CurrentUser == null)
+            {
+                MessageBox.Show("No user is currently logged in.", "Error", MessageBoxButton.OK,
+                    MessageBoxImage.Warning);
+                return;
+            }
+
             _userManager = userManager;
 
             Countries = new ObservableCollection<string>
@@ -119,7 +134,8 @@ namespace OPG_Robin_Strandberg_SYSM9.ViewModels
                     _userManager.CurrentUser.Country = SelectedCountry;
                 }
 
-                MessageBox.Show("User details updated successfully!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show("User details updated successfully!", "Success", MessageBoxButton.OK,
+                    MessageBoxImage.Information);
 
                 var listWindow = new RecipeListWindow(_userManager.GetRecipeManagerForCurrentUser());
                 listWindow.Show();
@@ -135,7 +151,8 @@ namespace OPG_Robin_Strandberg_SYSM9.ViewModels
             }
             catch (Exception ex)
             {
-                MessageBox.Show("An error occurred: " + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("An error occurred: " + ex.Message, "Error", MessageBoxButton.OK,
+                    MessageBoxImage.Error);
             }
         }
 
@@ -157,11 +174,13 @@ namespace OPG_Robin_Strandberg_SYSM9.ViewModels
             }
             catch (Exception ex)
             {
-                MessageBox.Show("An error occurred: " + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("An error occurred: " + ex.Message, "Error", MessageBoxButton.OK,
+                    MessageBoxImage.Error);
             }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
+
         private void OnPropertyChanged([CallerMemberName] string prop = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));

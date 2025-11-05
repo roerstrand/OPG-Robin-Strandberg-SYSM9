@@ -17,6 +17,8 @@ namespace OPG_Robin_Strandberg_SYSM9.ViewModels
         private readonly RecipeManager _recipeManager;
         private readonly UserManager _userManager;
 
+        public bool IsAdminVisible => _userManager.ActiveAdmins.Contains(_userManager.CurrentUser);
+
         private ObservableCollection<Recipe> _recipes;
 
         public ObservableCollection<Recipe> Recipes
@@ -57,11 +59,13 @@ namespace OPG_Robin_Strandberg_SYSM9.ViewModels
 
         public ICommand AddRecipeCommand { get; }
         public ICommand RemoveRecipeCommand { get; }
-        public ICommand DetailsCommand { get; }
+        public ICommand RecipeDetailsCommand { get; }
         public ICommand FilterCommand { get; }
         public ICommand InfoCommand { get; }
         public ICommand SignOutCommand { get; }
         public ICommand ShowUserDetailsCommand { get; }
+
+        public ICommand ShowAllRecipesCommand { get; }
 
         public RecipeListViewModel(RecipeManager recipeManager, UserManager userManager)
         {
@@ -70,11 +74,15 @@ namespace OPG_Robin_Strandberg_SYSM9.ViewModels
 
             AddRecipeCommand = new RelayCommand(_ => AddRecipe());
             RemoveRecipeCommand = new RelayCommand(_ => RemoveRecipe());
-            DetailsCommand = new RelayCommand(_ => ShowDetails());
+            RecipeDetailsCommand = new RelayCommand(_ => ShowRecipeDetails());
             FilterCommand = new RelayCommand(_ => FilterRecipes());
             InfoCommand = new RelayCommand(_ => ShowInfo());
             SignOutCommand = new RelayCommand(_ => SignOut());
             ShowUserDetailsCommand = new RelayCommand(_ => ShowUserDetails());
+
+            ShowAllRecipesCommand = new RelayCommand(_ => ShowAllRecipes(),
+                _ => _userManager.ActiveAdmins.Contains(_userManager.CurrentUser));
+
 
             LoadRecipes();
         }
@@ -90,8 +98,8 @@ namespace OPG_Robin_Strandberg_SYSM9.ViewModels
                     return;
                 }
 
-                if (_userManager.CurrentUser.UserName == "admin")
-                    Recipes = _recipeManager.GetAllRecipes();
+                if (_userManager.ActiveAdmins.Contains(_userManager.CurrentUser))
+                    Recipes = _recipeManager.GetAllRecipesForAdmin(_userManager.Users);
                 else
                     Recipes = new ObservableCollection<Recipe>(_recipeManager.GetByUser(_userManager.CurrentUser));
             }
@@ -100,6 +108,7 @@ namespace OPG_Robin_Strandberg_SYSM9.ViewModels
                 ShowError("Could not load recipes.", ex);
             }
         }
+
 
         private void FilterRecipes()
         {
@@ -143,7 +152,7 @@ namespace OPG_Robin_Strandberg_SYSM9.ViewModels
             }
         }
 
-        private void ShowDetails()
+        private void ShowRecipeDetails()
         {
             if (SelectedRecipe == null)
             {
@@ -157,18 +166,41 @@ namespace OPG_Robin_Strandberg_SYSM9.ViewModels
             CloseCurrentWindow();
         }
 
+
         private void ShowUserDetails()
         {
-            var userDetails = new UserDetailsWindow(_userManager);
-            userDetails.Show();
-            CloseCurrentWindow();
+            try
+            {
+                var userDetails = new UserDetailsWindow(_userManager);
+                userDetails.Show();
+                CloseCurrentWindow();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Could not open user details.\n\n{ex.Message}", "Error", MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+            }
         }
+
 
         private void ShowInfo()
         {
-            MessageBox.Show("CookMaster lets you create, view, and manage your recipes.\n\n" +
-                            "Use filtering to search by title or category.",
-                "About CookMaster", MessageBoxButton.OK, MessageBoxImage.Information);
+            MessageBox.Show(
+                "Welcome to CookMaster\n\n" +
+                "CookMaster is a modern recipe management platform designed to make it easy to collect, organize, and share cooking inspiration.\n\n" +
+                "USER GUIDE\n" +
+                "• Regular users can create, edit, and manage their own recipes.\n" +
+                "• Recipes can be filtered by title or category for quick access.\n\n" +
+                "ADMIN ACCESS\n" +
+                "• Admin users can view and manage all submitted recipes.\n" +
+                "• Ensures quality and consistency in the shared recipe database.\n\n" +
+                "ABOUT COOKMASTER\n" +
+                "CookMaster is developed with a focus on simplicity, creativity, and community. Our goal is to bring structure and joy to everyday cooking while offering a clean and user-friendly experience.\n\n" +
+                "Thank you for using CookMaster.",
+                "About CookMaster",
+                MessageBoxButton.OK,
+                MessageBoxImage.Information
+            );
         }
 
         private void SignOut()
@@ -190,6 +222,30 @@ namespace OPG_Robin_Strandberg_SYSM9.ViewModels
                 }
             }
         }
+
+        private void ShowAllRecipes()
+        {
+            try
+            {
+                if (_userManager.ActiveAdmins.Contains(_userManager.CurrentUser))
+                {
+                    Recipes = _recipeManager.ViewAllRecipes(
+                        _userManager.CurrentUser,
+                        _userManager.ActiveAdmins.Select(a => (User)a).ToList()
+                    );
+                }
+                else
+                {
+                    MessageBox.Show("Only admins can view all recipes.",
+                        "Access Denied", MessageBoxButton.OK, MessageBoxImage.Warning);
+                }
+            }
+            catch (Exception ex)
+            {
+                ShowError("Could not load all recipes.", ex);
+            }
+        }
+
 
         private void ShowError(string message, Exception ex)
         {

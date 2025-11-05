@@ -1,16 +1,13 @@
-﻿using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Linq;
-using System.Runtime.CompilerServices;
+﻿using System.Collections.ObjectModel;
 using OPG_Robin_Strandberg_SYSM9.Managers;
-using OPG_Robin_Strandberg_SYSM9.Models;
 
 namespace OPG_Robin_Strandberg_SYSM9.Models
 {
-    public class AdminUser : User, INotifyPropertyChanged
+    public class AdminUser : User
     {
         private readonly RecipeManager _recipeManager;
+
+        public override bool IsAdmin => true;
 
         public AdminUser(string username, string password, string country, RecipeManager recipeManager = null)
             : base(username, password, country)
@@ -30,9 +27,5 @@ namespace OPG_Robin_Strandberg_SYSM9.Models
         {
             return _recipeManager.GetAllRecipes();
         }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
-            => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 }

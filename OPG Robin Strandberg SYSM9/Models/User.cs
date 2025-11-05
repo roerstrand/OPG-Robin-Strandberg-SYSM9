@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Diagnostics.Metrics;
-using System.Linq;
+﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OPG_Robin_Strandberg_SYSM9.Models
 {
@@ -15,7 +9,7 @@ namespace OPG_Robin_Strandberg_SYSM9.Models
         public string Password { get; set; }
         public string Country { get; set; }
 
-        public bool IsAdmin { get; protected set; }
+        public virtual bool IsAdmin => false;
 
         public User(string userName, string password, string country)
         {
@@ -24,22 +18,26 @@ namespace OPG_Robin_Strandberg_SYSM9.Models
             Country = country;
         }
 
-        public void ValidateLogin(string userName, string password)
+        public virtual bool ValidateLogin(string userName, string password)
         {
+            return UserName == userName && Password == password;
         }
 
-        public void ChangePassword(string password)
+        public virtual void ChangePassword(string newPassword)
         {
-            Password = password;
+            Password = newPassword;
+            OnPropertyChanged(nameof(Password));
         }
 
-        public void UpdateDetails()
+        public virtual void UpdateDetails(string country)
         {
+            Country = country;
+            OnPropertyChanged(nameof(Country));
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }

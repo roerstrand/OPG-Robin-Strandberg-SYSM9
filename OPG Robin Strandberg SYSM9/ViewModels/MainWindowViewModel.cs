@@ -24,16 +24,6 @@ namespace OPG_Robin_Strandberg_SYSM9
 
         private RecipeListViewModel _recipeListViewModel;
 
-        public RecipeListViewModel RecipeListViewModel
-        {
-            get => _recipeListViewModel;
-            set
-            {
-                _recipeListViewModel = value;
-                OnPropertyChanged();
-            }
-        }
-
         public string UserNameInput
         {
             get => _userNameInput;
@@ -64,80 +54,52 @@ namespace OPG_Robin_Strandberg_SYSM9
             }
         }
 
-        public bool IsAuthenticated => _userManager.IsAuthenticated;
-
         public ICommand ShowRegisterCommand { get; }
         public ICommand ShowForgotPasswordCommand { get; }
-        public ICommand ShowAddRecipeCommand { get; }
-        public ICommand ShowViewRecipeDetailsCommand { get; }
-        public ICommand ShowViewRecipeListCommand { get; }
-        public ICommand ShowViewUserDetailsCommand { get; }
+
         public ICommand LoginCommand { get; }
-        public ICommand LogoutCommand { get; }
 
         public MainWindowViewModel()
         {
             _userManager = App.UserManager;
-            _recipeManager = new RecipeManager();
 
             LoginCommand = new RelayCommand(_ => Login_Button());
             ShowRegisterCommand = new RelayCommand(_ =>
             {
-                var register = new RegisterWindow
+                var register = new RegisterWindow();
+                register.Show();
+
+                foreach (Window window in Application.Current.Windows)
                 {
-                    Owner = Application.Current.MainWindow
-                };
-                register.ShowDialog();
+                    if (window is MainWindow)
+                    {
+                        window.Close();
+                        break;
+                    }
+                }
             });
 
             ShowForgotPasswordCommand = new RelayCommand(_ =>
             {
-                var forgot = new ForgotPasswordWindow
+                try
                 {
-                    Owner = Application.Current.MainWindow
-                };
-                forgot.ShowDialog();
-            });
+                    var forgot = new ForgotPasswordWindow();
+                    forgot.Show();
 
-            ShowAddRecipeCommand = new RelayCommand(_ =>
-            {
-                var addRecipeWindow = new AddRecipeWindow
-                {
-                    DataContext = new AddRecipeViewModel(_recipeManager),
-                    Owner = Application.Current.MainWindow
-                };
-                addRecipeWindow.Show();
-            });
-
-            ShowViewRecipeListCommand = new RelayCommand(_ =>
-            {
-                RecipeListViewModel = new RecipeListViewModel(_recipeManager, _userManager);
-                var recipeListWindow = new RecipeListWindow
-                {
-                    DataContext = RecipeListViewModel,
-                    Owner = Application.Current.MainWindow
-                };
-                recipeListWindow.Show();
-            });
-
-            ShowViewRecipeDetailsCommand = new RelayCommand(_ =>
-            {
-                if (_recipeManager.CurrentRecipe == null)
-                {
-                    MessageBox.Show("Choose a recipe first.", "Information", MessageBoxButton.OK,
-                        MessageBoxImage.Information);
-                    return;
+                    foreach (Window window in Application.Current.Windows)
+                    {
+                        if (window is MainWindow)
+                        {
+                            window.Close();
+                            break;
+                        }
+                    }
                 }
-
-                var recipeDetailWindow = new RecipeDetailsWindow(_recipeManager.CurrentRecipe, _recipeManager)
+                catch (Exception ex)
                 {
-                    DataContext = new RecipeDetailViewModel(_recipeManager.CurrentRecipe, _recipeManager),
-                    Owner = Application.Current.MainWindow
-                };
-                recipeDetailWindow.Show();
+                    MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
             });
-
-            LogoutCommand = new RelayCommand(_ => Logout_Button());
         }
 
         public void Login_Button()
@@ -148,6 +110,8 @@ namespace OPG_Robin_Strandberg_SYSM9
                 {
                     var recipeList = new RecipeListWindow(_userManager.GetRecipeManagerForCurrentUser());
                     recipeList.Show();
+
+                    _userManager.IsAuthenticated = true;
 
                     foreach (Window window in Application.Current.Windows)
                     {
@@ -163,14 +127,6 @@ namespace OPG_Robin_Strandberg_SYSM9
             {
                 MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
-        }
-
-        public void Logout_Button()
-        {
-            _userManager.Logout();
-            UserNameInput = string.Empty;
-            PasswordInput = string.Empty;
-            OnPropertyChanged(nameof(IsAuthenticated));
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

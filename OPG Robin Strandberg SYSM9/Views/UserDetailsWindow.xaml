@@ -5,9 +5,10 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
         WindowStartupLocation="CenterScreen"
-        Width="800"
-        Height="600"
-        Title="User Details">
+        Width="1000"
+        Height="1000"
+        Title="User Details"
+        Background="{StaticResource AppBackground}">
 
     <Grid Margin="16">
 
@@ -23,7 +24,7 @@
                 <TextBlock Text="Current Username:" FontWeight="Bold" />
                 <TextBlock Text="{Binding CurrentUserName}" />
 
-                <TextBlock Text="Current Country:" FontWeight="Bold" Margin="0 0 0 8" />
+                <TextBlock Text="Current Country:" FontWeight="Bold" />
                 <TextBlock Text="{Binding CurrentCountry}" />
 
                 <Separator Margin="8 16" />
@@ -41,8 +42,8 @@
                 <ComboBox ItemsSource="{Binding Countries}" SelectedItem="{Binding SelectedCountry}" />
 
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="8 0 0 0">
-                    <Button Content="Save" Margin="8" Command="{Binding SaveCommand}" />
-                    <Button Content="Cancel" Margin="8" Command="{Binding CancelCommand}" />
+                    <Button Content="Save" Command="{Binding SaveCommand}" />
+                    <Button Content="Cancel" Command="{Binding CancelCommand}" />
                 </StackPanel>
             </StackPanel>
         </StackPanel>

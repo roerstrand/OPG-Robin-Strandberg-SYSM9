@@ -30,6 +30,8 @@ namespace OPG_Robin_Strandberg_SYSM9.Views
 
         private void BackToLogin_Click(object sender, RoutedEventArgs e)
         {
+            var window = new MainWindow();
+            window.Show();
             Close();
         }
     }

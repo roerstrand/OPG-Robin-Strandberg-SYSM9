@@ -24,8 +24,13 @@ namespace OPG_Robin_Strandberg_SYSM9.ViewModels
             {
                 _recipe = value;
                 OnPropertyChanged();
+                OnPropertyChanged(nameof(Title));
+                OnPropertyChanged(nameof(Ingredients));
+                OnPropertyChanged(nameof(Instructions));
+                OnPropertyChanged(nameof(Category));
             }
         }
+
 
         public bool IsEditing
         {

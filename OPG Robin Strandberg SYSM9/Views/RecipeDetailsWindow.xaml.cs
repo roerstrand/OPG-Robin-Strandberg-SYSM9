@@ -9,18 +9,15 @@ namespace OPG_Robin_Strandberg_SYSM9.Views
     {
         private readonly RecipeManager _recipeManager;
 
+        private readonly RecipeDetailViewModel _viewModel;
+
         public RecipeDetailsWindow(Recipe recipe, RecipeManager recipeManager)
         {
             InitializeComponent();
             _recipeManager = recipeManager;
-            DataContext = new RecipeDetailViewModel(recipe, _recipeManager);
-        }
 
-        private void Close_Click(object sender, RoutedEventArgs e)
-        {
-            var listWindow = new RecipeListWindow(_recipeManager);
-            listWindow.Show();
-            Close();
+            _viewModel = new RecipeDetailViewModel(recipe, _recipeManager);
+            DataContext = _viewModel;
         }
     }
 }

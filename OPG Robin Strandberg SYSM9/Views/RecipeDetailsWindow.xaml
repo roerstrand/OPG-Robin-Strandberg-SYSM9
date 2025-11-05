@@ -3,11 +3,10 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:vm="clr-namespace:OPG_Robin_Strandberg_SYSM9.ViewModels"
         mc:Ignorable="d"
         WindowStartupLocation="CenterScreen"
-        Width="800"
-        Height="600"
+        Width="1000"
+        Height="1000"
         Background="{StaticResource AppBackground}">
 
     <Grid Margin="40">
@@ -18,30 +17,32 @@
                        FontWeight="Bold"
                        HorizontalAlignment="Center"
                        Margin="0,0,0,40" />
+
             <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Width="500">
 
-                <Label Content="Recipe Details" />
+                <TextBlock Text="Recipe Details" Margin="0,10,0,20" FontWeight="Bold" FontSize="18"/>
 
                 <TextBlock Text="Title:" />
-                <TextBox Text="{Binding Title, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="{Binding IsReadOnly}" />
+                <TextBox Text="{Binding Title, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                         IsReadOnly="{Binding IsReadOnly}" />
 
                 <TextBlock Text="Ingredients:" />
-                <TextBox Text="{Binding Ingredients, UpdateSourceTrigger=PropertyChanged}"
+                <TextBox Text="{Binding Ingredients, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                          IsReadOnly="{Binding IsReadOnly}" TextWrapping="Wrap" />
 
                 <TextBlock Text="Instructions:" />
-                <TextBox Text="{Binding Instructions, UpdateSourceTrigger=PropertyChanged}"
-                         TextWrapping="Wrap" Height="100" IsReadOnly="{Binding IsReadOnly}" />
+                <TextBox Text="{Binding Instructions, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                         TextWrapping="Wrap" Height="75" IsReadOnly="{Binding IsReadOnly}" />
 
                 <TextBlock Text="Category:" />
-                <TextBox Text="{Binding Category, UpdateSourceTrigger=PropertyChanged}"
+                <TextBox Text="{Binding Category, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                          IsReadOnly="{Binding IsReadOnly}" />
 
                 <TextBlock Text="Created by:" />
-                <TextBlock Text="{Binding CreatedBy}" />
+                <TextBlock Text="{Binding Recipe.CreatedBy.UserName}" />
 
                 <TextBlock Text="Created at:" />
-                <TextBlock Text="{Binding CreatedAt, StringFormat={}{0:yyyy-MM-dd HH:mm}}" />
+                <TextBlock Text="{Binding Recipe.CreatedDate, StringFormat={}{0:yyyy-MM-dd HH:mm}}" />
 
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,20,0,0">
                     <Button Content="Edit" Command="{Binding EditCommand}" />

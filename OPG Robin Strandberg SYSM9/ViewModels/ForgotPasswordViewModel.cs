@@ -6,6 +6,7 @@ using System.Windows.Input;
 using OPG_Robin_Strandberg_SYSM9.Managers;
 using OPG_Robin_Strandberg_SYSM9.Commands;
 using OPG_Robin_Strandberg_SYSM9.Models;
+using OPG_Robin_Strandberg_SYSM9.Views;
 
 namespace OPG_Robin_Strandberg_SYSM9
 {
@@ -166,6 +167,8 @@ namespace OPG_Robin_Strandberg_SYSM9
                 {
                     if (window is Views.ForgotPasswordWindow forgotWindow)
                     {
+                        var mainWindow = new MainWindow();
+                        mainWindow.Show();
                         forgotWindow.Close();
                         break;
                     }

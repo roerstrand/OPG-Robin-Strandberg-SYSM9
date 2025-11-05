@@ -30,6 +30,9 @@ namespace OPG_Robin_Strandberg_SYSM9
                 App_DispatcherUnhandledException; // Global felhanterare av fel i UI-tråden
             AppDomain.CurrentDomain.UnhandledException +=
                 CurrentDomain_UnhandledException; // felhanterade för bakgrundstrådar i applikationen
+
+            ShutdownMode = ShutdownMode.OnExplicitShutdown; // Förhindrar att app avslutas om alla fönster stängs så inte
+            // tilladga recept, användare eller ändringar i användardata går förlorad.
         }
 
         public void App_DispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)

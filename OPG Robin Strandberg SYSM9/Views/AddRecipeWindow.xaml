@@ -5,8 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
         WindowStartupLocation="CenterScreen"
-        Width="800"
-        Height="600"
+        Width="1000"
+        Height="1000"
         Background="{StaticResource AppBackground}">
     <Grid>
 
@@ -20,9 +20,9 @@
 
             <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Width="400">
 
-                <Label Content="Add Recipe"
+                <TextBlock Text="Add Recipe"
                        FontSize="20"
-                       FontWeight="600"
+                       FontWeight="700"
                        HorizontalAlignment="Center"
                        Margin="0,10,0,20" />
 
@@ -36,7 +36,7 @@
                 <TextBox x:Name="categoryInput" />
 
                 <TextBlock Text="Instructions" Margin="0,10,0,0" />
-                <TextBox x:Name="instructionsInput" Height="100" TextWrapping="Wrap" AcceptsReturn="True" />
+                <TextBox x:Name="instructionsInput" Height="75" TextWrapping="Wrap" AcceptsReturn="True" />
 
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,20,0,0">
                     <Button Content="Save Recipe"

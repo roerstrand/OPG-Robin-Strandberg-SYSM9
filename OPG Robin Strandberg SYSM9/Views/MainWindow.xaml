@@ -7,19 +7,76 @@
         mc:Ignorable="d"
         Title="CookMaster"
         WindowStartupLocation="CenterScreen"
-        Width="800"
-        Height="600"
+        Width="1000"
+        Height="1000"
         Background="{StaticResource AppBackground}">
 
     <Grid VerticalAlignment="Center" HorizontalAlignment="Center">
 
         <StackPanel>
+            <Viewbox Width="200" Height="200" HorizontalAlignment="Center" Margin="0,0,0,25">
+
+                <!-- canvas-element för att rita ut företagslogga, likt svg med direkta värden i koordinater/punkter -->
+                <Canvas Width="150" Height="150">
+
+                    <!-- Bakgrund med svag skugga -->
+                    <Ellipse Width="130" Height="130" Canvas.Left="10" Canvas.Top="10">
+                        <Ellipse.Fill>
+                            <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                <GradientStop Color="#FFFDF6EE" Offset="0"/>
+                                <GradientStop Color="#FAEBD7" Offset="1"/>
+                            </LinearGradientBrush>
+                        </Ellipse.Fill>
+                        <Ellipse.Effect>
+                            <DropShadowEffect Color="#444" BlurRadius="10" ShadowDepth="3"/>
+                        </Ellipse.Effect>
+                    </Ellipse>
+
+                    <!-- Gryta -->
+                    <Rectangle Width="90" Height="30" Canvas.Left="30" Canvas.Top="70"
+                               RadiusX="6" RadiusY="6">
+                        <Rectangle.Fill>
+                            <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                <GradientStop Color="#C0782F" Offset="0"/>
+                                <GradientStop Color="#9B5510" Offset="1"/>
+                            </LinearGradientBrush>
+                        </Rectangle.Fill>
+                        <Rectangle.Stroke>
+                            <SolidColorBrush Color="#2F2F2F"/>
+                        </Rectangle.Stroke>
+                        <Rectangle.StrokeThickness>2</Rectangle.StrokeThickness>
+                    </Rectangle>
+
+                    <!-- Handtag -->
+                    <Rectangle Width="6" Height="16" Canvas.Left="24" Canvas.Top="75" Fill="#2F2F2F"/>
+                    <Rectangle Width="6" Height="16" Canvas.Left="120" Canvas.Top="75" Fill="#2F2F2F"/>
+
+                    <!-- Lock -->
+                    <Rectangle Width="70" Height="10" Canvas.Left="40" Canvas.Top="58" RadiusX="2" RadiusY="2" Fill="#2F2F2F"/>
+                    <Ellipse Width="16" Height="8" Canvas.Left="67" Canvas.Top="50" Fill="#B5651D"/>
+
+                    <!-- Låga -->
+                    <Path Stroke="#FF7F50" StrokeThickness="3" Fill="Transparent"
+                          Data="M75,50 C68,38 82,35 75,20"/>
+
+                </Canvas>
+            </Viewbox>
+
+
             <TextBlock Text="CookMaster"
                        Foreground="{StaticResource PrimaryTitle}"
                        FontSize="80"
                        FontWeight="Bold"
                        HorizontalAlignment="Center"
                        Margin="0,0,0,40" />
+
+            <TextBlock Text="Smart Cooking. Simplified."
+                       FontSize="18"
+                       FontStyle="Italic"
+                       Foreground="#444"
+                       HorizontalAlignment="Center"
+                       Margin="0,0,0,30" />
+
 
             <StackPanel HorizontalAlignment="Center"
                         VerticalAlignment="Center"

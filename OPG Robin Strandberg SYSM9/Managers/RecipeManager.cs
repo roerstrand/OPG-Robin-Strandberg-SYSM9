@@ -41,6 +41,32 @@ namespace OPG_Robin_Strandberg_SYSM9.Managers
         public RecipeManager()
         {
             RecipeList = new ObservableCollection<Recipe>();
+            RecipeList.Add(new Recipe(
+                "Classic Pancakes",
+                "Mix flour, milk, eggs, and butter. Fry in pan until golden.",
+                "Breakfast",
+                DateTime.Now,
+                new User("System", "default1", "Sweden"),
+                "Flour, Milk, Eggs, Butter, Salt"
+            ));
+
+            RecipeList.Add(new Recipe(
+                "Spaghetti Bolognese",
+                "Cook pasta. Prepare sauce with minced meat, tomatoes, and herbs. Combine and serve.",
+                "Dinner",
+                DateTime.Now,
+                new User("System", "default2", "Italy"),
+                "Spaghetti, Minced Meat, Tomato Sauce, Garlic, Onion, Herbs"
+            ));
+
+            RecipeList.Add(new Recipe(
+                "Chocolate Chip Cookies",
+                "Mix dough with butter, sugar, eggs, and chocolate chips. Bake until golden brown.",
+                "Dessert",
+                DateTime.Now,
+                new User("System", "default3", "USA"),
+                "Butter, Sugar, Eggs, Flour, Chocolate Chips"
+            ));
         }
 
         public void AddRecipe(Recipe recipe)
@@ -135,6 +161,62 @@ namespace OPG_Robin_Strandberg_SYSM9.Managers
                 return new List<Recipe>();
             }
         }
+
+        public ObservableCollection<Recipe> ViewAllRecipes(User currentUser, List<User> activeAdmins)
+        {
+            try
+            {
+                if (currentUser == null)
+                {
+                    MessageBox.Show("No user is logged in. Cannot load recipes.",
+                        "Session", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return new ObservableCollection<Recipe>();
+                }
+
+                if (activeAdmins != null && activeAdmins.Contains(currentUser))
+                {
+                    return new ObservableCollection<Recipe>(RecipeList);
+                }
+
+                return new ObservableCollection<Recipe>(
+                    RecipeList.Where(r => r.CreatedBy?.UserName == currentUser.UserName)
+                );
+            }
+            catch (Exception ex)
+            {
+                ShowError("Unexpected error when loading recipes.", ex);
+                return new ObservableCollection<Recipe>();
+            }
+        }
+
+        public ObservableCollection<Recipe> GetAllRecipesForAdmin(List<User> allUsers)
+        {
+            try
+            {
+                var allRecipes = new ObservableCollection<Recipe>();
+
+                if (allUsers == null || allUsers.Count == 0)
+                    return allRecipes;
+
+                foreach (var user in allUsers)
+                {
+                    var userRecipes = GetByUser(user);
+                    foreach (var recipe in userRecipes)
+                    {
+                        if (!allRecipes.Contains(recipe))
+                            allRecipes.Add(recipe);
+                    }
+                }
+
+                return allRecipes;
+            }
+            catch (Exception ex)
+            {
+                ShowError("Unexpected error while loading all recipes for admin.", ex);
+                return new ObservableCollection<Recipe>();
+            }
+        }
+
 
         public ObservableCollection<Recipe> Filter(string criteria)
         {

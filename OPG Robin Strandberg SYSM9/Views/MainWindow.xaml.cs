@@ -24,10 +24,9 @@ namespace OPG_Robin_Strandberg_SYSM9.Views
 
         public MainWindow()
         {
+            InitializeComponent();
             _viewModel = new MainWindowViewModel();
             DataContext = _viewModel;
-
-            InitializeComponent();
 
         }
 
