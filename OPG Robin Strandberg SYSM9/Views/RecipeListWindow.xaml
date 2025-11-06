@@ -14,71 +14,114 @@
         <BooleanToVisibilityConverter x:Key="BoolToVis" />
     </Window.Resources>
 
-    <DockPanel Margin="40">
-        <StackPanel HorizontalAlignment="Center" Width="900">
+    <Grid>
+        <!-- Viewbox för responsivitet på olika skärmstorlekar. Stretch down only för att enbart skala ned för små skärmas,
+        ej skala upp så komponenter/knappar etc blir för stora vid större skärmar-->
+        <Viewbox Stretch="Uniform" StretchDirection="DownOnly">
+            <Grid VerticalAlignment="Center" HorizontalAlignment="Center" Margin="40">
 
-            <TextBlock Text="CookMaster"
-                       Foreground="{StaticResource PrimaryTitle}"
-                       FontSize="80"
-                       FontWeight="Bold"
-                       HorizontalAlignment="Center"
-                       Margin="0,0,0,20" />
+                <StackPanel HorizontalAlignment="Center" MaxWidth="900">
 
-            <StackPanel Orientation="Horizontal"
-                        HorizontalAlignment="Center"
-                        Margin="0,0,0,25">
-                <TextBlock Text="Current User: "
-                           FontWeight="Bold"
-                           FontSize="16"
-                           Margin="0,0,5,0"/>
-                <TextBlock Text="{Binding CurrentUserName}" FontSize="16" />
-            </StackPanel>
+                     <Viewbox Width="200" Height="200" HorizontalAlignment="Center" Margin="0,0,0,25">
+                        <Canvas Width="150" Height="150">
+                            <Ellipse Width="130" Height="130" Canvas.Left="10" Canvas.Top="10">
+                                <Ellipse.Fill>
+                                    <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                        <GradientStop Color="#FFFDF6EE" Offset="0" />
+                                        <GradientStop Color="#FAEBD7" Offset="1" />
+                                    </LinearGradientBrush>
+                                </Ellipse.Fill>
+                                <Ellipse.Effect>
+                                    <DropShadowEffect Color="#444" BlurRadius="10" ShadowDepth="3" />
+                                </Ellipse.Effect>
+                            </Ellipse>
 
-            <StackPanel Orientation="Horizontal"
-                        HorizontalAlignment="Center"
-                        Margin="0,0,0,30">
-                <TextBox Width="300"
-                         Text="{Binding FilterText, Mode=TwoWay}" />
-                <Button Content="Filter"
-                        Command="{Binding FilterCommand}" />
-            </StackPanel>
+                            <Rectangle Width="90" Height="30" Canvas.Left="30" Canvas.Top="70"
+                                       RadiusX="6" RadiusY="6">
+                                <Rectangle.Fill>
+                                    <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                        <GradientStop Color="#C0782F" Offset="0" />
+                                        <GradientStop Color="#9B5510" Offset="1" />
+                                    </LinearGradientBrush>
+                                </Rectangle.Fill>
+                                <Rectangle.Stroke>
+                                    <SolidColorBrush Color="#2F2F2F" />
+                                </Rectangle.Stroke>
+                                <Rectangle.StrokeThickness>2</Rectangle.StrokeThickness>
+                            </Rectangle>
 
-            <StackPanel Orientation="Horizontal"
-                        HorizontalAlignment="Center"
-                        Margin="0,0,0,10">
-                <Button Content="Add Recipe"
-                        Command="{Binding AddRecipeCommand}" />
-                <Button Content="Remove Recipe"
-                        Command="{Binding RemoveRecipeCommand}" />
-                <Button Content="Recipe Details"
-                        Command="{Binding RecipeDetailsCommand}" />
-            </StackPanel>
+                            <Rectangle Width="6" Height="16" Canvas.Left="24" Canvas.Top="75" Fill="#2F2F2F" />
+                            <Rectangle Width="6" Height="16" Canvas.Left="120" Canvas.Top="75" Fill="#2F2F2F" />
 
-            <StackPanel Orientation="Horizontal"
-                        HorizontalAlignment="Center"
-                        Margin="0,0,0,25">
-                <Button Content="App Info"
-                        Command="{Binding InfoCommand}" />
-                <Button Content="User Details"
-                        Command="{Binding ShowUserDetailsCommand}" />
-                <Button Content="Log Out"
-                        Command="{Binding SignOutCommand}" />
-                <Button Content="View All Recipes"
-                        Command="{Binding ShowAllRecipesCommand}"
-                        Visibility="{Binding IsAdminVisible, Converter={StaticResource BoolToVis}}" />
-            </StackPanel>
-            <ListView ItemsSource="{Binding Recipes}"
-                      SelectedItem="{Binding SelectedRecipe, Mode=TwoWay}"
-                      Margin="0,10,0,0"
-                      Height="400">
-                <ListView.View>
-                    <GridView>
-                        <GridViewColumn Header="Title" DisplayMemberBinding="{Binding Title}" Width="250" />
-                        <GridViewColumn Header="Category" DisplayMemberBinding="{Binding Category}" Width="250" />
-                        <GridViewColumn Header="Created" DisplayMemberBinding="{Binding CreatedDate}" Width="250" />
-                    </GridView>
-                </ListView.View>
-            </ListView>
-        </StackPanel>
-    </DockPanel>
+                            <Rectangle Width="70" Height="10" Canvas.Left="40" Canvas.Top="58" RadiusX="2" RadiusY="2"
+                                       Fill="#2F2F2F" />
+                            <Ellipse Width="16" Height="8" Canvas.Left="67" Canvas.Top="50" Fill="#B5651D" />
+                            <Path Stroke="#FF7F50" StrokeThickness="3" Fill="Transparent"
+                                  Data="M75,50 C68,38 82,35 75,20" />
+                        </Canvas>
+                    </Viewbox>
+
+                    <TextBlock Text="CookMaster"
+                               Foreground="{StaticResource PrimaryTitle}"
+                               FontSize="80"
+                               FontWeight="Bold"
+                               HorizontalAlignment="Center"
+                               Margin="0,0,0,20" />
+
+                    <StackPanel Orientation="Horizontal"
+                                HorizontalAlignment="Center"
+                                Margin="0,0,0,25">
+                        <TextBlock Text="Current User: " FontWeight="Bold" FontSize="16" Margin="0,0,5,0" />
+                        <TextBlock Text="{Binding CurrentUserName}" FontSize="16" />
+                        <TextBlock Text="(Administrator)" FontWeight="Bold" Foreground="DarkRed" FontSize="16" Visibility="{Binding IsAdminVisible, Converter={StaticResource BoolToVis}}"/>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Horizontal"
+                                HorizontalAlignment="Center"
+                                Margin="0,0,0,30">
+                        <TextBox Text="{Binding FilterText, Mode=TwoWay}" Margin="6,10"/>
+                        <Button Content="Filter" Command="{Binding FilterCommand}" />
+                    </StackPanel>
+
+                    <Grid HorizontalAlignment="Center" Margin="0,0,0,25">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Button Content="Add Recipe" Command="{Binding AddRecipeCommand}" Grid.Row="0" Grid.Column="0"/>
+                        <Button Content="Remove Recipe" Command="{Binding RemoveRecipeCommand}" Grid.Row="0" Grid.Column="1"/>
+                        <Button Content="Recipe Details" Command="{Binding RecipeDetailsCommand}" Grid.Row="0" Grid.Column="2"/>
+                        <Button Content="App Info" Command="{Binding InfoCommand}" Grid.Row="0" Grid.Column="3"/>
+
+                        <Button Content="User Details" Command="{Binding ShowUserDetailsCommand}" Grid.Row="1" Grid.Column="0"/>
+                        <Button Content="View All Recipes (admin only)"
+                                Command="{Binding ShowAllRecipesCommand}"
+                                Visibility="{Binding IsAdminVisible, Converter={StaticResource BoolToVis}}"
+                                Grid.Row="1" Grid.Column="1"/>
+                        <Button Content="Log Out" Command="{Binding SignOutCommand}" Grid.Row="1" Grid.Column="2" Grid.ColumnSpan="2"/>
+                    </Grid>
+
+                    <ListView ItemsSource="{Binding Recipes}"
+                              SelectedItem="{Binding SelectedRecipe, Mode=TwoWay}"
+                              Margin="0,10,0,0"
+                              MinHeight="200">
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn Header="Title" DisplayMemberBinding="{Binding Title}" Width="250" />
+                                <GridViewColumn Header="Category" DisplayMemberBinding="{Binding Category}" Width="250" />
+                                <GridViewColumn Header="Created" DisplayMemberBinding="{Binding CreatedDate}" Width="250" />
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+                </StackPanel>
+            </Grid>
+        </Viewbox>
+    </Grid>
 </Window>

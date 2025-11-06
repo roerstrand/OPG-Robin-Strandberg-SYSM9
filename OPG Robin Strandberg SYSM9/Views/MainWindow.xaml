@@ -11,94 +11,90 @@
         Height="1000"
         Background="{StaticResource AppBackground}">
 
-    <Grid VerticalAlignment="Center" HorizontalAlignment="Center">
+    <Grid>
+        <!-- Viewbox för responsivitet på olika skärmstorlekar. Stretch down only för att enbart skala ned för små skärmas,
+        ej skala upp så komponenter/knappar etc blir för stora vid större skärmar-->
+        <Viewbox Stretch="Uniform" StretchDirection="DownOnly">
+            <Grid VerticalAlignment="Center" HorizontalAlignment="Center">
+                <StackPanel>
 
-        <StackPanel>
-            <Viewbox Width="200" Height="200" HorizontalAlignment="Center" Margin="0,0,0,25">
+                    <Viewbox Width="200" Height="200" HorizontalAlignment="Center" Margin="0,0,0,25">
+                        <!-- Canvas-element för att rita logga med koordinater/punkter likt svg -->
+                        <Canvas Width="150" Height="150">
+                            <Ellipse Width="130" Height="130" Canvas.Left="10" Canvas.Top="10">
+                                <Ellipse.Fill>
+                                    <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                        <GradientStop Color="#FFFDF6EE" Offset="0" />
+                                        <GradientStop Color="#FAEBD7" Offset="1" />
+                                    </LinearGradientBrush>
+                                </Ellipse.Fill>
+                                <Ellipse.Effect>
+                                    <DropShadowEffect Color="#444" BlurRadius="10" ShadowDepth="3" />
+                                </Ellipse.Effect>
+                            </Ellipse>
 
-                <!-- canvas-element för att rita ut företagslogga, likt svg med direkta värden i koordinater/punkter -->
-                <Canvas Width="150" Height="150">
+                            <Rectangle Width="90" Height="30" Canvas.Left="30" Canvas.Top="70"
+                                       RadiusX="6" RadiusY="6">
+                                <Rectangle.Fill>
+                                    <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                        <GradientStop Color="#C0782F" Offset="0" />
+                                        <GradientStop Color="#9B5510" Offset="1" />
+                                    </LinearGradientBrush>
+                                </Rectangle.Fill>
+                                <Rectangle.Stroke>
+                                    <SolidColorBrush Color="#2F2F2F" />
+                                </Rectangle.Stroke>
+                                <Rectangle.StrokeThickness>2</Rectangle.StrokeThickness>
+                            </Rectangle>
 
-                    <!-- Bakgrund med svag skugga -->
-                    <Ellipse Width="130" Height="130" Canvas.Left="10" Canvas.Top="10">
-                        <Ellipse.Fill>
-                            <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-                                <GradientStop Color="#FFFDF6EE" Offset="0"/>
-                                <GradientStop Color="#FAEBD7" Offset="1"/>
-                            </LinearGradientBrush>
-                        </Ellipse.Fill>
-                        <Ellipse.Effect>
-                            <DropShadowEffect Color="#444" BlurRadius="10" ShadowDepth="3"/>
-                        </Ellipse.Effect>
-                    </Ellipse>
+                            <Rectangle Width="6" Height="16" Canvas.Left="24" Canvas.Top="75" Fill="#2F2F2F" />
+                            <Rectangle Width="6" Height="16" Canvas.Left="120" Canvas.Top="75" Fill="#2F2F2F" />
 
-                    <!-- Gryta -->
-                    <Rectangle Width="90" Height="30" Canvas.Left="30" Canvas.Top="70"
-                               RadiusX="6" RadiusY="6">
-                        <Rectangle.Fill>
-                            <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-                                <GradientStop Color="#C0782F" Offset="0"/>
-                                <GradientStop Color="#9B5510" Offset="1"/>
-                            </LinearGradientBrush>
-                        </Rectangle.Fill>
-                        <Rectangle.Stroke>
-                            <SolidColorBrush Color="#2F2F2F"/>
-                        </Rectangle.Stroke>
-                        <Rectangle.StrokeThickness>2</Rectangle.StrokeThickness>
-                    </Rectangle>
+                            <Rectangle Width="70" Height="10" Canvas.Left="40" Canvas.Top="58" RadiusX="2" RadiusY="2"
+                                       Fill="#2F2F2F" />
+                            <Ellipse Width="16" Height="8" Canvas.Left="67" Canvas.Top="50" Fill="#B5651D" />
+                            <Path Stroke="#FF7F50" StrokeThickness="3" Fill="Transparent"
+                                  Data="M75,50 C68,38 82,35 75,20" />
+                        </Canvas>
+                    </Viewbox>
 
-                    <!-- Handtag -->
-                    <Rectangle Width="6" Height="16" Canvas.Left="24" Canvas.Top="75" Fill="#2F2F2F"/>
-                    <Rectangle Width="6" Height="16" Canvas.Left="120" Canvas.Top="75" Fill="#2F2F2F"/>
+                    <TextBlock Text="CookMaster"
+                               Foreground="{StaticResource PrimaryTitle}"
+                               FontSize="80"
+                               FontWeight="Bold"
+                               HorizontalAlignment="Center"
+                               Margin="0,0,0,40" />
 
-                    <!-- Lock -->
-                    <Rectangle Width="70" Height="10" Canvas.Left="40" Canvas.Top="58" RadiusX="2" RadiusY="2" Fill="#2F2F2F"/>
-                    <Ellipse Width="16" Height="8" Canvas.Left="67" Canvas.Top="50" Fill="#B5651D"/>
+                    <TextBlock Text="Smart Cooking. Simplified."
+                               FontSize="18"
+                               FontStyle="Italic"
+                               Foreground="#444"
+                               HorizontalAlignment="Center"
+                               Margin="0,0,0,30" />
 
-                    <!-- Låga -->
-                    <Path Stroke="#FF7F50" StrokeThickness="3" Fill="Transparent"
-                          Data="M75,50 C68,38 82,35 75,20"/>
+                    <StackPanel HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Width="300"
+                                Orientation="Vertical">
 
-                </Canvas>
-            </Viewbox>
+                        <TextBlock Text="Username" Margin="0,0,0,5" />
+                        <TextBox Text="{Binding UserNameInput, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
+                        <TextBlock Text="Password" Margin="0,0,0,5" />
+                        <PasswordBox x:Name="MainWindowPasswordBox"
+                                     PasswordChanged="PasswordBox_PasswordChanged" />
 
-            <TextBlock Text="CookMaster"
-                       Foreground="{StaticResource PrimaryTitle}"
-                       FontSize="80"
-                       FontWeight="Bold"
-                       HorizontalAlignment="Center"
-                       Margin="0,0,0,40" />
+                        <Button Content="Log In"
+                                Command="{Binding LoginCommand}" />
 
-            <TextBlock Text="Smart Cooking. Simplified."
-                       FontSize="18"
-                       FontStyle="Italic"
-                       Foreground="#444"
-                       HorizontalAlignment="Center"
-                       Margin="0,0,0,30" />
+                        <Button Content="Register"
+                                Command="{Binding ShowRegisterCommand}" />
 
-
-            <StackPanel HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        Width="300"
-                        Orientation="Vertical">
-
-                <TextBlock Text="Username" Margin="0,0,0,5" />
-                <TextBox Text="{Binding UserNameInput, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-
-                <TextBlock Text="Password" Margin="0,0,0,5" />
-                <PasswordBox x:Name="MainWindowPasswordBox"
-                             PasswordChanged="PasswordBox_PasswordChanged" />
-
-                <Button Content="Log In"
-                        Command="{Binding LoginCommand}" />
-
-                <Button Content="Register"
-                        Command="{Binding ShowRegisterCommand}" />
-
-                <Button Content="Forgot Password"
-                        Command="{Binding ShowForgotPasswordCommand}" />
-            </StackPanel>
-        </StackPanel>
+                        <Button Content="Forgot Password"
+                                Command="{Binding ShowForgotPasswordCommand}" />
+                    </StackPanel>
+                </StackPanel>
+            </Grid>
+        </Viewbox>
     </Grid>
 </Window>

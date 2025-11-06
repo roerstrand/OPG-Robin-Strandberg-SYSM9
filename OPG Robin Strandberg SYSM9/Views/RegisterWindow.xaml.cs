@@ -24,9 +24,12 @@ namespace OPG_Robin_Strandberg_SYSM9.Views
 
             if (success)
             {
+                var mainWindow = new MainWindow();
+                mainWindow.Show();
                 Close();
             }
         }
+
 
         private void BackToLogin_Click(object sender, RoutedEventArgs e)
         {

@@ -38,35 +38,9 @@ namespace OPG_Robin_Strandberg_SYSM9.Managers
             }
         }
 
-        public RecipeManager()
+        public RecipeManager(User user)
         {
-            RecipeList = new ObservableCollection<Recipe>();
-            RecipeList.Add(new Recipe(
-                "Classic Pancakes",
-                "Mix flour, milk, eggs, and butter. Fry in pan until golden.",
-                "Breakfast",
-                DateTime.Now,
-                new User("System", "default1", "Sweden"),
-                "Flour, Milk, Eggs, Butter, Salt"
-            ));
-
-            RecipeList.Add(new Recipe(
-                "Spaghetti Bolognese",
-                "Cook pasta. Prepare sauce with minced meat, tomatoes, and herbs. Combine and serve.",
-                "Dinner",
-                DateTime.Now,
-                new User("System", "default2", "Italy"),
-                "Spaghetti, Minced Meat, Tomato Sauce, Garlic, Onion, Herbs"
-            ));
-
-            RecipeList.Add(new Recipe(
-                "Chocolate Chip Cookies",
-                "Mix dough with butter, sugar, eggs, and chocolate chips. Bake until golden brown.",
-                "Dessert",
-                DateTime.Now,
-                new User("System", "default3", "USA"),
-                "Butter, Sugar, Eggs, Flour, Chocolate Chips"
-            ));
+            RecipeList = user?.RecipeList ?? new ObservableCollection<Recipe>();
         }
 
         public void AddRecipe(Recipe recipe)

@@ -61,7 +61,7 @@ namespace OPG_Robin_Strandberg_SYSM9
             }
         }
 
-        public int Attempts
+        private int Attempts
         {
             get => _attempts;
             set
@@ -151,6 +151,18 @@ namespace OPG_Robin_Strandberg_SYSM9
                 }
 
                 _userManager.ChangePassword(user, newPassword);
+                foreach (Window window in Application.Current.Windows)
+                {
+                    if (window is Views.ForgotPasswordWindow forgotWindow)
+                    {
+                        var mainWindow = new MainWindow();
+                        mainWindow.Show();
+                        forgotWindow.Close();
+                        break;
+                    }
+                }
+
+
             }
             catch (Exception)
             {
@@ -183,7 +195,7 @@ namespace OPG_Robin_Strandberg_SYSM9
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        private void OnPropertyChanged([CallerMemberName] string propertyName = null)
             => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 }

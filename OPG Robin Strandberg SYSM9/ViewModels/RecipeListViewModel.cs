@@ -109,7 +109,6 @@ namespace OPG_Robin_Strandberg_SYSM9.ViewModels
             }
         }
 
-
         private void FilterRecipes()
         {
             try
@@ -255,7 +254,7 @@ namespace OPG_Robin_Strandberg_SYSM9.ViewModels
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        private void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }

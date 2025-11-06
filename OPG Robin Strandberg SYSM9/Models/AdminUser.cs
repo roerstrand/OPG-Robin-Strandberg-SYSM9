@@ -12,7 +12,7 @@ namespace OPG_Robin_Strandberg_SYSM9.Models
         public AdminUser(string username, string password, string country, RecipeManager recipeManager = null)
             : base(username, password, country)
         {
-            _recipeManager = recipeManager ?? new RecipeManager();
+            _recipeManager = recipeManager ?? new RecipeManager(this);
         }
 
         public void RemoveAnyRecipe(Recipe recipe)

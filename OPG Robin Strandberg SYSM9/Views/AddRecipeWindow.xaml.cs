@@ -3,6 +3,7 @@ using System.Windows;
 using System.Windows.Controls;
 using OPG_Robin_Strandberg_SYSM9.Managers;
 using OPG_Robin_Strandberg_SYSM9.Models;
+using OPG_Robin_Strandberg_SYSM9.ViewModels;
 
 namespace OPG_Robin_Strandberg_SYSM9.Views
 {
@@ -10,16 +11,11 @@ namespace OPG_Robin_Strandberg_SYSM9.Views
     {
         private readonly RecipeManager _recipeManager;
 
-        public AddRecipeWindow()
-        {
-            InitializeComponent();
-            _recipeManager = new RecipeManager();
-        }
-
         public AddRecipeWindow(RecipeManager recipeManager)
         {
             InitializeComponent();
-            _recipeManager = recipeManager;
+            _recipeManager = recipeManager ?? App.UserManager?.GetRecipeManagerForCurrentUser();
+            DataContext = new AddRecipeViewModel(_recipeManager);
         }
 
         private void SaveRecipe_Click(object sender, RoutedEventArgs e)

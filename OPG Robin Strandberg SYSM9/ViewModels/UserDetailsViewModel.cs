@@ -52,8 +52,8 @@ namespace OPG_Robin_Strandberg_SYSM9.ViewModels
         {
             if (userManager == null || userManager.CurrentUser == null)
             {
-                MessageBox.Show("No user is currently logged in.", "Error", MessageBoxButton.OK,
-                    MessageBoxImage.Warning);
+                MessageBox.Show("No user is currently logged in.", "Error",
+                    MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 
@@ -99,13 +99,16 @@ namespace OPG_Robin_Strandberg_SYSM9.ViewModels
                 {
                     if (NewUserName.Length < 3)
                     {
-                        MessageBox.Show("Username must be at least 3 characters long.");
+                        MessageBox.Show("Username must be at least 3 characters long.",
+                            "Invalid username", MessageBoxButton.OK, MessageBoxImage.Warning);
                         return;
                     }
 
-                    if (_userManager.IsUsernameTaken(NewUserName))
+                    if (NewUserName != _userManager.CurrentUser.UserName &&
+                        _userManager.IsUsernameTaken(NewUserName))
                     {
-                        MessageBox.Show("That username is already taken.");
+                        MessageBox.Show("That username is already taken. Please choose another one.",
+                            "Username taken", MessageBoxButton.OK, MessageBoxImage.Warning);
                         return;
                     }
 
@@ -116,13 +119,15 @@ namespace OPG_Robin_Strandberg_SYSM9.ViewModels
                 {
                     if (NewPassword.Length < 5)
                     {
-                        MessageBox.Show("Password must be at least 5 characters long.");
+                        MessageBox.Show("Password must be at least 5 characters long.",
+                            "Invalid password", MessageBoxButton.OK, MessageBoxImage.Warning);
                         return;
                     }
 
                     if (NewPassword != ConfirmPassword)
                     {
-                        MessageBox.Show("Passwords do not match.");
+                        MessageBox.Show("Passwords do not match.",
+                            "Mismatch", MessageBoxButton.OK, MessageBoxImage.Warning);
                         return;
                     }
 
@@ -134,8 +139,8 @@ namespace OPG_Robin_Strandberg_SYSM9.ViewModels
                     _userManager.CurrentUser.Country = SelectedCountry;
                 }
 
-                MessageBox.Show("User details updated successfully!", "Success", MessageBoxButton.OK,
-                    MessageBoxImage.Information);
+                MessageBox.Show("User details updated successfully!",
+                    "Success", MessageBoxButton.OK, MessageBoxImage.Information);
 
                 var listWindow = new RecipeListWindow(_userManager.GetRecipeManagerForCurrentUser());
                 listWindow.Show();
@@ -151,8 +156,8 @@ namespace OPG_Robin_Strandberg_SYSM9.ViewModels
             }
             catch (Exception ex)
             {
-                MessageBox.Show("An error occurred: " + ex.Message, "Error", MessageBoxButton.OK,
-                    MessageBoxImage.Error);
+                MessageBox.Show("An error occurred: " + ex.Message,
+                    "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -174,8 +179,8 @@ namespace OPG_Robin_Strandberg_SYSM9.ViewModels
             }
             catch (Exception ex)
             {
-                MessageBox.Show("An error occurred: " + ex.Message, "Error", MessageBoxButton.OK,
-                    MessageBoxImage.Error);
+                MessageBox.Show("An error occurred: " + ex.Message,
+                    "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 

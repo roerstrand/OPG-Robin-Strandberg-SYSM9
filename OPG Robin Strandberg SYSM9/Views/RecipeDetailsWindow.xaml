@@ -4,53 +4,159 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
+        Title="Recipe Details"
         WindowStartupLocation="CenterScreen"
         Width="1000"
         Height="1000"
         Background="{StaticResource AppBackground}">
 
-    <Grid Margin="40">
-        <StackPanel>
-            <TextBlock Text="CookMaster"
-                       Foreground="{StaticResource PrimaryTitle}"
-                       FontSize="80"
-                       FontWeight="Bold"
-                       HorizontalAlignment="Center"
-                       Margin="0,0,0,40" />
+    <Grid>
+        <Viewbox Stretch="Uniform" StretchDirection="DownOnly">
+            <Grid VerticalAlignment="Center" HorizontalAlignment="Center">
+                <StackPanel HorizontalAlignment="Center" MaxWidth="900">
 
-            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Width="500">
+                    <Viewbox Width="200" Height="200" HorizontalAlignment="Center" Margin="0,0,0,25">
+                        <Canvas Width="150" Height="150">
+                            <Ellipse Width="130" Height="130" Canvas.Left="10" Canvas.Top="10">
+                                <Ellipse.Fill>
+                                    <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                        <GradientStop Color="#FFFDF6EE" Offset="0" />
+                                        <GradientStop Color="#FAEBD7" Offset="1" />
+                                    </LinearGradientBrush>
+                                </Ellipse.Fill>
+                                <Ellipse.Effect>
+                                    <DropShadowEffect Color="#444" BlurRadius="10" ShadowDepth="3" />
+                                </Ellipse.Effect>
+                            </Ellipse>
 
-                <TextBlock Text="Recipe Details" Margin="0,10,0,20" FontWeight="Bold" FontSize="18"/>
+                            <Rectangle Width="90" Height="30" Canvas.Left="30" Canvas.Top="70"
+                                       RadiusX="6" RadiusY="6">
+                                <Rectangle.Fill>
+                                    <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                        <GradientStop Color="#C0782F" Offset="0" />
+                                        <GradientStop Color="#9B5510" Offset="1" />
+                                    </LinearGradientBrush>
+                                </Rectangle.Fill>
+                                <Rectangle.Stroke>
+                                    <SolidColorBrush Color="#2F2F2F" />
+                                </Rectangle.Stroke>
+                                <Rectangle.StrokeThickness>2</Rectangle.StrokeThickness>
+                            </Rectangle>
 
-                <TextBlock Text="Title:" />
-                <TextBox Text="{Binding Title, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                         IsReadOnly="{Binding IsReadOnly}" />
+                            <Rectangle Width="6" Height="16" Canvas.Left="24" Canvas.Top="75" Fill="#2F2F2F" />
+                            <Rectangle Width="6" Height="16" Canvas.Left="120" Canvas.Top="75" Fill="#2F2F2F" />
+                            <Rectangle Width="70" Height="10" Canvas.Left="40" Canvas.Top="58" RadiusX="2" RadiusY="2"
+                                       Fill="#2F2F2F" />
+                            <Ellipse Width="16" Height="8" Canvas.Left="67" Canvas.Top="50" Fill="#B5651D" />
+                            <Path Stroke="#FF7F50" StrokeThickness="3" Fill="Transparent"
+                                  Data="M75,50 C68,38 82,35 75,20" />
+                        </Canvas>
+                    </Viewbox>
 
-                <TextBlock Text="Ingredients:" />
-                <TextBox Text="{Binding Ingredients, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                         IsReadOnly="{Binding IsReadOnly}" TextWrapping="Wrap" />
+                    <TextBlock Text="CookMaster"
+                               Foreground="{StaticResource PrimaryTitle}"
+                               FontSize="80"
+                               FontWeight="Bold"
+                               HorizontalAlignment="Center"
+                               Margin="0,0,0,40" />
 
-                <TextBlock Text="Instructions:" />
-                <TextBox Text="{Binding Instructions, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                         TextWrapping="Wrap" Height="75" IsReadOnly="{Binding IsReadOnly}" />
+                    <StackPanel HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                MaxWidth="500"
+                                Orientation="Vertical">
 
-                <TextBlock Text="Category:" />
-                <TextBox Text="{Binding Category, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                         IsReadOnly="{Binding IsReadOnly}" />
+                        <TextBlock Text="Recipe Details"
+                                   Margin="0,10,0,20"
+                                   FontWeight="Bold"
+                                   FontSize="18" />
 
-                <TextBlock Text="Created by:" />
-                <TextBlock Text="{Binding Recipe.CreatedBy.UserName}" />
+                        <TextBlock Text="Title:" />
+                        <TextBox Text="{Binding Title, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                 IsReadOnly="{Binding IsReadOnly}">
+                            <TextBox.Style>
+                                <Style TargetType="TextBox">
+                                    <Setter Property="Background" Value="WhiteSmoke" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsReadOnly}" Value="False">
+                                            <Setter Property="Background" Value="#FFF7E6" />
+                                            <Setter Property="BorderBrush" Value="#C0782F" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBox.Style>
+                        </TextBox>
 
-                <TextBlock Text="Created at:" />
-                <TextBlock Text="{Binding Recipe.CreatedDate, StringFormat={}{0:yyyy-MM-dd HH:mm}}" />
+                        <TextBlock Text="Ingredients:" />
+                        <TextBox Text="{Binding Ingredients, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                 IsReadOnly="{Binding IsReadOnly}" TextWrapping="Wrap">
+                            <TextBox.Style>
+                                <Style TargetType="TextBox">
+                                    <Setter Property="Background" Value="WhiteSmoke" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsReadOnly}" Value="False">
+                                            <Setter Property="Background" Value="#FFF7E6" />
+                                            <Setter Property="BorderBrush" Value="#C0782F" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBox.Style>
+                        </TextBox>
 
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,20,0,0">
-                    <Button Content="Edit" Command="{Binding EditCommand}" />
-                    <Button Content="Save" Command="{Binding SaveCommand}" />
-                    <Button Content="Copy" Command="{Binding CopyCommand}" />
-                    <Button Content="Cancel" Command="{Binding CancelCommand}" />
+                        <TextBlock Text="Instructions:" />
+                        <TextBox Text="{Binding Instructions, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                 TextWrapping="Wrap" Height="75" IsReadOnly="{Binding IsReadOnly}">
+                            <TextBox.Style>
+                                <Style TargetType="TextBox">
+                                    <Setter Property="Background" Value="WhiteSmoke" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsReadOnly}" Value="False">
+                                            <Setter Property="Background" Value="#FFF7E6" />
+                                            <Setter Property="BorderBrush" Value="#C0782F" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBox.Style>
+                        </TextBox>
+
+                        <TextBlock Text="Category:" />
+                        <TextBox Text="{Binding Category, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                 IsReadOnly="{Binding IsReadOnly}">
+                            <TextBox.Style>
+                                <Style TargetType="TextBox">
+                                    <Setter Property="Background" Value="WhiteSmoke" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsReadOnly}" Value="False">
+                                            <Setter Property="Background" Value="#FFF7E6" />
+                                            <Setter Property="BorderBrush" Value="#C0782F" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBox.Style>
+                        </TextBox>
+
+                        <TextBlock Text="Created by:" />
+                        <TextBlock Text="{Binding Recipe.CreatedBy.UserName}" />
+
+                        <TextBlock Text="Created at:" />
+                        <TextBlock Text="{Binding Recipe.CreatedDate, StringFormat={}{0:yyyy-MM-dd HH:mm}}" />
+
+                        <Grid HorizontalAlignment="Center" Margin="0,20,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+
+                            <Button Content="{Binding EditButtonText}" Command="{Binding EditCommand}" Grid.Column="0"
+                                    Margin="4,0" />
+                            <Button Content="Save" Command="{Binding SaveCommand}" Grid.Column="1" Margin="4,0" />
+                            <Button Content="Copy" Command="{Binding CopyCommand}" Grid.Column="2" Margin="4,0" />
+                            <Button Content="Cancel" Command="{Binding CancelCommand}" Grid.Column="3" Margin="4,0" />
+                        </Grid>
+                    </StackPanel>
                 </StackPanel>
-            </StackPanel>
-        </StackPanel>
+            </Grid>
+        </Viewbox>
     </Grid>
 </Window>

@@ -8,45 +8,51 @@
         Width="1000"
         Height="1000"
         Background="{StaticResource AppBackground}">
+
     <Grid>
+        <!-- Viewbox för responsivitet på olika skärmstorlekar. Stretch down only för att enbart skala ned för små skärmas,
+        ej skala upp så komponenter/knappar etc blir för stora vid större skärmar-->
+        <Viewbox Stretch="Uniform" StretchDirection="DownOnly">
+            <Grid VerticalAlignment="Center" HorizontalAlignment="Center">
 
-        <StackPanel>
-            <TextBlock Text="CookMaster"
-                       Foreground="{StaticResource PrimaryTitle}"
-                       FontSize="80"
-                       FontWeight="Bold"
-                       HorizontalAlignment="Center"
-                       Margin="0,0,0,40" />
+                <StackPanel>
+                    <TextBlock Text="CookMaster"
+                               Foreground="{StaticResource PrimaryTitle}"
+                               FontSize="80"
+                               FontWeight="Bold"
+                               HorizontalAlignment="Center"
+                               Margin="0,0,0,40" />
 
-            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Width="400">
+                    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Width="400">
+                        <TextBlock Text="Add Recipe"
+                                   FontSize="20"
+                                   FontWeight="700"
+                                   HorizontalAlignment="Center"
+                                   Margin="0,10,0,20" />
 
-                <TextBlock Text="Add Recipe"
-                       FontSize="20"
-                       FontWeight="700"
-                       HorizontalAlignment="Center"
-                       Margin="0,10,0,20" />
+                        <TextBlock Text="Title" />
+                        <TextBox x:Name="titleInput" />
 
-                <TextBlock Text="Title" />
-                <TextBox x:Name="titleInput" />
+                        <TextBlock Text="Ingredients (comma separated)" Margin="0,10,0,0" />
+                        <TextBox x:Name="ingredientsInput" TextWrapping="Wrap" AcceptsReturn="True" />
 
-                <TextBlock Text="Ingredients (comma separated)" Margin="0,10,0,0" />
-                <TextBox x:Name="ingredientsInput" Height="60" TextWrapping="Wrap" AcceptsReturn="True" />
+                        <TextBlock Text="Category" Margin="0,10,0,0" />
+                        <TextBox x:Name="categoryInput" />
 
-                <TextBlock Text="Category" Margin="0,10,0,0" />
-                <TextBox x:Name="categoryInput" />
+                        <TextBlock Text="Instructions" Margin="0,10,0,0" />
+                        <TextBox x:Name="instructionsInput" TextWrapping="Wrap" AcceptsReturn="True" />
 
-                <TextBlock Text="Instructions" Margin="0,10,0,0" />
-                <TextBox x:Name="instructionsInput" Height="75" TextWrapping="Wrap" AcceptsReturn="True" />
+                        <TextBlock Text="Date Created" Margin="0,10,0,0" />
+                        <DatePicker SelectedDate="{Binding CreatedDate}" />
 
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,20,0,0">
-                    <Button Content="Save Recipe"
-                            Width="120"
-                            Click="SaveRecipe_Click" />
-                    <Button Content="Back"
-                            Width="120"
-                            Click="BackToList_Click" />
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,20,0,0">
+                            <Button Content="Save Recipe" Command="{Binding SaveCommand}" />
+                            <Button Content="Back" Command="{Binding CancelCommand}" />
+                        </StackPanel>
+
+                    </StackPanel>
                 </StackPanel>
-            </StackPanel>
-        </StackPanel>
+            </Grid>
+        </Viewbox>
     </Grid>
 </Window>

@@ -77,9 +77,27 @@ namespace OPG_Robin_Strandberg_SYSM9.Managers
 
         public void CreateDefaultUsers()
         {
-            // Lägg till en AdminUser och en vanlig user
             Users.Add(new AdminUser("admin", "password", "Sweden"));
-            Users.Add(new User("user", "password", "Norway"));
+            var normalUser = new User("user", "password", "Norway");
+            Users.Add(normalUser);
+
+            normalUser.RecipeList.Add(new Recipe(
+                "Classic Pancakes",
+                "Mix flour, milk, eggs, and butter. Fry in pan until golden.",
+                "Breakfast",
+                DateTime.Now,
+                normalUser,
+                "Flour, Milk, Eggs, Butter, Salt"
+            ));
+
+            normalUser.RecipeList.Add(new Recipe(
+                "Spaghetti Bolognese",
+                "Cook pasta. Prepare sauce with minced meat, tomatoes, and herbs. Combine and serve.",
+                "Dinner",
+                DateTime.Now,
+                normalUser,
+                "Spaghetti, Minced Meat, Tomato Sauce, Garlic, Onion, Herbs"
+            ));
         }
 
         public bool Login(string username, string password)
@@ -90,6 +108,9 @@ namespace OPG_Robin_Strandberg_SYSM9.Managers
                 {
                     if (u.UserName == username && u.Password == password)
                     {
+                        if (!PerformTwoFactorAuthentication(u))
+                            return false;
+
                         CurrentUser = u;
                         IsAuthenticated = true;
                         GetRecipeManagerForCurrentUser();
@@ -97,12 +118,14 @@ namespace OPG_Robin_Strandberg_SYSM9.Managers
                         if (u is AdminUser admin && !ActiveAdmins.Contains(admin))
                         {
                             ActiveAdmins.Add(admin);
-                            MessageBox.Show($"Welcome administrator {u.UserName}!");
+                            MessageBox.Show($"Welcome administrator {u.UserName}!",
+                                "Login successful", MessageBoxButton.OK, MessageBoxImage.Information);
                             OnPropertyChanged(nameof(IsAuthenticated));
                             return true;
                         }
 
-                        MessageBox.Show($"Welcome {u.UserName}!");
+                        MessageBox.Show($"Welcome {u.UserName}!",
+                            "Login successful", MessageBoxButton.OK, MessageBoxImage.Information);
                         OnPropertyChanged(nameof(IsAuthenticated));
                         return true;
                     }
@@ -110,16 +133,17 @@ namespace OPG_Robin_Strandberg_SYSM9.Managers
 
                 IsAuthenticated = false;
                 OnPropertyChanged(nameof(IsAuthenticated));
-                MessageBox.Show("Warning! Wrong password or username.");
+                MessageBox.Show("Incorrect username or password.",
+                    "Login failed", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return false;
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
-                MessageBox.Show("Unexpected error when trying to login.");
+                MessageBox.Show("Unexpected error occurred while trying to log in.",
+                    "System error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return false;
             }
-
-            return false;
         }
 
         public RecipeManager GetRecipeManagerForCurrentUser()
@@ -130,7 +154,7 @@ namespace OPG_Robin_Strandberg_SYSM9.Managers
                     return null;
 
                 if (!_userRecipeManagers.ContainsKey(CurrentUser))
-                    _userRecipeManagers[CurrentUser] = new RecipeManager();
+                    _userRecipeManagers[CurrentUser] = new RecipeManager(CurrentUser);
 
                 return _userRecipeManagers[CurrentUser];
             }
@@ -174,8 +198,8 @@ namespace OPG_Robin_Strandberg_SYSM9.Managers
                 if (!Regex.IsMatch(newPassword, pattern))
                 {
                     MessageBox.Show(
-                        "Lösenordet måste vara minst 8 tecken långt och innehålla minst en siffra och ett specialtecken.",
-                        "Ogiltigt lösenord",
+                        "Password must be at least 8 characters long and include at least one digit and one special character.",
+                        "Invalid password",
                         MessageBoxButton.OK,
                         MessageBoxImage.Warning
                     );
@@ -186,8 +210,8 @@ namespace OPG_Robin_Strandberg_SYSM9.Managers
                 user.Password = newPassword;
 
                 MessageBox.Show(
-                    "Lösenordet har ändrats!",
-                    "Klart",
+                    "Password has been changed!",
+                    "Done",
                     MessageBoxButton.OK,
                     MessageBoxImage.Information
                 );
@@ -195,8 +219,8 @@ namespace OPG_Robin_Strandberg_SYSM9.Managers
             catch (Exception ex)
             {
                 MessageBox.Show(
-                    "Ett fel uppstod vid ändring av lösenordet:\n" + ex.Message,
-                    "Systemfel",
+                    "An error occurred during registration:\n" + ex.Message,
+                    "System error",
                     MessageBoxButton.OK,
                     MessageBoxImage.Error
                 );
@@ -261,22 +285,17 @@ namespace OPG_Robin_Strandberg_SYSM9.Managers
         {
             try
             {
-                if (Users.Any(u =>
-                        u.UserName.Equals(newUserName, StringComparison.Ordinal)))
-                {
-                    MessageBox.Show("Username already taken!.");
-                    return false;
-                }
+                return Users.Any(u =>
+                    u.UserName.Equals(newUserName, StringComparison.Ordinal));
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
-                MessageBox.Show(
-                    "Unexpected error when checking if username already taken. Please try another username.");
+                MessageBox.Show("Unexpected error when checking username availability.");
+                return false;
             }
-
-            return true;
         }
+
 
         public List<User> FindUsers(string username)
         {
@@ -320,6 +339,42 @@ namespace OPG_Robin_Strandberg_SYSM9.Managers
             }
 
             return null;
+        }
+
+        private string _lastGeneratedCode;
+
+        private bool PerformTwoFactorAuthentication(User user)
+        {
+            try
+            {
+                var random = new Random();
+                _lastGeneratedCode = random.Next(100000, 999999).ToString();
+
+                MessageBox.Show(
+                    $"Simulated email sent to {user.UserName}@example.com\nVerification code: {_lastGeneratedCode}",
+                    "Two-Factor Authentication",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Information
+                );
+
+                var twoFactorWindow = new OPG_Robin_Strandberg_SYSM9.Views.TwoFactorWindow(_lastGeneratedCode);
+                bool? result = twoFactorWindow.ShowDialog();
+
+                if (result == true)
+                {
+                    return true;
+                }
+
+                MessageBox.Show("Two-Factor verification failed. Login cancelled.",
+                    "Verification failed", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return false;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("An error occurred during two-factor authentication:\n" + ex.Message,
+                    "System error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return false;
+            }
         }
 
 

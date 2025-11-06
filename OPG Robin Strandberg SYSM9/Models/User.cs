@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
 namespace OPG_Robin_Strandberg_SYSM9.Models
@@ -9,6 +10,8 @@ namespace OPG_Robin_Strandberg_SYSM9.Models
         public string Password { get; set; }
         public string Country { get; set; }
 
+        public ObservableCollection<Recipe> RecipeList { get; set; }
+
         public virtual bool IsAdmin => false;
 
         public User(string userName, string password, string country)
@@ -16,6 +19,7 @@ namespace OPG_Robin_Strandberg_SYSM9.Models
             UserName = userName;
             Password = password;
             Country = country;
+            RecipeList = new ObservableCollection<Recipe>();
         }
 
         public virtual bool ValidateLogin(string userName, string password)

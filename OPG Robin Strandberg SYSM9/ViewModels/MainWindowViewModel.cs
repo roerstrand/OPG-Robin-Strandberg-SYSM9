@@ -102,7 +102,7 @@ namespace OPG_Robin_Strandberg_SYSM9
             });
         }
 
-        public void Login_Button()
+        private void Login_Button()
         {
             try
             {

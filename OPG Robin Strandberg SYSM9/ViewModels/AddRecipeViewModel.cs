@@ -17,29 +17,57 @@ namespace OPG_Robin_Strandberg_SYSM9.ViewModels
         private string _ingredients;
         private string _instructions;
         private string _category;
+        private DateTime _createdDate = DateTime.Now;
+
 
         public string Title
         {
             get => _title;
-            set { _title = value; OnPropertyChanged(); }
+            set
+            {
+                _title = value;
+                OnPropertyChanged();
+            }
         }
 
         public string Ingredients
         {
             get => _ingredients;
-            set { _ingredients = value; OnPropertyChanged(); }
+            set
+            {
+                _ingredients = value;
+                OnPropertyChanged();
+            }
         }
 
         public string Instructions
         {
             get => _instructions;
-            set { _instructions = value; OnPropertyChanged(); }
+            set
+            {
+                _instructions = value;
+                OnPropertyChanged();
+            }
         }
 
         public string Category
         {
             get => _category;
-            set { _category = value; OnPropertyChanged(); }
+            set
+            {
+                _category = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public DateTime CreatedDate
+        {
+            get => _createdDate;
+            set
+            {
+                _createdDate = value;
+                OnPropertyChanged();
+            }
         }
 
         public ICommand SaveCommand { get; }
@@ -70,10 +98,11 @@ namespace OPG_Robin_Strandberg_SYSM9.ViewModels
                     Title,
                     Instructions,
                     Category,
-                    DateTime.Now,
+                    CreatedDate,
                     App.UserManager.CurrentUser,
                     Ingredients
                 );
+
 
                 _recipeManager.AddRecipe(recipe);
 
@@ -101,6 +130,7 @@ namespace OPG_Robin_Strandberg_SYSM9.ViewModels
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
+
         private void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));

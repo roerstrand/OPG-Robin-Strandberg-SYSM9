@@ -3,7 +3,6 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:vm="clr-namespace:OPG_Robin_Strandberg_SYSM9.ViewModels"
         mc:Ignorable="d"
         Title="Register"
         WindowStartupLocation="CenterScreen"
@@ -12,39 +11,84 @@
         Background="{StaticResource AppBackground}">
 
     <Grid>
+        <!-- Viewbox för responsivitet på olika skärmstorlekar. Stretch down only för att enbart skala ned för små skärmas,
+        ej skala upp så komponenter/knappar etc blir för stora vid större skärmar-->
+        <Viewbox Stretch="Uniform" StretchDirection="DownOnly">
+            <Grid VerticalAlignment="Center" HorizontalAlignment="Center">
 
-        <StackPanel>
-            <TextBlock Text="CookMaster"
-                       Foreground="{StaticResource PrimaryTitle}"
-                       FontSize="80"
-                       FontWeight="Bold"
-                       HorizontalAlignment="Center"
-                       Margin="0,0,0,40" />
-            <Border CornerRadius="10"
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center">
+                <StackPanel>
 
-                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                    <TextBlock Text="Create new account" Margin="0,10,0,20" FontWeight="Bold"/>
+                    <Viewbox Width="200" Height="200" HorizontalAlignment="Center" Margin="0,0,0,25">
+                        <!-- Canvas-element för att rita logga med koordinater/punkter likt svg -->
+                        <Canvas Width="150" Height="150">
+                            <Ellipse Width="130" Height="130" Canvas.Left="10" Canvas.Top="10">
+                                <Ellipse.Fill>
+                                    <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                        <GradientStop Color="#FFFDF6EE" Offset="0" />
+                                        <GradientStop Color="#FAEBD7" Offset="1" />
+                                    </LinearGradientBrush>
+                                </Ellipse.Fill>
+                                <Ellipse.Effect>
+                                    <DropShadowEffect Color="#444" BlurRadius="10" ShadowDepth="3" />
+                                </Ellipse.Effect>
+                            </Ellipse>
 
-                    <TextBlock Text="Username" />
-                    <TextBox x:Name="UsernameBox" />
+                            <Rectangle Width="90" Height="30" Canvas.Left="30" Canvas.Top="70"
+                                       RadiusX="6" RadiusY="6">
+                                <Rectangle.Fill>
+                                    <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                        <GradientStop Color="#C0782F" Offset="0" />
+                                        <GradientStop Color="#9B5510" Offset="1" />
+                                    </LinearGradientBrush>
+                                </Rectangle.Fill>
+                                <Rectangle.Stroke>
+                                    <SolidColorBrush Color="#2F2F2F" />
+                                </Rectangle.Stroke>
+                                <Rectangle.StrokeThickness>2</Rectangle.StrokeThickness>
+                            </Rectangle>
 
-                    <TextBlock Text="Password" />
-                    <PasswordBox x:Name="PasswordBox" />
+                            <Rectangle Width="6" Height="16" Canvas.Left="24" Canvas.Top="75" Fill="#2F2F2F" />
+                            <Rectangle Width="6" Height="16" Canvas.Left="120" Canvas.Top="75" Fill="#2F2F2F" />
 
-                    <TextBlock Text="Select Country" />
-                    <ComboBox x:Name="CountryBox"
-                              ItemsSource="{Binding Countries}"
-                              SelectedIndex="0" />
+                            <Rectangle Width="70" Height="10" Canvas.Left="40" Canvas.Top="58" RadiusX="2" RadiusY="2"
+                                       Fill="#2F2F2F" />
+                            <Ellipse Width="16" Height="8" Canvas.Left="67" Canvas.Top="50" Fill="#B5651D" />
+                            <Path Stroke="#FF7F50" StrokeThickness="3" Fill="Transparent"
+                                  Data="M75,50 C68,38 82,35 75,20" />
+                        </Canvas>
+                    </Viewbox>
 
-                    <Button Content="Register"
-                            Click="Register_Click" />
+                    <TextBlock Text="CookMaster"
+                               Foreground="{StaticResource PrimaryTitle}"
+                               FontSize="80"
+                               FontWeight="Bold"
+                               HorizontalAlignment="Center"
+                               Margin="0,0,0,40" />
 
-                    <Button Content="Back to Login"
-                            Click="BackToLogin_Click" />
+                    <Border CornerRadius="10"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center">
+
+                        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <TextBlock Text="Create new account" Margin="0,10,0,20" FontWeight="Bold" />
+
+                            <TextBlock Text="Username" />
+                            <TextBox x:Name="UsernameBox" />
+
+                            <TextBlock Text="Password" />
+                            <PasswordBox x:Name="PasswordBox" />
+
+                            <TextBlock Text="Select Country" />
+                            <ComboBox x:Name="CountryBox"
+                                      ItemsSource="{Binding Countries}"
+                                      SelectedIndex="0" />
+
+                            <Button Content="Register" Click="Register_Click" />
+                            <Button Content="Back to Login" Click="BackToLogin_Click" />
+                        </StackPanel>
+                    </Border>
                 </StackPanel>
-            </Border>
-        </StackPanel>
+            </Grid>
+        </Viewbox>
     </Grid>
 </Window>
