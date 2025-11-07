@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Windows;
 
 namespace OPG_Robin_Strandberg_SYSM9.Models
 {
@@ -106,18 +107,91 @@ namespace OPG_Robin_Strandberg_SYSM9.Models
             Category = category;
             CreatedAt = createdAt;
             CreatedBy = createdBy;
+            // Select metod för att omvandla split som returnerar array-element utan trim till => trimmade element. Likt map-metod i javascript
             Ingredients = ingredients.Split(',').Select(i => i.Trim()).ToList();
         }
 
-        public void EditRecipe(string title, string instructions, string category, DateTime createdAt, User createdBy,
-            string ingredients)
+        public void EditRecipe(string title, string instructions, string category, string ingredients)
         {
-            Title = title;
-            Instructions = instructions;
-            Category = category;
-            CreatedAt = createdAt;
-            CreatedBy = createdBy;
-            Ingredients = ingredients.Split(',').Select(i => i.Trim()).ToList();
+            try
+            {
+                if (string.IsNullOrWhiteSpace(title) ||
+                    string.IsNullOrWhiteSpace(instructions) ||
+                    string.IsNullOrWhiteSpace(category) ||
+                    string.IsNullOrWhiteSpace(ingredients))
+                {
+                    MessageBox.Show("All fields must be filled in before saving.", "Validation Error",
+                        MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+
+                // Where-metod villkor/condition metod (likt SQL) som måste uppfyllas
+                var ingredientList = ingredients.Split(',')
+                    .Select(i => i.Trim())
+                    .Where(i => !string.IsNullOrWhiteSpace(i))
+                    .ToList();
+
+                if (ingredientList.Count == 0)
+                {
+                    MessageBox.Show("At least one ingredient must be specified.", "Validation Error",
+                        MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+
+                Title = title.Trim();
+                Instructions = instructions.Trim();
+                Category = category.Trim();
+                Ingredients = ingredientList;
+
+                MessageBox.Show("Recipe updated successfully!", "Success",
+                    MessageBoxButton.OK, MessageBoxImage.Information);
+
+                OnPropertyChanged(nameof(Title));
+                OnPropertyChanged(nameof(Instructions));
+                OnPropertyChanged(nameof(Category));
+                OnPropertyChanged(nameof(Ingredients));
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"An unexpected error occurred while editing the recipe.\n\n{ex.Message}",
+                    "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        public Recipe CopyRecipe(User newOwner = null)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(Title) ||
+                    string.IsNullOrWhiteSpace(Instructions) ||
+                    string.IsNullOrWhiteSpace(Category) ||
+                    Ingredients == null || Ingredients.Count == 0)
+                {
+                    MessageBox.Show("Cannot copy recipe — some fields are empty.", "Validation Error",
+                        MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return null;
+                }
+
+                var copy = new Recipe(
+                    $"{Title} (Copy)",
+                    Instructions,
+                    Category,
+                    DateTime.Now,
+                    newOwner ?? CreatedBy,
+                    string.Join(", ", Ingredients)
+                );
+
+                MessageBox.Show("Recipe copied successfully!", "Copied",
+                    MessageBoxButton.OK, MessageBoxImage.Information);
+
+                return copy;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"An unexpected error occurred while copying the recipe.\n\n{ex.Message}",
+                    "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return null;
+            }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

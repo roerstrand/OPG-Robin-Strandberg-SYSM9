@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.Windows;
 using OPG_Robin_Strandberg_SYSM9.Managers;
 
 namespace OPG_Robin_Strandberg_SYSM9.Models
@@ -17,10 +18,26 @@ namespace OPG_Robin_Strandberg_SYSM9.Models
 
         public void RemoveAnyRecipe(Recipe recipe)
         {
-            if (recipe == null) return;
+            try
+            {
+                if (recipe == null)
+                {
+                    MessageBox.Show("No recipe selected to remove.",
+                        "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
 
-            _recipeManager.RemoveRecipe(recipe);
-            OnPropertyChanged(nameof(ViewAllRecipes));
+                _recipeManager.RecipeList.Remove(recipe);
+                OnPropertyChanged(nameof(RecipeList));
+
+                MessageBox.Show($"Recipe \"{recipe.Title}\" was removed by administrator.",
+                    "Removed", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error while removing recipe: {ex.Message}",
+                    "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         public ObservableCollection<Recipe> ViewAllRecipes()

@@ -10,7 +10,6 @@ namespace OPG_Robin_Strandberg_SYSM9.ViewModels
     {
         private readonly UserManager _userManager;
 
-        // Gör countries publikt för XAML
         public List<string> Countries { get; }
 
         public RegisterViewModel()

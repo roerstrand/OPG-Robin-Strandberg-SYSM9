@@ -11,21 +11,6 @@ namespace OPG_Robin_Strandberg_SYSM9.Managers
 {
     public class RecipeManager : INotifyPropertyChanged
     {
-        private Recipe _currentRecipe;
-
-        public Recipe CurrentRecipe
-        {
-            get => _currentRecipe;
-            set
-            {
-                if (_currentRecipe != value)
-                {
-                    _currentRecipe = value;
-                    OnPropertyChanged(nameof(CurrentRecipe));
-                }
-            }
-        }
-
         private ObservableCollection<Recipe> _recipes;
 
         public ObservableCollection<Recipe> RecipeList

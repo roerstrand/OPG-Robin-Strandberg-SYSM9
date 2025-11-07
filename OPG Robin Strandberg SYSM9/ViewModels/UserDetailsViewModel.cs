@@ -14,9 +14,6 @@ namespace OPG_Robin_Strandberg_SYSM9.ViewModels
     {
         private readonly UserManager _userManager;
 
-        public string CurrentUserName => _userManager.CurrentUser.UserName;
-        public string CurrentCountry => _userManager.CurrentUser.Country;
-
         private string _newUserName;
         private string _selectedCountry;
 
@@ -95,35 +92,23 @@ namespace OPG_Robin_Strandberg_SYSM9.ViewModels
         {
             try
             {
-                if (!string.IsNullOrWhiteSpace(NewUserName))
-                {
-                    if (NewUserName.Length < 3)
-                    {
-                        MessageBox.Show("Username must be at least 3 characters long.",
-                            "Invalid username", MessageBoxButton.OK, MessageBoxImage.Warning);
-                        return;
-                    }
+                var currentUser = _userManager.CurrentUser;
 
-                    if (NewUserName != _userManager.CurrentUser.UserName &&
-                        _userManager.IsUsernameTaken(NewUserName))
+                if (!string.IsNullOrWhiteSpace(NewUserName) &&
+                    NewUserName != currentUser.UserName)
+                {
+                    if (_userManager.IsUsernameTaken(NewUserName))
                     {
                         MessageBox.Show("That username is already taken. Please choose another one.",
                             "Username taken", MessageBoxButton.OK, MessageBoxImage.Warning);
                         return;
                     }
 
-                    _userManager.CurrentUser.UserName = NewUserName;
+                    currentUser.ChangeUserName(NewUserName);
                 }
 
                 if (!string.IsNullOrWhiteSpace(NewPassword))
                 {
-                    if (NewPassword.Length < 5)
-                    {
-                        MessageBox.Show("Password must be at least 5 characters long.",
-                            "Invalid password", MessageBoxButton.OK, MessageBoxImage.Warning);
-                        return;
-                    }
-
                     if (NewPassword != ConfirmPassword)
                     {
                         MessageBox.Show("Passwords do not match.",
@@ -131,13 +116,11 @@ namespace OPG_Robin_Strandberg_SYSM9.ViewModels
                         return;
                     }
 
-                    _userManager.CurrentUser.Password = NewPassword;
+                    currentUser.ChangePassword(NewPassword);
                 }
 
                 if (!string.IsNullOrWhiteSpace(SelectedCountry))
-                {
-                    _userManager.CurrentUser.Country = SelectedCountry;
-                }
+                    currentUser.UpdateDetails(SelectedCountry);
 
                 MessageBox.Show("User details updated successfully!",
                     "Success", MessageBoxButton.OK, MessageBoxImage.Information);
@@ -160,6 +143,7 @@ namespace OPG_Robin_Strandberg_SYSM9.ViewModels
                     "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
+
 
         private void Cancel()
         {

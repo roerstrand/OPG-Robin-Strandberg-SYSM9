@@ -16,6 +16,7 @@
                 <StackPanel HorizontalAlignment="Center" MaxWidth="900">
 
                     <Viewbox Width="200" Height="200" HorizontalAlignment="Center" Margin="0,0,0,25">
+                        <!-- Canvas-element (behållare) för barnobjekt (ellipse, rektanglar) som ges exakta koordinater (x, y) för att rita former. Likt SVG-värden. -->
                         <Canvas Width="150" Height="150">
                             <Ellipse Width="130" Height="130" Canvas.Left="10" Canvas.Top="10">
                                 <Ellipse.Fill>

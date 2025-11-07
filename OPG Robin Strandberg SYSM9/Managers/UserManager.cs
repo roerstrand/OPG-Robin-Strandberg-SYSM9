@@ -7,6 +7,8 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
+using System.IO;
+using System.Text.Json;
 using OPG_Robin_Strandberg_SYSM9.Models;
 
 namespace OPG_Robin_Strandberg_SYSM9.Managers
@@ -18,7 +20,6 @@ namespace OPG_Robin_Strandberg_SYSM9.Managers
         public User CurrentUser // getLogged in här
         {
             get { return _currentUser; }
-
 
             private set
             {
@@ -41,6 +42,7 @@ namespace OPG_Robin_Strandberg_SYSM9.Managers
             }
         }
 
+        // Dictionary med alla användares recept
         private readonly Dictionary<User, RecipeManager> _userRecipeManagers = new();
 
         private List<User> _users;
@@ -169,7 +171,6 @@ namespace OPG_Robin_Strandberg_SYSM9.Managers
 
         public void Logout()
         {
-            // 🔹 Ta bort aktuell användare från ActiveAdmins om det är en admin
             if (CurrentUser is AdminUser admin && ActiveAdmins.Contains(admin))
             {
                 ActiveAdmins.Remove(admin);
@@ -194,7 +195,6 @@ namespace OPG_Robin_Strandberg_SYSM9.Managers
                 // $                           → Slutet av strängen
                 string pattern = @"^(?=.*\d)(?=.*[!@#$%^&*(),.?""':{}|<>])[A-Za-z\d!@#$%^&*(),.?""':{}|<>]{8,}$";
 
-                // Kontrollera om lösenordet matchar mönstret
                 if (!Regex.IsMatch(newPassword, pattern))
                 {
                     MessageBox.Show(
@@ -206,8 +206,7 @@ namespace OPG_Robin_Strandberg_SYSM9.Managers
                     return;
                 }
 
-                // Uppdatera användarens lösenord om det är giltigt
-                user.Password = newPassword;
+                user.ChangePassword(newPassword);
 
                 MessageBox.Show(
                     "Password has been changed!",
@@ -226,7 +225,6 @@ namespace OPG_Robin_Strandberg_SYSM9.Managers
                 );
             }
         }
-
 
         public bool Register(string username, string password, string country)
         {
@@ -280,7 +278,6 @@ namespace OPG_Robin_Strandberg_SYSM9.Managers
             }
         }
 
-
         public bool IsUsernameTaken(string newUserName)
         {
             try
@@ -294,31 +291,6 @@ namespace OPG_Robin_Strandberg_SYSM9.Managers
                 MessageBox.Show("Unexpected error when checking username availability.");
                 return false;
             }
-        }
-
-
-        public List<User> FindUsers(string username)
-        {
-            try
-            {
-                List<User> foundUsers = new List<User>();
-
-                foreach (User u in Users)
-                {
-                    if (username == u.UserName)
-                    {
-                        foundUsers.Add(u);
-                    }
-                }
-
-                return foundUsers;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
-
-            return null;
         }
 
         public User FindUser(string username)
@@ -343,6 +315,7 @@ namespace OPG_Robin_Strandberg_SYSM9.Managers
 
         private string _lastGeneratedCode;
 
+        // Simulerad 2FA med messagebox för 6-siffrig kod
         private bool PerformTwoFactorAuthentication(User user)
         {
             try

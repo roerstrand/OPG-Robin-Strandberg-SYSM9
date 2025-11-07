@@ -136,6 +136,8 @@ namespace OPG_Robin_Strandberg_SYSM9.ViewModels
 
         private void RemoveRecipe()
         {
+            var currentUser = _userManager.CurrentUser;
+
             if (SelectedRecipe == null)
             {
                 MessageBox.Show("Select a recipe to remove.",
@@ -144,12 +146,38 @@ namespace OPG_Robin_Strandberg_SYSM9.ViewModels
             }
 
             if (MessageBox.Show($"Do you want to delete \"{SelectedRecipe.Title}\"?",
-                    "Confirm", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+                    "Confirm", MessageBoxButton.YesNo, MessageBoxImage.Question) != MessageBoxResult.Yes)
             {
-                _recipeManager.RemoveRecipe(SelectedRecipe);
+                return;
+            }
+
+            try
+            {
+                if (currentUser.IsAdmin && currentUser is AdminUser adminUser)
+                {
+                    adminUser.RemoveAnyRecipe(SelectedRecipe);
+                }
+                else
+                {
+                    if (SelectedRecipe.CreatedBy?.UserName != currentUser.UserName)
+                    {
+                        MessageBox.Show("You can only delete your own recipes.",
+                            "Access Denied", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        return;
+                    }
+
+                    _recipeManager.RemoveRecipe(SelectedRecipe);
+                }
+
                 LoadRecipes();
             }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error while removing recipe: {ex.Message}",
+                    "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
+
 
         private void ShowRecipeDetails()
         {
@@ -228,9 +256,10 @@ namespace OPG_Robin_Strandberg_SYSM9.ViewModels
             {
                 if (_userManager.ActiveAdmins.Contains(_userManager.CurrentUser))
                 {
+                    // Of Type som villkor ist för typeOf
                     Recipes = _recipeManager.ViewAllRecipes(
                         _userManager.CurrentUser,
-                        _userManager.ActiveAdmins.Select(a => (User)a).ToList()
+                        _userManager.ActiveAdmins.OfType<User>().ToList()
                     );
                 }
                 else

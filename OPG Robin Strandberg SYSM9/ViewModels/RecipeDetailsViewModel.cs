@@ -44,6 +44,7 @@ namespace OPG_Robin_Strandberg_SYSM9.ViewModels
             }
         }
 
+        // Toggle bool egenskap för låsta/upplåsta inputfält
         public bool IsReadOnly => !IsEditing;
 
         public string EditButtonText
@@ -59,7 +60,11 @@ namespace OPG_Robin_Strandberg_SYSM9.ViewModels
         public string Title
         {
             get => Recipe.Title;
-            set { Recipe.Title = value; OnPropertyChanged(); }
+            set
+            {
+                Recipe.Title = value;
+                OnPropertyChanged();
+            }
         }
 
         public string Ingredients
@@ -75,13 +80,21 @@ namespace OPG_Robin_Strandberg_SYSM9.ViewModels
         public string Instructions
         {
             get => Recipe.Instructions;
-            set { Recipe.Instructions = value; OnPropertyChanged(); }
+            set
+            {
+                Recipe.Instructions = value;
+                OnPropertyChanged();
+            }
         }
 
         public string Category
         {
             get => Recipe.Category;
-            set { Recipe.Category = value; OnPropertyChanged(); }
+            set
+            {
+                Recipe.Category = value;
+                OnPropertyChanged();
+            }
         }
 
         public ICommand EditCommand { get; }
@@ -104,19 +117,11 @@ namespace OPG_Robin_Strandberg_SYSM9.ViewModels
 
         private void SaveRecipe()
         {
-            if (string.IsNullOrWhiteSpace(Title) ||
-                string.IsNullOrWhiteSpace(Instructions) ||
-                string.IsNullOrWhiteSpace(Category) ||
-                string.IsNullOrWhiteSpace(Ingredients))
-            {
-                MessageBox.Show("All fields must be filled in.", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
-                return;
-            }
-
             try
             {
-                _recipeManager.UpdateRecipe(Recipe, Title, Instructions, Category, Ingredients);
-                MessageBox.Show("Recipe updated successfully!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                Recipe.EditRecipe(Title, Instructions, Category, Ingredients);
+                MessageBox.Show("Recipe updated successfully!", "Success", MessageBoxButton.OK,
+                    MessageBoxImage.Information);
 
                 var listWindow = new RecipeListWindow(_recipeManager);
                 listWindow.Show();
@@ -132,7 +137,8 @@ namespace OPG_Robin_Strandberg_SYSM9.ViewModels
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error saving recipe: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Error while saving recipe: {ex.Message}", "Error", MessageBoxButton.OK,
+                    MessageBoxImage.Error);
             }
         }
 
@@ -140,9 +146,12 @@ namespace OPG_Robin_Strandberg_SYSM9.ViewModels
         {
             try
             {
-                var copy = new Recipe($"{Title} (Copy)", Instructions, Category, DateTime.Now, App.UserManager.CurrentUser, string.Join(", ", Recipe.Ingredients));
+                var copy = Recipe.CopyRecipe(App.UserManager.CurrentUser);
+
+                if (copy == null)
+                    return;
+
                 _recipeManager.AddRecipe(copy);
-                MessageBox.Show("Recipe copied successfully!", "Copied", MessageBoxButton.OK, MessageBoxImage.Information);
 
                 var listWindow = new RecipeListWindow(_recipeManager);
                 listWindow.Show();
@@ -158,7 +167,8 @@ namespace OPG_Robin_Strandberg_SYSM9.ViewModels
             }
             catch (Exception ex)
             {
-                MessageBox.Show("An error occurred: " + ex.Message);
+                MessageBox.Show($"An error occurred while copying the recipe: {ex.Message}",
+                    "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -178,6 +188,7 @@ namespace OPG_Robin_Strandberg_SYSM9.ViewModels
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
+
         private void OnPropertyChanged([CallerMemberName] string propertyName = null)
             => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
