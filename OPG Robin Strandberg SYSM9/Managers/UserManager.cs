@@ -3,12 +3,8 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Windows;
-using System.IO;
-using System.Text.Json;
 using OPG_Robin_Strandberg_SYSM9.Models;
 
 namespace OPG_Robin_Strandberg_SYSM9.Managers
@@ -17,7 +13,7 @@ namespace OPG_Robin_Strandberg_SYSM9.Managers
     {
         private User _currentUser;
 
-        public User CurrentUser // getLogged in här
+        public User CurrentUser // ULM getLogged in här
         {
             get { return _currentUser; }
 
@@ -33,7 +29,6 @@ namespace OPG_Robin_Strandberg_SYSM9.Managers
         public User SearchedUser
         {
             get { return _searchedUser; }
-
 
             set
             {
@@ -117,6 +112,7 @@ namespace OPG_Robin_Strandberg_SYSM9.Managers
                         IsAuthenticated = true;
                         GetRecipeManagerForCurrentUser();
 
+                        // Om user type admin och inte finns i lista aktive admins, lägg till
                         if (u is AdminUser admin && !ActiveAdmins.Contains(admin))
                         {
                             ActiveAdmins.Add(admin);
@@ -168,7 +164,6 @@ namespace OPG_Robin_Strandberg_SYSM9.Managers
             return null;
         }
 
-
         public void Logout()
         {
             if (CurrentUser is AdminUser admin && ActiveAdmins.Contains(admin))
@@ -181,48 +176,21 @@ namespace OPG_Robin_Strandberg_SYSM9.Managers
             OnPropertyChanged(nameof(IsAuthenticated));
         }
 
-        public void ChangePassword(User user, string newPassword)
+        public bool ChangePassword(User user, string newPassword)
         {
             try
             {
-                // Regex-mönster
-                //
-                // ^                           → Början av strängen
-                // =?.                         → Lookahead för specifikt mönster
-                // (?=.*\d)                    → Måste innehålla minst en siffra (0–9)
-                // (?=.*[!@#$%^&*(),.?""':{}|<>]) → Måste innehålla minst ett specialtecken
-                // [A-Za-z\d!@#$%^&*(),.?""':{}|<>]{8,} → Tillåtna tecken (bokstäver, siffror och specialtecken) samt minst 8 tecken totalt
-                // $                           → Slutet av strängen
-                string pattern = @"^(?=.*\d)(?=.*[!@#$%^&*(),.?""':{}|<>])[A-Za-z\d!@#$%^&*(),.?""':{}|<>]{8,}$";
-
-                if (!Regex.IsMatch(newPassword, pattern))
-                {
-                    MessageBox.Show(
-                        "Password must be at least 8 characters long and include at least one digit and one special character.",
-                        "Invalid password",
-                        MessageBoxButton.OK,
-                        MessageBoxImage.Warning
-                    );
-                    return;
-                }
-
-                user.ChangePassword(newPassword);
-
-                MessageBox.Show(
-                    "Password has been changed!",
-                    "Done",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Information
-                );
+                return user.ChangePassword(newPassword);
             }
             catch (Exception ex)
             {
                 MessageBox.Show(
-                    "An error occurred during registration:\n" + ex.Message,
+                    "An error occurred while changing password:\n" + ex.Message,
                     "System error",
                     MessageBoxButton.OK,
                     MessageBoxImage.Error
                 );
+                return false;
             }
         }
 
@@ -230,7 +198,18 @@ namespace OPG_Robin_Strandberg_SYSM9.Managers
         {
             try
             {
-                // samma string pattern som vid ChangePassword
+                if (Users.Any(u => u.UserName.Equals(username, StringComparison.OrdinalIgnoreCase)))
+                {
+                    MessageBox.Show(
+                        "Username already taken. Please choose another.",
+                        "Username taken",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Warning
+                    );
+                    return false;
+                }
+
+                // strikt regex-mönster vid registrering och glömt lösenord
                 string pattern = @"^(?=.*\d)(?=.*[!@#$%^&*(),.?""':{}|<>])[A-Za-z\d!@#$%^&*(),.?""':{}|<>]{8,}$";
 
                 if (!Regex.IsMatch(password, pattern))
@@ -238,17 +217,6 @@ namespace OPG_Robin_Strandberg_SYSM9.Managers
                     MessageBox.Show(
                         "Password must be 8 symbols long, contain at least one digit and one special character.",
                         "Not allowed password",
-                        MessageBoxButton.OK,
-                        MessageBoxImage.Warning
-                    );
-                    return false;
-                }
-
-                if (Users.Any(u => u.UserName.Equals(username, StringComparison.Ordinal)))
-                {
-                    MessageBox.Show(
-                        "Username already taken. Please choose another.",
-                        "Username taken",
                         MessageBoxButton.OK,
                         MessageBoxImage.Warning
                     );
@@ -283,7 +251,7 @@ namespace OPG_Robin_Strandberg_SYSM9.Managers
             try
             {
                 return Users.Any(u =>
-                    u.UserName.Equals(newUserName, StringComparison.Ordinal));
+                    u.UserName.Equals(newUserName, StringComparison.OrdinalIgnoreCase));
             }
             catch (Exception ex)
             {
@@ -330,26 +298,18 @@ namespace OPG_Robin_Strandberg_SYSM9.Managers
                     MessageBoxImage.Information
                 );
 
-                var twoFactorWindow = new OPG_Robin_Strandberg_SYSM9.Views.TwoFactorWindow(_lastGeneratedCode);
+                var twoFactorWindow = new Views.TwoFactorWindow(_lastGeneratedCode);
                 bool? result = twoFactorWindow.ShowDialog();
 
-                if (result == true)
-                {
-                    return true;
-                }
-
-                MessageBox.Show("Two-Factor verification failed. Login cancelled.",
-                    "Verification failed", MessageBoxButton.OK, MessageBoxImage.Warning);
-                return false;
+                return result == true;
             }
             catch (Exception ex)
             {
-                MessageBox.Show("An error occurred during two-factor authentication:\n" + ex.Message,
+                MessageBox.Show($"An error occurred during two-factor authentication:\n{ex.Message}",
                     "System error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return false;
             }
         }
-
 
         public event PropertyChangedEventHandler PropertyChanged;
 

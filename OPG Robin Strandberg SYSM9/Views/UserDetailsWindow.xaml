@@ -37,10 +37,13 @@
                         <TextBox Text="{Binding NewUserName, UpdateSourceTrigger=PropertyChanged}" />
 
                         <TextBlock Text="New Password:" />
-                        <PasswordBox x:Name="PasswordBox1" PasswordChanged="PasswordBox1_PasswordChanged" />
+                        <PasswordBox x:Name="NewPasswordBox"
+                                     PasswordChanged="PasswordBox1_PasswordChanged" />
 
                         <TextBlock Text="Confirm Password:" />
-                        <PasswordBox x:Name="PasswordBox2" PasswordChanged="PasswordBox2_PasswordChanged" />
+                        <PasswordBox x:Name="ConfirmPasswordBox"
+                                     PasswordChanged="PasswordBox2_PasswordChanged" />
+
 
                         <TextBlock Text="Select Country:" />
                         <ComboBox ItemsSource="{Binding Countries}" SelectedItem="{Binding SelectedCountry}" />

@@ -39,7 +39,7 @@ namespace OPG_Robin_Strandberg_SYSM9.Managers
                     return;
                 }
 
-                if (RecipeList.Any(r => string.Equals(r.Title, recipe.Title, StringComparison.Ordinal)
+                if (RecipeList.Any(r => string.Equals(r.Title, recipe.Title, StringComparison.OrdinalIgnoreCase)
                                         && r.CreatedBy?.UserName == recipe.CreatedBy?.UserName))
                 {
                     MessageBox.Show("A recipe with that title already exists for this user.", "Duplicate",
@@ -137,6 +137,7 @@ namespace OPG_Robin_Strandberg_SYSM9.Managers
                     return new ObservableCollection<Recipe>(RecipeList);
                 }
 
+                // Where villkor likt SQL som behöver uppfyllas
                 return new ObservableCollection<Recipe>(
                     RecipeList.Where(r => r.CreatedBy?.UserName == currentUser.UserName)
                 );
@@ -159,8 +160,10 @@ namespace OPG_Robin_Strandberg_SYSM9.Managers
 
                 foreach (var user in allUsers)
                 {
-                    var userRecipes = GetByUser(user);
-                    foreach (var recipe in userRecipes)
+                    if (user.RecipeList == null)
+                        continue;
+
+                    foreach (var recipe in user.RecipeList.ToList()) // kopierar aktuell lista
                     {
                         if (!allRecipes.Contains(recipe))
                             allRecipes.Add(recipe);
@@ -177,34 +180,41 @@ namespace OPG_Robin_Strandberg_SYSM9.Managers
         }
 
 
-        public ObservableCollection<Recipe> Filter(string criteria)
+        public ObservableCollection<Recipe> Filter(DateTime? selectedDate, string selectedCategory)
         {
             try
             {
-                if (string.IsNullOrWhiteSpace(criteria))
-                    return new ObservableCollection<Recipe>(RecipeList);
+                IEnumerable<Recipe> source;
 
-                criteria = criteria.Trim();
+                if (App.UserManager.CurrentUser is AdminUser)
+                    source = App.UserManager.Users.SelectMany(u => u.RecipeList);
+                else
+                    source = RecipeList;
 
-                var filtered = RecipeList
-                    .Where(r =>
-                        r.Title.Contains(criteria, StringComparison.Ordinal) ||
-                        r.Category.Contains(criteria, StringComparison.Ordinal))
-                    .ToList();
+                if (selectedDate == null && string.IsNullOrWhiteSpace(selectedCategory))
+                    return new ObservableCollection<Recipe>(source);
+
+                var filtered = source.Where(r =>
+                    (selectedDate == null || r.CreatedAt.Date == selectedDate.Value.Date) &&
+                    (string.IsNullOrWhiteSpace(selectedCategory) ||
+                     r.Category.Equals(selectedCategory, StringComparison.OrdinalIgnoreCase))
+                ).ToList();
 
                 if (filtered.Count == 0)
-                    MessageBox.Show("No recipes matched your search.", "No Results", MessageBoxButton.OK,
-                        MessageBoxImage.Information);
+                    MessageBox.Show("No recipes matched your filters.", "No Results",
+                        MessageBoxButton.OK, MessageBoxImage.Information);
 
                 return new ObservableCollection<Recipe>(filtered);
             }
             catch (Exception ex)
             {
-                ShowError("An error occurred while filtering recipes.", ex);
+                MessageBox.Show($"Error filtering recipes: {ex.Message}", "Error", MessageBoxButton.OK,
+                    MessageBoxImage.Error);
                 return new ObservableCollection<Recipe>();
             }
         }
 
+        // Skapad metod enligt ULM men för närvarande används modell-metod
         public void UpdateRecipe(Recipe recipe, string title, string instructions, string category, string ingredients)
         {
             try

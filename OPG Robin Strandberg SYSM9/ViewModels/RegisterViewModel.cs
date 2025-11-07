@@ -2,15 +2,44 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
+using OPG_Robin_Strandberg_SYSM9.Commands;
 using OPG_Robin_Strandberg_SYSM9.Managers;
+using OPG_Robin_Strandberg_SYSM9.Views;
 
 namespace OPG_Robin_Strandberg_SYSM9.ViewModels
 {
     public class RegisterViewModel : INotifyPropertyChanged
     {
         private readonly UserManager _userManager;
+        private string _username;
+        private string _selectedCountry;
 
         public List<string> Countries { get; }
+
+        public string Username
+        {
+            get => _username;
+            set
+            {
+                _username = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public string SelectedCountry
+        {
+            get => _selectedCountry;
+            set
+            {
+                _selectedCountry = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public ICommand RegisterCommand { get; }
+        public ICommand BackToLoginCommand { get; }
 
         public RegisterViewModel()
         {
@@ -43,13 +72,70 @@ namespace OPG_Robin_Strandberg_SYSM9.ViewModels
                 "United States", "Uruguay", "Uzbekistan", "Venezuela", "Vietnam", "Yemen",
                 "Zambia", "Zimbabwe"
             };
+            RegisterCommand = new RelayCommand(Register);
+            BackToLoginCommand = new RelayCommand(BackToLogin);
         }
 
-        public bool CreateUser(string username, string password, string country)
+        private void Register(object parameter)
         {
-            return _userManager.Register(username, password, country);
+            if (parameter is not Window window)
+                return;
+
+            var pw1 = window.FindName("PasswordBox") as PasswordBox;
+            var pw2 = window.FindName("ConfirmPasswordBox") as PasswordBox;
+
+            if (pw1 == null || pw2 == null)
+            {
+                MessageBox.Show("Password fields could not be read.", "Error",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            string password = pw1.Password.Trim();
+            string confirm = pw2.Password.Trim();
+
+            if (string.IsNullOrWhiteSpace(password) || string.IsNullOrWhiteSpace(confirm))
+            {
+                MessageBox.Show("Please fill in both password fields.",
+                    "Missing Password", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            if (password != confirm)
+            {
+                MessageBox.Show("Passwords do not match.",
+                    "Mismatch", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            bool success = _userManager.Register(Username, password, SelectedCountry);
+
+            if (success)
+            {
+                var mainWindow = new MainWindow();
+                mainWindow.Show();
+                CloseCurrentWindow();
+            }
         }
 
+        private void BackToLogin(object parameter)
+        {
+            var window = new MainWindow();
+            window.Show();
+            CloseCurrentWindow();
+        }
+
+        private void CloseCurrentWindow()
+        {
+            foreach (Window w in Application.Current.Windows)
+            {
+                if (w.DataContext == this)
+                {
+                    w.Close();
+                    break;
+                }
+            }
+        }
 
         public event PropertyChangedEventHandler PropertyChanged;
 

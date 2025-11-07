@@ -72,6 +72,7 @@ namespace OPG_Robin_Strandberg_SYSM9.ViewModels
             get => string.Join(", ", Recipe.Ingredients);
             set
             {
+                // select likt javascript map, väljer varje element och mappar om det till trimmat element. Sedan tolist.
                 Recipe.Ingredients = value.Split(',').Select(i => i.Trim()).ToList();
                 OnPropertyChanged();
             }
@@ -120,8 +121,6 @@ namespace OPG_Robin_Strandberg_SYSM9.ViewModels
             try
             {
                 Recipe.EditRecipe(Title, Instructions, Category, Ingredients);
-                MessageBox.Show("Recipe updated successfully!", "Success", MessageBoxButton.OK,
-                    MessageBoxImage.Information);
 
                 var listWindow = new RecipeListWindow(_recipeManager);
                 listWindow.Show();

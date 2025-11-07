@@ -19,7 +19,6 @@ namespace OPG_Robin_Strandberg_SYSM9.ViewModels
         private string _category;
         private DateTime _createdDate = DateTime.Now;
 
-
         public string Title
         {
             get => _title;
@@ -90,7 +89,8 @@ namespace OPG_Robin_Strandberg_SYSM9.ViewModels
                     string.IsNullOrWhiteSpace(Category) ||
                     string.IsNullOrWhiteSpace(Ingredients))
                 {
-                    MessageBox.Show("Alla fält måste fyllas i.", "Fel", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    MessageBox.Show("All fields must be filled out.", "Error", MessageBoxButton.OK,
+                        MessageBoxImage.Warning);
                     return;
                 }
 
@@ -103,14 +103,24 @@ namespace OPG_Robin_Strandberg_SYSM9.ViewModels
                     Ingredients
                 );
 
-
                 _recipeManager.AddRecipe(recipe);
 
-                MessageBox.Show("Recept tillagt!", "Klart", MessageBoxButton.OK, MessageBoxImage.Information);
+                var listWindow = new RecipeListWindow(App.UserManager.GetRecipeManagerForCurrentUser());
+                listWindow.Show();
+
+                foreach (Window w in Application.Current.Windows)
+                {
+                    if (w.DataContext == this)
+                    {
+                        w.Close();
+                        break;
+                    }
+                }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Ett fel uppstod: {ex.Message}", "Fel", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"An error occurred: {ex.Message}", "Error", MessageBoxButton.OK,
+                    MessageBoxImage.Error);
             }
         }
 

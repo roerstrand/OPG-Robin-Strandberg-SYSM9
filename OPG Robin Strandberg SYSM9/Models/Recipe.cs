@@ -181,9 +181,6 @@ namespace OPG_Robin_Strandberg_SYSM9.Models
                     string.Join(", ", Ingredients)
                 );
 
-                MessageBox.Show("Recipe copied successfully!", "Copied",
-                    MessageBoxButton.OK, MessageBoxImage.Information);
-
                 return copy;
             }
             catch (Exception ex)

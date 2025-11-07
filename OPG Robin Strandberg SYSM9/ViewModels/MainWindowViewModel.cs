@@ -113,6 +113,7 @@ namespace OPG_Robin_Strandberg_SYSM9
 
                     _userManager.IsAuthenticated = true;
 
+                    // Går igenom alla öppna fönster i applikation och stänger det fönster med datacontext satt till denna specifika viewmodel
                     foreach (Window window in Application.Current.Windows)
                     {
                         if (window is MainWindow)
@@ -121,6 +122,11 @@ namespace OPG_Robin_Strandberg_SYSM9
                             break;
                         }
                     }
+                }
+                else
+                {
+                    UserNameInput = string.Empty;
+                    PasswordInput = string.Empty;
                 }
             }
             catch (Exception ex)

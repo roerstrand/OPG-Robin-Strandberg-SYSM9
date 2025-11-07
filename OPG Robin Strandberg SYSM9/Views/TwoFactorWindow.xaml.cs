@@ -5,6 +5,7 @@ namespace OPG_Robin_Strandberg_SYSM9.Views
     public partial class TwoFactorWindow : Window
     {
         private readonly string _expectedCode;
+        private int _attemptsLeft = 3;
 
         public TwoFactorWindow(string expectedCode)
         {
@@ -21,10 +22,23 @@ namespace OPG_Robin_Strandberg_SYSM9.Views
             }
             else
             {
-                MessageBox.Show("Incorrect verification code. Please try again.",
-                    "Invalid code", MessageBoxButton.OK, MessageBoxImage.Warning);
+                _attemptsLeft--;
                 CodeBox.Clear();
                 CodeBox.Focus();
+
+                if (_attemptsLeft > 0)
+                {
+                    MessageBox.Show($"Incorrect verification code. {_attemptsLeft} attempts remaining.",
+                        "Invalid code", MessageBoxButton.OK, MessageBoxImage.Warning);
+                }
+                else
+                {
+                    MessageBox.Show("Too many failed attempts. Login cancelled.",
+                        "Access denied", MessageBoxButton.OK, MessageBoxImage.Error);
+
+                    DialogResult = false;
+                    Close();
+                }
             }
         }
 

@@ -139,22 +139,16 @@
                         <TextBlock Text="{Binding Recipe.CreatedBy.UserName}" />
 
                         <TextBlock Text="Created at:" />
+                        <!-- Date-objekt måste konverteras till string med StringFormat-metod -->
                         <TextBlock Text="{Binding Recipe.CreatedDate, StringFormat={}{0:yyyy-MM-dd HH:mm}}" />
 
-                        <Grid HorizontalAlignment="Center" Margin="0,20,0,0">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="Auto" />
-                            </Grid.ColumnDefinitions>
+                        <WrapPanel HorizontalAlignment="Center" Margin="0,20,0,0" ItemWidth="Auto" ItemHeight="Auto">
+                            <Button Content="{Binding EditButtonText}" Command="{Binding EditCommand}" Margin="10,10" />
+                            <Button Content="Save" Command="{Binding SaveCommand}" Margin="10,10" />
+                            <Button Content="Copy" Command="{Binding CopyCommand}" Margin="10,10" />
+                            <Button Content="Cancel" Command="{Binding CancelCommand}" Margin="10,10" />
+                        </WrapPanel>
 
-                            <Button Content="{Binding EditButtonText}" Command="{Binding EditCommand}" Grid.Column="0"
-                                    Margin="4,0" />
-                            <Button Content="Save" Command="{Binding SaveCommand}" Grid.Column="1" Margin="4,0" />
-                            <Button Content="Copy" Command="{Binding CopyCommand}" Grid.Column="2" Margin="4,0" />
-                            <Button Content="Cancel" Command="{Binding CancelCommand}" Grid.Column="3" Margin="4,0" />
-                        </Grid>
                     </StackPanel>
                 </StackPanel>
             </Grid>

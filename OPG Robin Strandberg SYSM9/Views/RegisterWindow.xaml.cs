@@ -13,29 +13,5 @@ namespace OPG_Robin_Strandberg_SYSM9.Views
             _viewModel = new RegisterViewModel();
             DataContext = _viewModel;
         }
-
-        private void Register_Click(object sender, RoutedEventArgs e)
-        {
-            var username = UsernameBox.Text.Trim();
-            var password = PasswordBox.Password.Trim();
-            var country = CountryBox.SelectedItem?.ToString();
-
-            bool success = _viewModel.CreateUser(username, password, country);
-
-            if (success)
-            {
-                var mainWindow = new MainWindow();
-                mainWindow.Show();
-                Close();
-            }
-        }
-
-
-        private void BackToLogin_Click(object sender, RoutedEventArgs e)
-        {
-            var window = new MainWindow();
-            window.Show();
-            Close();
-        }
     }
 }

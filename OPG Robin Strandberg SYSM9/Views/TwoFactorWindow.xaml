@@ -62,7 +62,7 @@
                                HorizontalAlignment="Center"
                                Margin="0,0,0,40" />
 
-                    <!-- Rundning av kanter i hörnegenskap -->
+                    <!-- Rundning av kanter i hörnegenskap för inramning -->
                     <!-- Border-element enbart ett barn tillåtet, därav en nästlad stackpanel -->
 
                     <Border CornerRadius="10"
@@ -78,22 +78,17 @@
                             <TextBox x:Name="CodeBox"
                                      FontSize="16"
                                      HorizontalContentAlignment="Center"
-                                     MaxLength="6"
-                                     Margin="0,0,0,25" />
+                                     MaxLength="6" />
 
                             <StackPanel Orientation="Horizontal"
                                         HorizontalAlignment="Center"
                                         VerticalAlignment="Center">
                                 <Button Content="Verify"
-                                        Width="120"
-                                        Height="38"
-                                        Click="Verify_Click"
-                                        Margin="10,0" />
+
+                                        Click="Verify_Click" />
                                 <Button Content="Cancel"
-                                        Width="120"
-                                        Height="38"
-                                        Click="Cancel_Click"
-                                        Margin="10,0" />
+
+                                        Click="Cancel_Click" />
                             </StackPanel>
                         </StackPanel>
                     </Border>

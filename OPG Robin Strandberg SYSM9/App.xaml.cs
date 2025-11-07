@@ -18,7 +18,9 @@ namespace OPG_Robin_Strandberg_SYSM9
             // Application klass base metod OnSartUp laddar globalt med absolut filväg
             var theme = new ResourceDictionary
             {
-                Source = new Uri("pack://application:,,,/OPG%20Robin%20Strandberg%20SYSM9;component/Themes/GlobalStyles.xaml", UriKind.Absolute)
+                Source = new Uri(
+                    "pack://application:,,,/OPG%20Robin%20Strandberg%20SYSM9;component/Themes/GlobalStyles.xaml",
+                    UriKind.Absolute)
             };
 
             Application.Current.Resources.MergedDictionaries.Add(theme);
@@ -26,38 +28,43 @@ namespace OPG_Robin_Strandberg_SYSM9
             UserManager ??= new UserManager();
 
             MainWindow = new Views.MainWindow();
+            MainWindow.Closed += OnWindowClosed;
             MainWindow.Show();
 
             DispatcherUnhandledException +=
                 App_DispatcherUnhandledException; // Global felhanterare av fel i UI-tråden
             AppDomain.CurrentDomain.UnhandledException +=
                 CurrentDomain_UnhandledException; // felhanterade för bakgrundstrådar i applikationen
-
-            ShutdownMode = ShutdownMode.OnExplicitShutdown; // Förhindrar att app avslutas om alla fönster stängs så inte
-            // tilladga recept, användare eller ändringar i användardata går förlorad.
         }
 
         // Om användaren råkar stänga alla fönster i appen, skicka förfrågan om de vill öppna appen igen (appens fortsätta köra ändå enligt ShutDownMode)
-        protected override void OnExit(ExitEventArgs e)
+        private void OnWindowClosed(object sender, EventArgs e)
         {
-            if (Current.MainWindow == null)
+            // Dispatcher klass kontrollerar ööppna fönster efter UI tråd uppdaterat lista med fönster
+            Dispatcher.BeginInvoke(new Action(() =>
             {
-                var result = MessageBox.Show(
-                    "All windows are closed. Do you want to reopen the app?",
-                    "App still running",
-                    MessageBoxButton.YesNo,
-                    MessageBoxImage.Question
-                );
-
-                if (result == MessageBoxResult.Yes)
+                if (Current.Windows.Count == 0)
                 {
-                    var main = new MainWindow();
-                    main.Show();
-                }
-            }
+                    var result = MessageBox.Show(
+                        "All windows are closed. Do you want to reopen the app?",
+                        "Application still running",
+                        MessageBoxButton.YesNo,
+                        MessageBoxImage.Question);
 
-            base.OnExit(e);
+                    if (result == MessageBoxResult.Yes)
+                    {
+                        var main = new MainWindow();
+                        main.Closed += OnWindowClosed;
+                        main.Show();
+                    }
+                    else
+                    {
+                        Shutdown();
+                    }
+                }
+            }), DispatcherPriority.Background);
         }
+
 
         public void App_DispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
         {

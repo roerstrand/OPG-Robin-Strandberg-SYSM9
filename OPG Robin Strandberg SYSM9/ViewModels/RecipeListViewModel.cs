@@ -17,8 +17,6 @@ namespace OPG_Robin_Strandberg_SYSM9.ViewModels
         private readonly RecipeManager _recipeManager;
         private readonly UserManager _userManager;
 
-        public bool IsAdminVisible => _userManager.ActiveAdmins.Contains(_userManager.CurrentUser);
-
         private ObservableCollection<Recipe> _recipes;
 
         public ObservableCollection<Recipe> Recipes
@@ -55,7 +53,15 @@ namespace OPG_Robin_Strandberg_SYSM9.ViewModels
             }
         }
 
+        public DateTime? SelectedDate { get; set; }
+        public string SelectedCategory { get; set; }
+
+        public ObservableCollection<string> Categories { get; set; }
+
+
         public string CurrentUserName => _userManager?.CurrentUser?.UserName ?? "Unknown";
+
+        public bool IsAdminVisible => _userManager.ActiveAdmins.Contains(_userManager.CurrentUser);
 
         public ICommand AddRecipeCommand { get; }
         public ICommand RemoveRecipeCommand { get; }
@@ -91,17 +97,41 @@ namespace OPG_Robin_Strandberg_SYSM9.ViewModels
         {
             try
             {
-                if (_userManager.CurrentUser == null)
+                if (_userManager.ActiveAdmins.Contains(_userManager.CurrentUser))
                 {
-                    MessageBox.Show("No user is logged in. Returning to start screen.",
-                        "Session", MessageBoxButton.OK, MessageBoxImage.Warning);
-                    return;
+                    Recipes = new ObservableCollection<Recipe>(
+                        _recipeManager.GetByUser(_userManager.CurrentUser)
+                    );
+                }
+                else
+                {
+                    Recipes = new ObservableCollection<Recipe>(
+                        _recipeManager.GetByUser(_userManager.CurrentUser)
+                    );
                 }
 
-                if (_userManager.ActiveAdmins.Contains(_userManager.CurrentUser))
-                    Recipes = _recipeManager.GetAllRecipesForAdmin(_userManager.Users);
-                else
-                    Recipes = new ObservableCollection<Recipe>(_recipeManager.GetByUser(_userManager.CurrentUser));
+                Categories = new ObservableCollection<string>(
+                    // SQL liknande villkor för filtrering
+                    Recipes.Select(r => r.Category)
+                        .Where(c => !string.IsNullOrWhiteSpace(c))
+                        .Distinct()
+                        .OrderBy(c => c)
+                );
+                OnPropertyChanged(nameof(Categories));
+                if (Categories == null || Categories.Count == 0)
+                {
+                    Categories = new ObservableCollection<string>
+                    {
+                        "Breakfast",
+                        "Lunch",
+                        "Dinner",
+                        "Dessert",
+                        "Snack",
+                        "Drink"
+                    };
+                    OnPropertyChanged(nameof(Categories));
+                }
+
             }
             catch (Exception ex)
             {
@@ -109,23 +139,19 @@ namespace OPG_Robin_Strandberg_SYSM9.ViewModels
             }
         }
 
+
         private void FilterRecipes()
         {
             try
             {
-                if (string.IsNullOrWhiteSpace(FilterText))
-                {
-                    LoadRecipes();
-                    return;
-                }
-
-                Recipes = _recipeManager.Filter(FilterText);
+                Recipes = _recipeManager.Filter(SelectedDate, SelectedCategory);
             }
             catch (Exception ex)
             {
-                ShowError("Error while filtering.", ex);
+                ShowError("Error while filtering recipes.", ex);
             }
         }
+
 
         private void AddRecipe()
         {
@@ -140,41 +166,33 @@ namespace OPG_Robin_Strandberg_SYSM9.ViewModels
 
             if (SelectedRecipe == null)
             {
-                MessageBox.Show("Select a recipe to remove.",
-                    "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show("Select a recipe to remove.", "Warning",
+                    MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 
             if (MessageBox.Show($"Do you want to delete \"{SelectedRecipe.Title}\"?",
                     "Confirm", MessageBoxButton.YesNo, MessageBoxImage.Question) != MessageBoxResult.Yes)
-            {
                 return;
-            }
 
             try
             {
                 if (currentUser.IsAdmin && currentUser is AdminUser adminUser)
-                {
                     adminUser.RemoveAnyRecipe(SelectedRecipe);
-                }
+                else if (SelectedRecipe.CreatedBy?.UserName == currentUser.UserName)
+                    _recipeManager.RemoveRecipe(SelectedRecipe);
                 else
                 {
-                    if (SelectedRecipe.CreatedBy?.UserName != currentUser.UserName)
-                    {
-                        MessageBox.Show("You can only delete your own recipes.",
-                            "Access Denied", MessageBoxButton.OK, MessageBoxImage.Warning);
-                        return;
-                    }
-
-                    _recipeManager.RemoveRecipe(SelectedRecipe);
+                    MessageBox.Show("You can only delete your own recipes.",
+                        "Access Denied", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
                 }
 
                 LoadRecipes();
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error while removing recipe: {ex.Message}",
-                    "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                ShowError("Error while removing recipe.", ex);
             }
         }
 
@@ -256,11 +274,10 @@ namespace OPG_Robin_Strandberg_SYSM9.ViewModels
             {
                 if (_userManager.ActiveAdmins.Contains(_userManager.CurrentUser))
                 {
-                    // Of Type som villkor ist för typeOf
-                    Recipes = _recipeManager.ViewAllRecipes(
-                        _userManager.CurrentUser,
-                        _userManager.ActiveAdmins.OfType<User>().ToList()
-                    );
+                    Recipes = _recipeManager.GetAllRecipesForAdmin(_userManager.Users);
+
+                    MessageBox.Show("Displaying all recipes for all users.",
+                        "Admin View", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
                 else
                 {

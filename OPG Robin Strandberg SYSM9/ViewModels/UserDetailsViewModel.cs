@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using OPG_Robin_Strandberg_SYSM9.Commands;
 using OPG_Robin_Strandberg_SYSM9.Managers;
@@ -13,6 +15,9 @@ namespace OPG_Robin_Strandberg_SYSM9.ViewModels
     public class UserDetailsViewModel : INotifyPropertyChanged
     {
         private readonly UserManager _userManager;
+
+        public string CurrentUserName => _userManager.CurrentUser?.UserName;
+        public string CurrentCountry => _userManager.CurrentUser?.Country;
 
         private string _newUserName;
         private string _selectedCountry;
@@ -92,23 +97,56 @@ namespace OPG_Robin_Strandberg_SYSM9.ViewModels
         {
             try
             {
-                var currentUser = _userManager.CurrentUser;
+                var window = Application.Current.Windows.OfType<UserDetailsWindow>().FirstOrDefault();
 
-                if (!string.IsNullOrWhiteSpace(NewUserName) &&
-                    NewUserName != currentUser.UserName)
+                if (window != null)
                 {
-                    if (_userManager.IsUsernameTaken(NewUserName))
+                    var pw1 = window.FindName("NewPasswordBox") as PasswordBox;
+                    var pw2 = window.FindName("ConfirmPasswordBox") as PasswordBox;
+
+                    if (pw1 == null || pw2 == null)
                     {
-                        MessageBox.Show("That username is already taken. Please choose another one.",
-                            "Username taken", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        MessageBox.Show("Password fields could not be read.", "Error", MessageBoxButton.OK,
+                            MessageBoxImage.Error);
                         return;
                     }
 
-                    currentUser.ChangeUserName(NewUserName);
+                    NewPassword = pw1.Password;
+                    ConfirmPassword = pw2.Password;
+                }
+
+                var currentUser = _userManager.CurrentUser;
+                bool changedSomething = false;
+
+                if (!string.IsNullOrWhiteSpace(NewUserName) && NewUserName != currentUser.UserName)
+                {
+                    if (NewUserName.Length < 3)
+                    {
+                        MessageBox.Show("Username must be at least 3 characters long.",
+                            "Invalid Username", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        return;
+                    }
+
+                    if (_userManager.IsUsernameTaken(NewUserName))
+                    {
+                        MessageBox.Show("That username is already taken. Please choose another one.",
+                            "Username Taken", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        return;
+                    }
+
+                    if (currentUser.ChangeUserName(NewUserName))
+                        changedSomething = true;
                 }
 
                 if (!string.IsNullOrWhiteSpace(NewPassword))
                 {
+                    if (NewPassword.Length < 5)
+                    {
+                        MessageBox.Show("Password must be at least 5 characters long.",
+                            "Invalid Password", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        return;
+                    }
+
                     if (NewPassword != ConfirmPassword)
                     {
                         MessageBox.Show("Passwords do not match.",
@@ -116,14 +154,26 @@ namespace OPG_Robin_Strandberg_SYSM9.ViewModels
                         return;
                     }
 
-                    currentUser.ChangePassword(NewPassword);
+                    if (_userManager.ChangePassword(currentUser, NewPassword))
+                        changedSomething = true;
                 }
 
-                if (!string.IsNullOrWhiteSpace(SelectedCountry))
-                    currentUser.UpdateDetails(SelectedCountry);
+                if (!string.IsNullOrWhiteSpace(SelectedCountry) && SelectedCountry != currentUser.Country)
+                {
+                    if (currentUser.UpdateDetails(SelectedCountry))
+                        changedSomething = true;
+                }
 
-                MessageBox.Show("User details updated successfully!",
-                    "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                if (changedSomething)
+                {
+                    MessageBox.Show("User details updated successfully!",
+                        "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+                else
+                {
+                    MessageBox.Show("No changes were made.",
+                        "Information", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
 
                 var listWindow = new RecipeListWindow(_userManager.GetRecipeManagerForCurrentUser());
                 listWindow.Show();
@@ -143,7 +193,6 @@ namespace OPG_Robin_Strandberg_SYSM9.ViewModels
                     "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
-
 
         private void Cancel()
         {

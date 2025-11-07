@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Input;
 using OPG_Robin_Strandberg_SYSM9.Managers;
@@ -89,6 +90,7 @@ namespace OPG_Robin_Strandberg_SYSM9
 
         public ForgotPasswordViewModel()
         {
+            // App.UserManager global objektinstans tilldelas i konstruktorn app.xaml vid kompilering app-klass
             _userManager = App.UserManager;
 
             SubmitCommand = new RelayCommand(o => ValidatePriorPasswordChange());
@@ -131,7 +133,26 @@ namespace OPG_Robin_Strandberg_SYSM9
                     return;
                 }
 
-                _userManager.ChangePassword(user, InputNewPassword);
+                // Stark validering (samma som vid registrering)
+                string pattern = @"^(?=.*\d)(?=.*[!@#$%^&*(),.?""':{}|<>])[A-Za-z\d!@#$%^&*(),.?""':{}|<>]{8,}$";
+                if (!Regex.IsMatch(InputNewPassword, pattern))
+                {
+                    MessageBox.Show(
+                        "Password must be at least 8 characters long and include at least one digit and one special character.",
+                        "Invalid Password",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Warning
+                    );
+                    return;
+                }
+
+                bool success = _userManager.ChangePassword(user, InputNewPassword);
+
+                if (success)
+                {
+                    MessageBox.Show("Password successfully changed. You can now log in with your new password.",
+                        "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
 
                 foreach (Window window in Application.Current.Windows)
                 {

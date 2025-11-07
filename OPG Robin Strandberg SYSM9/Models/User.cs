@@ -1,7 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using System.Windows;
 
 namespace OPG_Robin_Strandberg_SYSM9.Models
 {
@@ -58,60 +57,31 @@ namespace OPG_Robin_Strandberg_SYSM9.Models
             return _userName == userName && _password == password;
         }
 
-        public virtual void ChangeUserName(string newUserName)
+        public virtual bool ChangeUserName(string newUserName)
         {
-            if (string.IsNullOrWhiteSpace(newUserName))
-            {
-                MessageBox.Show("Username cannot be empty.",
-                    "Validation Error", MessageBoxButton.OK, MessageBoxImage.Warning);
-                return;
-            }
-
-            if (newUserName.Length < 3)
-            {
-                MessageBox.Show("Username must be at least 3 characters long.",
-                    "Validation Error", MessageBoxButton.OK, MessageBoxImage.Warning);
-                return;
-            }
+            if (string.IsNullOrWhiteSpace(newUserName) || newUserName.Length < 3)
+                return false;
 
             UserName = newUserName.Trim();
-            MessageBox.Show("Username updated successfully.",
-                "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+            return true;
         }
 
-        public virtual void ChangePassword(string newPassword)
+        public virtual bool ChangePassword(string newPassword)
         {
-            if (string.IsNullOrWhiteSpace(newPassword))
-            {
-                MessageBox.Show("Password cannot be empty.",
-                    "Validation Error", MessageBoxButton.OK, MessageBoxImage.Warning);
-                return;
-            }
-
-            if (newPassword.Length < 5)
-            {
-                MessageBox.Show("Password must be at least 5 characters long.",
-                    "Validation Error", MessageBoxButton.OK, MessageBoxImage.Warning);
-                return;
-            }
+            if (string.IsNullOrWhiteSpace(newPassword) || newPassword.Length < 5)
+                return false;
 
             Password = newPassword.Trim();
-            MessageBox.Show("Password updated successfully.",
-                "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+            return true;
         }
 
-        public virtual void UpdateDetails(string newCountry)
+        public virtual bool UpdateDetails(string newCountry)
         {
             if (string.IsNullOrWhiteSpace(newCountry))
-            {
-                MessageBox.Show("Country cannot be empty.",
-                    "Validation Error", MessageBoxButton.OK, MessageBoxImage.Warning);
-                return;
-            }
+                return false;
 
             Country = newCountry.Trim();
-            MessageBox.Show("Country updated successfully.",
-                "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+            return true;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
